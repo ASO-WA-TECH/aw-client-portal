@@ -14,6 +14,9 @@ const DataRequests = () => {
   const TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE;
   const TOKEN = import.meta.env.VITE_AIRTABLE_TOKEN;
 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -33,20 +36,76 @@ const DataRequests = () => {
     fetchUsers();
   }, []);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(name, email);
+    try {
+      const response = await api.post(
+        `${BASE_ID}/${TABLE_NAME}`,
+        {
+          fields: {
+            Name: name,
+            Email: email,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("POST successful:", response.data.records);
+    } catch (err) {
+      console.log("ERROR", err.response?.data);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <h2>User list</h2>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.fields.Name}</li>
-        ))}
-      </ul>
+    <>
+      <div>
+        <h2>User list</h2>
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>{user.fields.Name}</li>
+          ))}
+        </ul>
+      </div>
 
-      <input type="button" value="Create new" />
-    </div>
+      <form onSubmit={handleSubmit} className="p-4">
+        <div>
+          <label>Name: </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="border p-1 m-2 required"
+          />
+        </div>
+        <div>
+          <label>Email: </label>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border p-1 m-2 required"
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-1 rounded"
+          >
+            {" "}
+            Send
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
