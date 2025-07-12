@@ -1,19 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import HttpService from "../Services/httpService";
 
-const DataRequests = () => {
-  const BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
-  const TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE;
-  const TOKEN = import.meta.env.VITE_AIRTABLE_TOKEN;
-
-  const api = axios.create({
-    baseURL: `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`,
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-      "Content-Type": "application/json",
-    },
-  });
-
+const UserRequests = () => {
   const [users, setUsers] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,44 +10,12 @@ const DataRequests = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchRecords = async () => {
-    const response = await api.get();
-    console.log(response);
-    return response.data.records;
-  };
-
-  const createRecords = async (record) => {
-    await api.post(`/`, {
-      fields: record,
-    });
-  };
-
-  const updateRecord = async (record) => {
-    console.log("update", record);
-    if (!record.id) {
-      alert("Please enter a valid id");
-      return;
-    }
-    const { id, ...fieldsToUpdate } = record;
-    await api.patch(`/${id}`, {
-      fields: fieldsToUpdate.fields,
-    });
-  };
-
-  const deleteRecord = async (record) => {
-    console.log("update", record);
-    if (!record) {
-      alert("Please enter a valid id");
-      return;
-    }
-    await api.delete(`/${record}`);
-    console.log("Delete success");
-  };
+  const httpService = new HttpService();
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const data = await fetchRecords();
+        const data = await httpService.fetchRecords();
         setUsers(data);
       } catch (err) {
         setError(err.message);
@@ -77,7 +33,7 @@ const DataRequests = () => {
       Email: email,
     };
     try {
-      await createRecords(userDetails);
+      await httpService.createRecords(userDetails);
       console.log("POST successful");
     } catch (err) {
       console.log("ERROR", err.response?.data);
@@ -94,7 +50,7 @@ const DataRequests = () => {
       },
     };
     try {
-      await updateRecord(userDetails);
+      await httpService.updateRecord(userDetails);
       console.log("Update success");
     } catch (err) {
       console.error(err.response?.data || err.message);
@@ -104,7 +60,7 @@ const DataRequests = () => {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await deleteRecord(userId);
+      await httpService.deleteRecord(userId);
     } catch (err) {
       console.error(err.response?.data || err.message);
     }
@@ -188,4 +144,4 @@ const DataRequests = () => {
   );
 };
 
-export default DataRequests;
+export default UserRequests;

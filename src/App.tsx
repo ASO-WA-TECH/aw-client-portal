@@ -1,10 +1,10 @@
 import "./App.css";
 // import Landing from "./Features/Landing";
-import DataRequests from "./Components/DataRequests";
+import UserRequests from "./Components/UserRequests";
 
 const App = () => (
   // <Landing />
-  <DataRequests />
+  <UserRequests />
 );
 
 export default App;
