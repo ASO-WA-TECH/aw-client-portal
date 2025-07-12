@@ -2,32 +2,65 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const DataRequests = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const api = axios.create({
-    baseURL: "https://api.airtable.com/v0/",
-  });
-
   const BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
   const TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE;
   const TOKEN = import.meta.env.VITE_AIRTABLE_TOKEN;
 
+  const api = axios.create({
+    baseURL: `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`,
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const [users, setUsers] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchRecords = async () => {
+    const response = await api.get();
+    console.log(response);
+    return response.data.records;
+  };
+
+  const createRecords = async (record) => {
+    await api.post(`/`, {
+      fields: record,
+    });
+  };
+
+  const updateRecord = async (record) => {
+    console.log("update", record);
+    if (!record.id) {
+      alert("Please enter a valid id");
+      return;
+    }
+    const { id, ...fieldsToUpdate } = record;
+    await api.patch(`/${id}`, {
+      fields: fieldsToUpdate.fields,
+    });
+  };
+
+  const deleteRecord = async (record) => {
+    console.log("update", record);
+    if (!record) {
+      alert("Please enter a valid id");
+      return;
+    }
+    await api.delete(`/${record}`);
+    console.log("Delete success");
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await api.get(`${BASE_ID}/${TABLE_NAME}`, {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-          },
-        });
-        console.log(response.data.records);
-        setUsers(response.data.records);
+        const data = await fetchRecords();
+        setUsers(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -39,53 +72,30 @@ const DataRequests = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(name, email);
+    const userDetails = {
+      Name: name,
+      Email: email,
+    };
     try {
-      const response = await api.post(
-        `${BASE_ID}/${TABLE_NAME}`,
-        {
-          fields: {
-            Name: name,
-            Email: email,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("POST successful:", response.data.records);
+      await createRecords(userDetails);
+      console.log("POST successful");
     } catch (err) {
       console.log("ERROR", err.response?.data);
     }
   };
 
-  const handleUpdate = async () => {
-    if (!userId) {
-      alert("Please eneter a valid id");
-      return;
-    }
-
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    const userDetails = {
+      id: userId,
+      fields: {
+        Name: name,
+        Email: email,
+      },
+    };
     try {
-      const response = await api.patch(
-        `${BASE_ID}/${TABLE_NAME}/${userId}`,
-        {
-          fields: {
-            Name: name,
-            Email: email,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Update success:", response.data.fields);
+      await updateRecord(userDetails);
+      console.log("Update success");
     } catch (err) {
       console.error(err.response?.data || err.message);
     }
@@ -93,28 +103,8 @@ const DataRequests = () => {
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    if (!userId) {
-      alert("Please eneter a valid id");
-      return;
-    }
-
     try {
-      const response = await api.delete(
-        `${BASE_ID}/${TABLE_NAME}/${userId}`,
-        // {
-        //   fields: {
-        //     Name: name,
-        //     Email: email,
-        //   },
-        // },
-        {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Delete success:", response.data);
+      await deleteRecord(userId);
     } catch (err) {
       console.error(err.response?.data || err.message);
     }
