@@ -91,6 +91,35 @@ const DataRequests = () => {
     }
   };
 
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    if (!userId) {
+      alert("Please eneter a valid id");
+      return;
+    }
+
+    try {
+      const response = await api.delete(
+        `${BASE_ID}/${TABLE_NAME}/${userId}`,
+        // {
+        //   fields: {
+        //     Name: name,
+        //     Email: email,
+        //   },
+        // },
+        {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Delete success:", response.data);
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -153,6 +182,17 @@ const DataRequests = () => {
         </label>
         <br />
         <button type="submit">Update</button>
+      </form>
+
+      <form action="" onSubmit={handleDelete}>
+        <h2> Delete Record </h2>
+        <label htmlFor="">
+          userId:
+          <input value={userId} onChange={(e) => setUserId(e.target.value)} />
+        </label>
+
+        <br />
+        <button type="submit">Delete</button>
       </form>
     </>
   );
