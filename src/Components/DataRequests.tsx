@@ -16,6 +16,7 @@ const DataRequests = () => {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -62,6 +63,34 @@ const DataRequests = () => {
     }
   };
 
+  const handleUpdate = async () => {
+    if (!userId) {
+      alert("Please eneter a valid id");
+      return;
+    }
+
+    try {
+      const response = await api.patch(
+        `${BASE_ID}/${TABLE_NAME}/${userId}`,
+        {
+          fields: {
+            Name: name,
+            Email: email,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Update success:", response.data.fields);
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -76,7 +105,7 @@ const DataRequests = () => {
         </ul>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4">
+      <form className="p-4" onSubmit={handleSubmit}>
         <div>
           <label>Name: </label>
           <input
@@ -104,6 +133,26 @@ const DataRequests = () => {
             Send
           </button>
         </div>
+      </form>
+
+      <form action="" onSubmit={handleUpdate}>
+        <h2> Update Record </h2>
+        <label htmlFor="">
+          userId:
+          <input value={userId} onChange={(e) => setUserId(e.target.value)} />
+        </label>
+        <br />
+        <label htmlFor="">
+          Name:
+          <input value={name} onChange={(e) => setName(e.target.value)} />
+        </label>
+        <br />
+        <label htmlFor="">
+          Email:
+          <input value={email} onChange={(e) => setEmail(e.target.value)} />
+        </label>
+        <br />
+        <button type="submit">Update</button>
       </form>
     </>
   );
