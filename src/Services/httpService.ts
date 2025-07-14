@@ -13,6 +13,15 @@ class HttpService {
     return response.data.records;
   }
 
+  async fetchRecord<T>(entity: T) {
+    if (!entity) {
+      alert("Please enter a valid id");
+      return;
+    }
+    const response = await apiClient.get(`/${this.tableName}/${entity}`);
+    return response.data.records;
+  }
+
   async createRecords<T>(entity: T) {
     await apiClient.post(`/${this.tableName}`, {
       fields: entity,
