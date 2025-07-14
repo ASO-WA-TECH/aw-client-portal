@@ -1,10 +1,6 @@
 import "./App.css";
-// import Landing from "./Features/Landing";
-import UserRequests from "./Components/UserRequests";
+import Landing from "./Features/Landing";
 
-const App = () => (
-  // <Landing />
-  <UserRequests />
-);
+const App = () => <Landing />;
 
 export default App;

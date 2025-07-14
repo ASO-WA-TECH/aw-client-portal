@@ -9,11 +9,10 @@ class HttpService {
 
   async fetchAllRecords() {
     const response = await apiClient.get(`/${this.tableName}`);
-    console.log(response);
     return response.data.records;
   }
 
-  async fetchRecord<T>(entity: T) {
+  async fetchRecord<string>(entity: string) {
     if (!entity) {
       alert("Please enter a valid id");
       return;
@@ -22,14 +21,13 @@ class HttpService {
     return response.data.records;
   }
 
-  async createRecords<T>(entity: T) {
+  async createRecords<string>(entity: string) {
     await apiClient.post(`/${this.tableName}`, {
       fields: entity,
     });
   }
 
-  async updateRecord<T>(entity: T) {
-    console.log("update", entity);
+  async updateRecord<string>(entity: string) {
     if (!entity.id) {
       alert("Please enter a valid id");
       return;
@@ -40,13 +38,12 @@ class HttpService {
     });
   }
 
-  async deleteRecord<T>(entity: T) {
+  async deleteRecord<string>(entity: string) {
     if (!entity) {
       alert("Please enter a valid id");
       return;
     }
     await apiClient.delete(`/${this.tableName}/${entity}`);
-    console.log("Delete success");
   }
 }
 
