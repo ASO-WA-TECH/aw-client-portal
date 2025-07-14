@@ -1,38 +1,44 @@
 import apiClient from "./apiClient";
 
-class HtttpService {
-  async fetchRecords() {
-    const response = await apiClient.get();
+class HttpService {
+  private tableName: string;
+
+  constructor(tableName: string) {
+    this.tableName = tableName;
+  }
+
+  async fetchAllRecords() {
+    const response = await apiClient.get(`/${this.tableName}`);
     console.log(response);
     return response.data.records;
   }
 
-  async createRecords(record) {
-    await apiClient.post(`/`, {
-      fields: record,
+  async createRecords<T>(entity: T) {
+    await apiClient.post(`/${this.tableName}`, {
+      fields: entity,
     });
   }
 
-  async updateRecord(record) {
-    console.log("update", record);
-    if (!record.id) {
+  async updateRecord<T>(entity: T) {
+    console.log("update", entity);
+    if (!entity.id) {
       alert("Please enter a valid id");
       return;
     }
-    const { id, ...fieldsToUpdate } = record;
-    await apiClient.patch(`/${id}`, {
+    const { id, ...fieldsToUpdate } = entity;
+    await apiClient.patch(`/${this.tableName}/${id}`, {
       fields: fieldsToUpdate.fields,
     });
   }
 
-  async deleteRecord(record) {
-    if (!record) {
+  async deleteRecord<T>(entity: T) {
+    if (!entity) {
       alert("Please enter a valid id");
       return;
     }
-    await apiClient.delete(`/${record}`);
+    await apiClient.delete(`/${this.tableName}/${entity}`);
     console.log("Delete success");
   }
 }
 
-export default HtttpService;
+export default HttpService;

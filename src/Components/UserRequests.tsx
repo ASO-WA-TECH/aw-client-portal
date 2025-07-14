@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import HttpService from "../Services/httpService";
 
 const UserRequests = () => {
+  const httpService = new HttpService("Users");
+
   const [users, setUsers] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -10,12 +12,10 @@ const UserRequests = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const httpService = new HttpService();
-
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const data = await httpService.fetchRecords();
+        const data = await httpService.fetchAllRecords();
         setUsers(data);
       } catch (err) {
         setError(err.message);
