@@ -19,7 +19,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  VITE_SAMPLE_SECRET: ${{ secrets.VITE_SAMPLE_SECRET }}
+  VITE_AIRTABLE_BASE_ID: ${{ secrets.VITE_AIRTABLE_BASE_ID }}
+  VITE_AIRTABLE_TOKEN: ${{ secrets.VITE_AIRTABLE_TOKEN }}
 
 jobs:
   # Single deploy job since we're just deploying
