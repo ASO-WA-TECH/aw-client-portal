@@ -17,3 +17,4 @@ This file returns an apliClient is made up of the BASE ID of the DB, as well as 
 ### httpService.ts
 
 This a utlity functions for all the HTTP requests that we can use throughout the application. Each function generic and expects a tablename as a type of string. This can be interchangeable depending on the table.
+
