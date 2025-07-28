@@ -12,7 +12,7 @@ class HttpService {
     return response.data.records;
   }
 
-  async fetchRecord<string>(entity: string) {
+  async fetchRecord(entity: string) {
     if (!entity) {
       alert("Please enter a valid id");
       return;
@@ -21,13 +21,13 @@ class HttpService {
     return response.data.records;
   }
 
-  async createRecords<string>(entity: string) {
+  async createRecords(entity: string) {
     await apiClient.post(`/${this.tableName}`, {
       fields: entity,
     });
   }
 
-  async updateRecord<string>(entity: string) {
+  async updateRecord(entity: string) {
     if (!entity.id) {
       alert("Please enter a valid id");
       return;
@@ -38,7 +38,7 @@ class HttpService {
     });
   }
 
-  async deleteRecord<string>(entity: string) {
+  async deleteRecord(entity: string) {
     if (!entity) {
       alert("Please enter a valid id");
       return;

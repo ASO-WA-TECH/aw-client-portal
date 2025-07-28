@@ -1,0 +1,87 @@
+@use '../../variables' as vars;
+
+.button {
+  display: inline-block;
+  cursor: pointer;
+  border: 0;
+  border-radius: 20px;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  padding: 10px 25px;
+  font-size: 1rem;
+  outline: none;
+
+  &--emeraldGreen--primary {
+    background-color: vars.$emeraldGreen;
+    color: white;
+  }
+
+  &--emeraldGreen--secondary {
+    background-color: white;
+    border: 1px solid vars.$emeraldGreen;
+    color: vars.$emeraldGreen;
+  }
+
+  &--emeraldGreen--tertiary {
+    color: vars.$emeraldGreen;
+
+  }
+
+  &--mustardYellow--primary {
+    background-color: vars.$mustardYellow;
+    color: white;
+  }
+
+  &--mustardYellow--secondary {
+    background-color: white;
+    border: 1px solid vars.$mustardYellow;
+    color: vars.$mustardYellow;
+  }
+
+
+  &--mustardYellow--tertiary {
+    color: vars.$mustardYellow;
+
+  }
+
+  &--cream--primary {
+    background-color: vars.$cream;
+    color: white;
+  }
+
+  &--cream--secondary {
+    background-color: white;
+    border: 1px solid vars.$cream;
+    color: vars.$cream;
+  }
+
+  &--cream--tertiary {
+    color: vars.$cream;
+
+  }
+
+  &--pink--primary {
+    background-color: vars.$pink;
+    color: white;
+  }
+
+  &--pink--secondary {
+    background-color: white;
+    border: 1px solid vars.$pink;
+    color: vars.$pink;
+  }
+
+  &--pink--tertiary {
+    color: vars.$pink;
+  }
+
+  &--tertiary {
+    border: none;
+    background-color: inherit;
+  }
+
+  &--isDisabled {
+    cursor: not-allowed;
+  }
+}
