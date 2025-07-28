@@ -1,8 +1,4 @@
-import './App.css'
-import Landing from './Features/Landing'
+import "./App.css";
+const App = () => {};
 
-const App = () =>
-  <Landing />
-
-
-export default App
+export default App;
