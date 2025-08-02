@@ -1,5 +1,3 @@
-import React from "react";
-
 const ListingPage = () => {
   return <div>ListingPage</div>;
 };

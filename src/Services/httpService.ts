@@ -21,20 +21,19 @@ class HttpService {
     return response.data.records;
   }
 
-  async createRecords(entity: string) {
+  async createRecords<T extends object>(entity: T) {
     await apiClient.post(`/${this.tableName}`, {
       fields: entity,
     });
   }
 
-  async updateRecord(entity: string) {
+  async updateRecord<T extends { id: string; fields: object }>(entity: T) {
     if (!entity.id) {
       alert("Please enter a valid id");
       return;
     }
-    const { id, ...fieldsToUpdate } = entity;
-    await apiClient.patch(`/${this.tableName}/${id}`, {
-      fields: fieldsToUpdate.fields,
+    await apiClient.patch(`/${this.tableName}/${entity.id}`, {
+      fields: entity.fields,
     });
   }
 

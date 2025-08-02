@@ -7,22 +7,22 @@ import {
   Route,
   createRoutesFromElements,
 } from "react-router-dom";
-import Layout from "./Pages/Layout.tsx";
-import ErrorPage from "./Pages/ErrorPage.tsx";
-import HomePage from "./Pages/HomePage.tsx";
-import FAQ from "./Pages/FAQPage.tsx";
-import ImageUploadPage from "./Pages/ImageUploadPage.tsx";
-import LandingPage from "./Pages/LandingPage.tsx";
-import ListingPage from "./Pages/ListingPage.tsx";
-import LoginPage from "./Pages/LoginPage.tsx";
-import RegisterPage from "./Pages/RegisterPage.tsx";
-import UserAccountPage from "./Pages/UserAccountPage.tsx";
-import UserAccountEditPage from "./Pages/UserAccountEditPage.tsx";
-import UserAccountCreatePage from "./Pages/UserAccountCreatePage.tsx";
-import AllUserListingsPage from "./Pages/AllUserListingsPage.tsx";
-import UserListingsEditPage from "./Pages/UserListingsEditPage.tsx";
-import UserListingsCreatePage from "./Pages/UserListingsCreatePage.tsx";
-import UserListingPage from "./Pages/UserListingPage.tsx";
+import Layout from "./Pages/Layout";
+import ErrorPage from "./Pages/ErrorPage";
+import HomePage from "./Pages/Homepage";
+import FAQ from "./Pages/FAQPage";
+import ImageUploadPage from "./Pages/ImageUploadPage";
+import LandingPage from "./Pages/LandingPage";
+import ListingPage from "./Pages/ListingPage";
+import LoginPage from "./Pages/LoginPage";
+import RegisterPage from "./Pages/RegisterPage";
+import UserAccountPage from "./Pages/UserAccountPage";
+import UserAccountEditPage from "./Pages/UserAccountEditPage";
+import UserAccountCreatePage from "./Pages/UserAccountCreatePage";
+import AllUserListingsPage from "./Pages/AllUserListingsPage";
+import UserListingsEditPage from "./Pages/UserListingsEditPage";
+import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
+import UserListingPage from "./Pages/UserListingPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(

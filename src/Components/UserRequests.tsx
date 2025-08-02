@@ -2,23 +2,35 @@ import React, { useEffect, useState } from "react";
 import HttpService from "../Services/httpService";
 
 const UserRequests = () => {
-  const httpService = new HttpService("Users");
+  interface User {
+    id: string;
+    fields: {
+      Name: string;
+      Emil: string;
+    };
+  }
 
-  const [users, setUsers] = useState([]);
+  const httpService = new HttpService("Users");
+  const [users, setUsers] = useState<User[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const data = await httpService.fetchAllRecords();
+        console.log(data);
         setUsers(data);
-      } catch (err) {
-        setError(err.message);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          console.error("Unknown error", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -26,7 +38,7 @@ const UserRequests = () => {
     fetchUsers();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userDetails = {
       Name: name,
@@ -35,12 +47,16 @@ const UserRequests = () => {
     try {
       await httpService.createRecords(userDetails);
       console.log("POST successful");
-    } catch (err) {
-      console.log("ERROR", err.response?.data);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error("Unknown error", error);
+      }
     }
   };
 
-  const handleUpdate = async (e) => {
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userDetails = {
       id: userId,
@@ -52,17 +68,25 @@ const UserRequests = () => {
     try {
       await httpService.updateRecord(userDetails);
       console.log("Update success");
-    } catch (err) {
-      console.error(err.response?.data || err.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error("Unknown error", error);
+      }
     }
   };
 
-  const handleDelete = async (e) => {
+  const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await httpService.deleteRecord(userId);
-    } catch (err) {
-      console.error(err.response?.data || err.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error("Unknown error", error);
+      }
     }
   };
 
@@ -86,7 +110,9 @@ const UserRequests = () => {
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setName(e.target.value)
+            }
             className="border p-1 m-2 required"
           />
         </div>
@@ -95,7 +121,9 @@ const UserRequests = () => {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             className="border p-1 m-2 required"
           />
         </div>
@@ -114,17 +142,32 @@ const UserRequests = () => {
         <h2> Update Record </h2>
         <label htmlFor="">
           userId:
-          <input value={userId} onChange={(e) => setUserId(e.target.value)} />
+          <input
+            value={userId}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setUserId(e.target.value)
+            }
+          />
         </label>
         <br />
         <label htmlFor="">
           Name:
-          <input value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            value={name}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setName(e.target.value)
+            }
+          />
         </label>
         <br />
         <label htmlFor="">
           Email:
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            value={email}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
+          />
         </label>
         <br />
         <button type="submit">Update</button>
@@ -134,7 +177,12 @@ const UserRequests = () => {
         <h2> Delete Record </h2>
         <label htmlFor="">
           userId:
-          <input value={userId} onChange={(e) => setUserId(e.target.value)} />
+          <input
+            value={userId}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setUserId(e.target.value)
+            }
+          />
         </label>
 
         <br />

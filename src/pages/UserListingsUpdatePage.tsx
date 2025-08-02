@@ -1,5 +1,3 @@
-import React from "react";
-
 const UserListingsUpdatePage = () => {
   return <div>UserListingsUpdatePage</div>;
 };
