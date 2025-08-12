@@ -10,4 +10,5 @@ export default defineConfig({
     globals: true,
     setupFiles: "./tests/setup.ts", // assuming the test folder is in the root of our project
   },
+  publicDir: "./src/assets"
 } as UserConfig);
