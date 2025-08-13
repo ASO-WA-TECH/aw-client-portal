@@ -15,14 +15,9 @@ export default meta;
 type Story = StoryObj<typeof BackButton>;
 
 export const Primary: Story = {
-  args: {
-    label: "Primary Button",
-  },
+  args: {},
 };
 
 export const Secondary: Story = {
-  args: {
-    label: "Secondary Button",
-    className: "secondary",
-  },
+  args: {},
 };
