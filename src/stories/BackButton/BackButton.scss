@@ -1,0 +1,19 @@
+.back-button {
+  background-image: url('./../../assets/storybookImages/black-back-button.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+  .dark .back-button {
+    background-image: url('./../../assets/storybookImages/white-back-button.png');
+  }
+}
+
