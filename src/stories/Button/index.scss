@@ -8,19 +8,32 @@
   font-weight: 500;
   line-height: 1;
   text-align: center;
-  padding: 10px 25px;
+  padding: 15px 25px;
   font-size: 1rem;
   outline: none;
+  width: 250px;
 
   &--emeraldGreen--primary {
     background-color: vars.$emeraldGreen;
     color: white;
+
+    &:hover {
+      color: vars.$emeraldGreen;
+      background-color: white;
+      border: 1px solid vars.$emeraldGreen;
+    }
   }
 
   &--emeraldGreen--secondary {
     background-color: white;
     border: 1px solid vars.$emeraldGreen;
     color: vars.$emeraldGreen;
+
+    &:hover {
+      color: white;
+      border: 1px solid vars.$emeraldGreen;
+      background-color: vars.$emeraldGreen;
+    }
   }
 
   &--emeraldGreen--tertiary {
@@ -31,12 +44,24 @@
   &--mustardYellow--primary {
     background-color: vars.$mustardYellow;
     color: white;
+
+    &:hover {
+      color: vars.$mustardYellow;
+      background-color: white;
+      border: 1px solid vars.$mustardYellow;
+    }
   }
 
   &--mustardYellow--secondary {
     background-color: white;
     border: 1px solid vars.$mustardYellow;
     color: vars.$mustardYellow;
+
+    &:hover {
+      color: white;
+      border: 1px solid vars.$mustardYellow;
+      background-color: vars.$mustardYellow;
+    }
   }
 
 
@@ -48,12 +73,24 @@
   &--cream--primary {
     background-color: vars.$cream;
     color: white;
+
+    &:hover {
+      color: vars.$cream;
+      background-color: white;
+      border: 1px solid vars.$cream;
+    }
   }
 
   &--cream--secondary {
     background-color: white;
     border: 1px solid vars.$cream;
     color: vars.$cream;
+
+    &:hover {
+      color: white;
+      border: 1px solid vars.$cream;
+      background-color: vars.$cream;
+    }
   }
 
   &--cream--tertiary {
@@ -64,12 +101,24 @@
   &--pink--primary {
     background-color: vars.$pink;
     color: white;
+
+    &:hover {
+      color: vars.$pink;
+      background-color: white;
+      border: 1px solid vars.$pink;
+    }
   }
 
   &--pink--secondary {
     background-color: white;
     border: 1px solid vars.$pink;
     color: vars.$pink;
+
+    &:hover {
+      color: white;
+      border: 1px solid vars.$pink;
+      background-color: vars.$pink;
+    }
   }
 
   &--pink--tertiary {

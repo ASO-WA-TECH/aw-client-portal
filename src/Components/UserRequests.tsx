@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import HttpService from "../Services/httpService";
 
 const UserRequests = () => {
@@ -10,7 +10,8 @@ const UserRequests = () => {
     };
   }
 
-  const httpService = new HttpService("Users");
+  const httpService = useMemo(() => new HttpService("Users"), [])
+
   const [users, setUsers] = useState<User[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -36,7 +37,7 @@ const UserRequests = () => {
       }
     };
     fetchUsers();
-  }, []);
+  }, [httpService]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

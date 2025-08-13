@@ -1,5 +1,5 @@
 .back-button {
-  background-image: url('../assets/black-back-button.png');
+  background-image: url('./../../assets/storybookImages/black-back-button.png');
   background-size: contain;
   background-repeat: no-repeat;
   width: 50px;
@@ -13,7 +13,7 @@
 
 @media (prefers-color-scheme: dark) {
   .dark .back-button {
-    background-image: url('../assets/white-back-button.png');
+    background-image: url('./../../assets/storybookImages/white-back-button.png');
   }
 }
 
