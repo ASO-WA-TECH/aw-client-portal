@@ -13,8 +13,6 @@ export interface ButtonProps {
   color?: 'emeraldGreen' | 'mustardYellow' | 'cream' | 'pink';
   /** Button action type control */
   variant?: 'primary' | 'secondary' | 'tertiary';
-  /** Button custom styling */
-  customStyle?: string
 }
 
 /** UI component for user interaction */
@@ -25,13 +23,12 @@ const Button = ({
   color = 'emeraldGreen',
   variant = 'primary',
   type = 'button',
-  customStyle = '',
   ...props
 }: ButtonProps) => {
   return (
     <button
       type={type}
-      className={['button', `button--${color}--${variant}`, `button--${variant}`, isDisabled ? `button--isDisabled` : '', customStyle].join(' ')}
+      className={['button', `button--${color}--${variant}`, `button--${variant}`, isDisabled ? `button--isDisabled` : ''].join(' ')}
       onClick={handleClick}
       disabled={isDisabled}
       data-testid='button'
