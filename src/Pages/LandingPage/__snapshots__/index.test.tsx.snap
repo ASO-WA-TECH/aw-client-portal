@@ -1,0 +1,53 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LandingPage > renders buttons 1`] = `
+<div>
+  <div
+    class="landing-page"
+  >
+    <h3
+      class="landing-page__title"
+    >
+      Welcome to 
+    </h3>
+    <img
+      class="landing-page__logo"
+      data-testid="logo-image"
+      height="160"
+      src="/logos/yellowLogo.png"
+      width="184"
+    />
+    <button
+      class="button button--emeraldGreen--secondary button--secondary  "
+      data-testid="button"
+      type="button"
+    >
+      LOG IN
+    </button>
+    <p
+      class="landing-page__buttons-seperator-text"
+    >
+      <span
+        class="landing-page__dash"
+      >
+        —
+      </span>
+      <strong>
+        OR
+      </strong>
+      <span
+        class="landing-page__dash"
+      >
+        —
+      </span>
+    </p>
+    <button
+      class="button button--emeraldGreen--primary button--primary  landing-page__registerButton"
+      data-testid="button"
+      type="button"
+    >
+      REGISTER
+    </button>
+  </div>
+</div>
+`;
