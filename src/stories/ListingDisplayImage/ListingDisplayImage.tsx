@@ -2,9 +2,9 @@ import React from "react";
 import "./ListingDisplayImage.scss";
 
 interface ListingDisplayImageProps {
-  imageUrl: string;
-  title: string;
-  subtitle: string;
+  imageUrl: string; //Url of image
+  title: string; // Title of image card
+  subtitle: string; //subtitle or description of image card
   darkMode?: boolean;
 }
 
