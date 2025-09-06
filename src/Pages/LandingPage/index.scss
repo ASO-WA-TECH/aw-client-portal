@@ -1,0 +1,40 @@
+@use '../../variables.scss' as vars;
+
+.landing-page {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    &__title {
+        font-size: 2.5rem;
+    }
+
+    &__logo {
+        display: block;
+        margin: 20px auto 80px;
+    }
+
+    &__buttons-seperator-text {
+        margin: 25px 0;
+
+        &__dash {
+            color: #D3D3D3;
+            margin: 20px 0;
+
+            :first-of-type {
+                margin-right: 20px;
+            }
+
+            :last-of-type {
+                margin-left: 20px;
+            }
+        }
+    }
+
+    &__registerButton {
+        color: vars.$mustardYellow;
+    }
+}

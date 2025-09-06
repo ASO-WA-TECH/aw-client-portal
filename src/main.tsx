@@ -23,37 +23,38 @@ import AllUserListingsPage from "./Pages/AllUserListingsPage";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
 import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
 import UserListingPage from "./Pages/UserListingPage";
+import { Routes } from "./Routes";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<Layout />}>
+      <Route path={Routes.INITIAL} element={<Layout />}>
         <Route index element={<HomePage />} /> {/* default page at "/" */}
-        <Route path="home" element={<HomePage />} />
-        <Route path="home/listing" element={<ListingPage />} />
-        <Route path="account" element={<UserAccountPage />} />
-        <Route path="create-account" element={<UserAccountCreatePage />} />
-        <Route path="account/edit" element={<UserAccountEditPage />} />
+        <Route path={Routes.HOME} element={<HomePage />} />
+        <Route path={Routes.LISTING} element={<ListingPage />} />
+        <Route path={Routes.ACCOUNT} element={<UserAccountPage />} />
+        <Route path={Routes.CREATE_ACCOUNT} element={<UserAccountCreatePage />} />
+        <Route path={Routes.EDIT_ACCOUNT} element={<UserAccountEditPage />} />
         <Route
-          path="account/all-my-listings"
+          path={Routes.ALL_MY_LISTINGS}
           element={<AllUserListingsPage />}
         />
-        <Route path="account/my-listing" element={<UserListingPage />} />
-        <Route path="create-listing" element={<UserListingsCreatePage />} />
+        <Route path={Routes.MY_LISTINGS} element={<UserListingPage />} />
+        <Route path={Routes.CREATE_LISTINGS} element={<UserListingsCreatePage />} />
         <Route
-          path="account/my-listings/edit"
+          path={Routes.EDIT_LISTINGS}
           element={<UserListingsEditPage />}
         />
         <Route
-          path="account/my-listings/edit/image-upload"
+          path={Routes.EDIT_LISTINGS_IMAGE_UPLOAD}
           element={<ImageUploadPage />}
         />
       </Route>
-      <Route path="landing" element={<LandingPage />} />
-      <Route path="register" element={<RegisterPage />} />
-      <Route path="login" element={<LoginPage />} />
-      <Route path="FAQ" element={<FAQ />} />
-      <Route path="*" element={<ErrorPage />} />
+      <Route path={Routes.LANDING} element={<LandingPage />} />
+      <Route path={Routes.REGISTER} element={<RegisterPage />} />
+      <Route path={Routes.LOG_IN} element={<LoginPage />} />
+      <Route path={Routes.FAQ} element={<FAQ />} />
+      <Route path={Routes.ANYTHING_ELSE} element={<ErrorPage />} />
     </>
   )
 );
