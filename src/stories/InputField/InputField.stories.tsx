@@ -20,7 +20,7 @@ const meta: Meta<typeof InputField> = {
 export default meta;
 type Story = StoryObj<typeof InputField>;
 
-const Template = (args: InputFieldProps): JSX.Element => {
+const Template = (args: InputFieldProps) => {
   const [value, setValue] = useState(args.value || "");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
