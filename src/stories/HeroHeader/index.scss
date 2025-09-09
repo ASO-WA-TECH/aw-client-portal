@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    color: white;
+    // color: white;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -23,11 +23,11 @@
     }
   }
   
-  @media (min-width: 1200px) {
-    .hero-header--login {
-      background-image: url('/src/assets/storybookImages/hero-bg-login-desktop.png');
-    }
-  }
+  // @media (min-width: 1200px) {
+  //   .hero-header--login {
+  //     background-image: url('/src/assets/storybookImages/hero-bg-login-desktop.png');
+  //   }
+  // }
   
   .hero-header--register {
     background-image: url('/hero-bg-register-small.png');

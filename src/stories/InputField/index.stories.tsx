@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { InputField } from "./InputField";
-import type { InputFieldProps } from "./InputField";
+import { InputField } from ".";
+import type { InputFieldProps } from ".";
 
 const meta: Meta<typeof InputField> = {
   title: "Components/InputField",

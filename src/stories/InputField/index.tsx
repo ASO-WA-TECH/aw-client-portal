@@ -1,5 +1,5 @@
 import React from "react";
-import "./InputField.scss";
+import "./index.scss";
 
 // Define the props for the InputField component
 export interface InputFieldProps {
@@ -17,11 +17,11 @@ export interface InputFieldProps {
  * It supports read-only mode and custom styling.
  */
 export const InputField = ({
-  value,
-  handleChange,
+  value = "",
+  handleChange = () => {},
   label,
-  placeholder,
-  darkMode,
+  placeholder = "",
+  darkMode = false,
   isReadOnly = false,
   customStyle,
 }: InputFieldProps) => {
@@ -61,3 +61,5 @@ export const InputField = ({
     </div>
   );
 };
+
+export default InputField;

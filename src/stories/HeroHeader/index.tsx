@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./HeroHeader.scss";
+import "./index.scss";
 
 // Defining props
 interface HeroHeaderProps {

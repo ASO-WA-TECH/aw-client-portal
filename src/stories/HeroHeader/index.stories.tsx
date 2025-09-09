@@ -1,5 +1,5 @@
 import type { StoryFn } from "@storybook/react-vite";
-import HeroHeader from "./HeroHeader";
+import HeroHeader from ".";
 
 export default {
   title: "Components/HeroHeader",

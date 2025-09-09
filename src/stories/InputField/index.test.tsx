@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { InputField } from "./InputField";
-import type { InputFieldProps } from "./InputField";
+import { InputField } from ".";
+import type { InputFieldProps } from ".";
 
 // A helper function to render the component with default props
 const renderComponent = (props?: Partial<InputFieldProps>) => {
