@@ -7,6 +7,7 @@ function FieldForm() {
   return (
     <div>
       <InputField
+        class="test"
         value={username}
         handleChange={(e) => setUsername(e.target.value)}
         label="Username"

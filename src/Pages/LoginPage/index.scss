@@ -22,16 +22,20 @@ html, body {
     background-size: cover;
     background-position: center;
     height: 550px;
-    margin-left: 20px; /* balanced margin */
+    margin-left: 40px; /* balanced margin */
   }
   
   .form {
     flex: 1 1 300px; /* grow=1, shrink=1, basis=300px */
-    background-color: yellow;
+    background-color: white;
     height: 550px;
-    margin-right: 20px;
+    margin-right: 60px;
   }
-  
+
+  .formContainer {
+    padding: 10px 36px;
+  }
+
   @media (max-width: 800px) {
     .flex-container {
       flex-direction: column;
