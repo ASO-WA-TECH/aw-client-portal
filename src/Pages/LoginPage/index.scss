@@ -1,12 +1,44 @@
-body {
-    position: relative;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
     width: 100%;
-    height: 120vh;
-}
-
-section {
-    padding: 40px 20px;
-    max-width: 100%;
-    margin: auto;
-    text-align: center;
-}
+    overflow-x: hidden; // only hide horizontal scroll, keep vertical if content grows
+  }
+  
+  .flex-container {
+    background-color: DodgerBlue;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; 
+    width: 100%; /* instead of 100vw */
+  }  
+  
+  .background {
+    flex: 2 1 400px; /* grow=2, shrink=1, basis=400px */
+    background-image: url("/src/assets/storybookImages/hero-bg-register-desktop.png");
+    background-size: cover;
+    background-position: center;
+    height: 550px;
+    margin-left: 20px; /* balanced margin */
+  }
+  
+  .form {
+    flex: 1 1 300px; /* grow=1, shrink=1, basis=300px */
+    background-color: yellow;
+    height: 550px;
+    margin-right: 20px;
+  }
+  
+  @media (max-width: 800px) {
+    .flex-container {
+      flex-direction: column;
+    }
+    .background, .form {
+      width: 90%; /* prevent them from squishing */
+      margin: 10px auto; /* center on small screens */
+    }
+  }
+  
