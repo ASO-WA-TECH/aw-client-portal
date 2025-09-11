@@ -7,7 +7,7 @@ html, body {
   }
   
   .flex-container {
-    background-color: DodgerBlue;
+    background-image: url("/src/assets/misc/background.png");
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -21,24 +21,39 @@ html, body {
     background-image: url("/src/assets/storybookImages/hero-bg-register-desktop.png");
     background-size: cover;
     background-position: center;
-    height: 550px;
-    margin-left: 40px; /* balanced margin */
+    height: 600px;
+    margin-left: 80px; /* balanced margin */
   }
   
   .form {
     flex: 1 1 300px; /* grow=1, shrink=1, basis=300px */
     background-color: white;
-    height: 550px;
-    margin-right: 60px;
+    height: 600px;
+    margin-right: 100px;
   }
 
   .formContainer {
     padding: 10px 36px;
   }
 
+  .formContent {
+    padding: 0px 74px 0px 50px;
+    
+  }
+  
+  .emailApprovalSection {
+    text-align: center;
+  }
+
   @media (max-width: 800px) {
     .flex-container {
       flex-direction: column;
+    }
+
+    .background {
+        background-image: url("/src/assets/storybookImages/hero-bg-register-small.png");
+        background-size: cover;       /* scale with div */
+        background-repeat: no-repeat; /* prevent tiling */
     }
     .background, .form {
       width: 90%; /* prevent them from squishing */

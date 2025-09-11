@@ -16,58 +16,63 @@ const LoginPage = () => {
       <div class="background">1</div>
       <div class="form">
         <div class="formContainer">
-          <h1>JOIN US TODAY</h1>
-          <InputField
-            value={fullname}
-            handleChange={(e) => setFullname(e.target.value)}
-            label="Full Name"
-            darkMode={false}
-            isReadOnly={false}
-            placeholder="Test Fullname"
-          />
-          <br />
-          <InputField
-            value={email}
-            handleChange={(e) => setEmail(e.target.value)}
-            label="Email"
-            darkMode={false}
-            isReadOnly={false}
-            placeholder="Test email"
-          />
-          <br />
-          <InputField
-            value={password}
-            handleChange={(e) => setPassword(e.target.value)}
-            label="password"
-            darkMode={false}
-            isReadOnly={false}
-            placeholder="Test password"
-          />
-          <br />
-          <InputField
-            value={passwordConfirmation}
-            handleChange={(e) => setPasswordConfirmation(e.target.value)}
-            label="password"
-            darkMode={false}
-            isReadOnly={false}
-            placeholder="Test password"
-          />
-          <br />
-          <input
-            type="checkbox"
-            id="emailApproval"
-            name="emailApproval"
-            value="emailApproval"
-          />
-          <label for="emailApproval">
-            By Joining I agree to recieve email from ASO WA
-          </label>
-          <br />
-          <Button
-            text="LOG IN"
-            handleClick={() => navigate(`/${Routes.HOME}`)}
-            variant="primary"
-          />
+          <h2>JOIN US TODAY</h2>
+          <div className="formContent">
+            <InputField
+              value={fullname}
+              handleChange={(e) => setFullname(e.target.value)}
+              label="Full Name"
+              darkMode={false}
+              isReadOnly={false}
+              placeholder="Fullname"
+            />
+            <br />
+            <InputField
+              value={email}
+              handleChange={(e) => setEmail(e.target.value)}
+              label="Email"
+              darkMode={false}
+              isReadOnly={false}
+              placeholder="Test email"
+            />
+            <br />
+            <InputField
+              value={password}
+              handleChange={(e) => setPassword(e.target.value)}
+              label="password"
+              darkMode={false}
+              isReadOnly={false}
+              placeholder="Test password"
+            />
+            <br />
+            <InputField
+              value={passwordConfirmation}
+              handleChange={(e) => setPasswordConfirmation(e.target.value)}
+              label="password"
+              darkMode={false}
+              isReadOnly={false}
+              placeholder="Test password"
+            />
+            <br />
+            <div className="emailApprovalSection">
+              <input
+                type="checkbox"
+                id="emailApproval"
+                name="emailApproval"
+                value="emailApproval"
+              />
+              <label for="emailApproval">
+                By Joining I agree to recieve email from ASO WA
+              </label>
+              <br />
+              <br />
+              <Button
+                text="LOG IN"
+                handleClick={() => navigate(`/${Routes.HOME}`)}
+                variant="primary"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
