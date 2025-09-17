@@ -25,6 +25,8 @@ import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
 import UserListingPage from "./Pages/UserListingPage";
 import { Routes } from "./Routes";
 
+import './main.scss'
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
