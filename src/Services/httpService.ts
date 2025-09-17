@@ -1,6 +1,6 @@
 import apiClient from "./apiClient";
 
-class HttpService {
+export default class HttpService {
   private tableName: string;
 
   constructor(tableName: string) {
@@ -46,4 +46,4 @@ class HttpService {
   }
 }
 
-export default HttpService;
+

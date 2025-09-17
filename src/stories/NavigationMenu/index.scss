@@ -1,0 +1,116 @@
+@use '../../variables' as vars;
+
+.navigation-menu {
+    position: relative;
+
+    &__closed {
+        display: block;
+
+        &__hamburger-button {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            z-index: 1000;
+
+            &__bar {
+                height: 3px;
+                width: 100%;
+                background-color: #000;
+                border-radius: 2px;
+            }
+        }
+    }
+
+    &__desktop {
+        display: none;
+    }
+
+    &__mobile {
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: vars.$emeraldGreen;
+        color: white;
+        width: 70%;
+        height: 100vh;
+        z-index: 1001;
+        padding: 1rem;
+
+        &__close-button {
+            font-size: 2rem;
+            color: white;
+            display: block;
+            text-align: end;
+            background: none;
+            border: none;
+        }
+
+        &__links {
+            &__item {
+                margin: 20px;
+                list-style: none;
+
+                &__link {
+                    text-decoration: none;
+                    color: white;
+                    font-size: 1.2rem;
+
+                    &__text {
+                        margin-left: 10px;
+                        vertical-align: super;
+                        font-size: 1rem;
+                    }
+                }
+            }
+        }
+    }
+
+    @media screen and (min-width: 800px) {
+        &__desktop {
+            display: flex;
+            justify-content: center;
+            background-color: white;
+            padding: 1rem 2rem;
+            z-index: 1000;
+
+            &__links {
+                display: flex;
+                gap: 2rem;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+
+                &__item {
+                    &__link {
+                        text-decoration: none;
+                        color: #333;
+                        font-weight: 600;
+                        font-size: 1.2rem;
+                        position: relative;
+                        padding: 0.5rem 0;
+
+                        &:hover {
+                            text-decoration: underline;
+                            color: vars.$emeraldGreen;
+                        }
+
+                        &__text {
+                            margin-left: 5px;
+                        }
+                    }
+                }
+            }
+        }
+
+        &__closed,
+        &__mobile {
+            display: none;
+        }
+    }
+}
