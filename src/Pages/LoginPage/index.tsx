@@ -16,7 +16,7 @@ const LoginPage = () => {
       <div class="background">1</div>
       <div class="form">
         <div class="formContainer">
-          <h2>JOIN US TODAY</h2>
+          <h1>JOIN US TODAY</h1>
           <div className="formContent">
             <InputField
               value={fullname}
@@ -39,19 +39,19 @@ const LoginPage = () => {
             <InputField
               value={password}
               handleChange={(e) => setPassword(e.target.value)}
-              label="password"
+              label="Password"
               darkMode={false}
               isReadOnly={false}
-              placeholder="Test password"
+              placeholder="Password..."
             />
             <br />
             <InputField
               value={passwordConfirmation}
               handleChange={(e) => setPasswordConfirmation(e.target.value)}
-              label="password"
+              label="Confirm Password"
               darkMode={false}
               isReadOnly={false}
-              placeholder="Test password"
+              placeholder="Confirm Password..."
             />
             <br />
             <div className="emailApprovalSection">
