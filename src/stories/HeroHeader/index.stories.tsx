@@ -17,17 +17,12 @@ export default {
 };
 
 interface HeroHeaderProps {
-  pageType: "login" | "register";
+  pageType: "authenticate";
 }
 
 const Template: StoryFn<HeroHeaderProps> = (args) => <HeroHeader {...args} />;
 
-export const LoginPage = Template.bind({});
-LoginPage.args = {
-  pageType: "login",
-};
-
-export const RegisterPage = Template.bind({});
-RegisterPage.args = {
-  pageType: "register",
+export const AuthenticationPage = Template.bind({});
+AuthenticationPage.args = {
+  pageType: "authenticate",
 };

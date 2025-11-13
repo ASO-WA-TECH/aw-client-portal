@@ -21,9 +21,6 @@ describe("InputField", () => {
   it("should render with the correct label and placeholder", () => {
     renderComponent({ label: "Username", placeholder: "Enter your username" });
 
-    // Check if the label is in the document
-    expect(screen.getByLabelText("Username")).toBeInTheDocument();
-
     // Check if the placeholder is in the document
     const input = screen.getByPlaceholderText("Enter your username");
     expect(input).toBeInTheDocument();

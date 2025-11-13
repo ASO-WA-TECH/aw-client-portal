@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.scss";
 
-// Define the props for the InputField component
 export interface InputFieldProps {
   value: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -10,12 +9,11 @@ export interface InputFieldProps {
   isReadOnly?: boolean;
   customStyle?: React.CSSProperties;
   darkMode?: boolean;
+  required?: boolean;
+  validate?: (value: string) => string | null;
+  type?: "text" | "password" | "email" | "number";
 }
 
-/**
- * A reusable input field component with a label and placeholder.
- * It supports read-only mode and custom styling.
- */
 export const InputField = ({
   value = "",
   handleChange = () => {},
@@ -24,21 +22,33 @@ export const InputField = ({
   darkMode = false,
   isReadOnly = false,
   customStyle,
+  required = false,
+  validate,
+  type = "text",
 }: InputFieldProps) => {
+  const [error, setError] = useState<string | null>(null);
   const isFilled = value.length > 0;
 
-  // Generate a unique ID for the input
-  const inputId = `input-${label
-    .toLowerCase()
-    .replace(/\s+/g, "-")}-${Math.random().toString(36).substr(2, 9)}`;
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    handleChange(event);
 
-  // Apply dark-mode class to the container, not the input
+    if (required && newValue.trim() === "") {
+      setError("This field is required");
+    } else if (validate) {
+      const validationMessage = validate(newValue);
+      setError(validationMessage);
+    } else {
+      setError(null);
+    }
+  };
+
   const containerClassName = `input-field-container ${
     darkMode ? "dark-mode" : ""
   }`;
   const inputClassName = `input-field-input ${isReadOnly ? "read-only" : ""} ${
     isFilled ? "filled" : ""
-  }`;
+  } ${error ? "error" : ""}`;
 
   return (
     <div
@@ -46,18 +56,18 @@ export const InputField = ({
       style={customStyle}
       data-testid="input-field-container"
     >
-      <label className="input-field-label" htmlFor={inputId}>
-        {label}
+      <label className="input-field-label">
+        {label} {required && <span className="required">*</span>}
       </label>
       <input
-        id={inputId}
-        type="text"
+        type={type}
         className={inputClassName}
         value={value}
-        onChange={handleChange}
+        onChange={handleInputChange}
         placeholder={placeholder}
         readOnly={isReadOnly}
       />
+      {error && <p className="input-error-message">{error}</p>}
     </div>
   );
 };

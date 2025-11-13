@@ -58,3 +58,33 @@ export const ReadOnly: Story = {
     isReadOnly: true,
   },
 };
+
+export const WithValidation: Story = {
+  render: () => {
+    const [value, setValue] = useState("");
+    const [error, setError] = useState<string | null>(null);
+
+    const validate = (val: string) => {
+      if (!val) return "This field is required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val))
+        return console.log("working");
+      return null;
+    };
+
+    return (
+      <InputField
+        label="Email"
+        value={value}
+        handleChange={(e) => {
+          setValue(e.target.value);
+          setError(null);
+        }}
+        onBlur={() => setError(validate(value))}
+        placeholder="Enter your email"
+        required
+        errorMessage={error}
+        type="text"
+      />
+    );
+  },
+};

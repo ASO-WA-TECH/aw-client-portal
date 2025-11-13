@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import '../../variables';
+
 
 html, body {
     margin: 0;
@@ -32,23 +33,54 @@ html, body {
     background-color: white;
     height: 600px;
     margin-right: 100px;
+    border-radius: 7px;
   }
 
   .formContainer {
     padding: 10px 36px;
   }
 
-  h1 {
-    font: Oswald;
+  .formSignUpContainer {
+    padding: 10px 36px;
+  }
+
+  .formLoginContainer {
+    padding: 56px 36px;
   }
 
   .formContent {
     padding: 0px 74px 0px 50px;
-    
   }
   
   .emailApprovalSection {
     text-align: center;
+  }
+  
+    h1 {
+    font-family: $h1-font-family;
+    font-optical-sizing: $h1-font-optical-sizing;
+    font-weight: $h1-font-weight;
+    font-style: $h1-font-style;
+    padding-left: 47px;
+  }
+  
+  .paragraph,
+  p,
+  .input-error-message {
+    font-family: $p-font-family;
+    font-optical-sizing: $p-font-optical-sizing;
+    font-weight: $p-font-weight;
+    font-style: $p-font-style;
+  }
+
+  .input-error-message {
+    color: #c90b0b;
+  }
+
+  .toggleLink {
+    text-decoration: "underline";
+    cursor: pointer;
+    padding-left: 47px;
   }
 
   @media (max-width: 800px) {
@@ -63,7 +95,7 @@ html, body {
     }
     .background, .form {
       width: 90%; /* prevent them from squishing */
-      margin: 10px auto; /* center on small screens */
+      margin: -4px auto; /* center on small screens */
     }
   }
   
