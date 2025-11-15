@@ -1,0 +1,42 @@
+@use '../../variables' as vars;
+
+.bottom-navigation-bar {
+    background-color: vars.$emeraldGreen;
+    padding: 10px;
+    border-radius: 15px;
+    color: white;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    margin-top: 50px;
+
+    &__icons {
+        vertical-align: super;
+        font-size: 2rem;
+        color: white;
+
+        :active,
+        :hover {
+            color: vars.$pink;
+            cursor: pointer;
+        }
+
+        &__link {
+            color: white;
+            text-decoration: none;
+        }
+
+        &__plus-icon {
+            background-color: vars.$pink;
+            border-radius: 50%;
+            padding: 10px;
+            font-weight: bold;
+            vertical-align: bottom;
+        }
+    }
+}
