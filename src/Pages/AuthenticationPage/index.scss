@@ -1,0 +1,101 @@
+@import '../../variables';
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden; // only hide horizontal scroll, keep vertical if content grows
+  }
+  
+  .flex-container {
+    background-image: url("/src/assets/misc/background.png");
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; 
+    width: 100%; /* instead of 100vw */
+  }  
+  
+  .background {
+    flex: 2 1 400px; /* grow=2, shrink=1, basis=400px */
+    background-image: url("/src/assets/storybookImages/hero-bg-register-desktop.png");
+    background-size: cover;
+    background-position: center;
+    height: 600px;
+    margin-left: 80px; /* balanced margin */
+  }
+  
+  .form {
+    flex: 1 1 300px; /* grow=1, shrink=1, basis=300px */
+    background-color: white;
+    height: 600px;
+    margin-right: 100px;
+    border-radius: 7px;
+  }
+
+  .formContainer {
+    padding: 10px 36px;
+  }
+
+  .formSignUpContainer {
+    padding: 10px 36px;
+  }
+
+  .formLoginContainer {
+    padding: 56px 36px;
+  }
+
+  .formContent {
+    padding: 0px 74px 0px 50px;
+  }
+  
+  .emailApprovalSection {
+    text-align: center;
+  }
+  
+    h1 {
+    font-family: $h1-font-family;
+    font-optical-sizing: $h1-font-optical-sizing;
+    font-weight: $h1-font-weight;
+    font-style: $h1-font-style;
+    padding-left: 47px;
+  }
+  
+  .paragraph,
+  p,
+  .input-error-message {
+    font-family: $p-font-family;
+    font-optical-sizing: $p-font-optical-sizing;
+    font-weight: $p-font-weight;
+    font-style: $p-font-style;
+  }
+
+  .input-error-message {
+    color: #c90b0b;
+  }
+
+  .toggleLink {
+    text-decoration: "underline";
+    cursor: pointer;
+    padding-left: 47px;
+  }
+
+  @media (max-width: 800px) {
+    .flex-container {
+      flex-direction: column;
+    }
+
+    .background {
+        background-image: url("/src/assets/storybookImages/hero-bg-register-small.png");
+        background-size: cover;       /* scale with div */
+        background-repeat: no-repeat; /* prevent tiling */
+    }
+    .background, .form {
+      width: 90%; /* prevent them from squishing */
+      margin: -4px auto; /* center on small screens */
+    }
+  }
+  

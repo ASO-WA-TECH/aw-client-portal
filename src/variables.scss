@@ -1,5 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 // Brand colour pallete
 $emeraldGreen: #00674E;
 $mustardYellow: #FFCE1B;
 $cream: #F9EBDF;
-$pink: #FFC5D3
+$pink: #FFC5D3;
+
+// Font family
+$font-primary: 'Roboto', sans-serif;
+
+// Font weights
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
+$font-weight-black: 900;
+
+// H1 specific styles
+$h1-font-family: $font-primary;
+$h1-font-weight: $font-weight-black;
+$h1-font-optical-sizing: auto;
+$h1-font-style: normal;
+
+// H2 specific styles
+$h2-font-family: $font-primary;
+$h2-font-weight: $font-weight-medium;
+$h2-font-optical-sizing: auto;
+$h2-font-style: normal;
+
+// paragraph specific styles
+$p-font-family: $font-primary;
+$p-font-weight: $font-weight-light;
+$p-font-optical-sizing: auto;
+$p-font-style: normal;

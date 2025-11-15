@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { InputField } from "./InputField";
-import type { InputFieldProps } from "./InputField";
+import { InputField } from ".";
+import type { InputFieldProps } from ".";
 
 const meta: Meta<typeof InputField> = {
   title: "Components/InputField",
@@ -56,5 +56,37 @@ export const ReadOnly: Story = {
   args: {
     ...Filled.args,
     isReadOnly: true,
+  },
+};
+
+export const WithValidation: Story = {
+  render: () => {
+    const [value, setValue] = useState("");
+    const [error, setError] = useState<string | null>(null);
+
+    const validate = (val: string): string | null => {
+      if (!val) return "This field is required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val))
+        return "Invalid email format";
+      return null;
+    };
+
+    return (
+      <div>
+        <InputField
+          label="Email"
+          value={value}
+          handleChange={(e) => {
+            setValue(e.target.value);
+            const validationError = validate(e.target.value);
+            setError(validationError);
+          }}
+          placeholder="Enter your email"
+          required
+          type="text"
+        />
+        {error && <div style={{ color: "red", marginTop: "4px" }}>{error}</div>}
+      </div>
+    );
   },
 };

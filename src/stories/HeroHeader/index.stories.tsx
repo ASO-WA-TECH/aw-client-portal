@@ -1,5 +1,5 @@
 import type { StoryFn } from "@storybook/react-vite";
-import HeroHeader from "./HeroHeader";
+import HeroHeader from ".";
 
 export default {
   title: "Components/HeroHeader",
@@ -17,7 +17,7 @@ export default {
 };
 
 interface HeroHeaderProps {
-  pageType: "login" | "register";
+  pageType: "register" | "login";
 }
 
 const Template: StoryFn<HeroHeaderProps> = (args) => <HeroHeader {...args} />;

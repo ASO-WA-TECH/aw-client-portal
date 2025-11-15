@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import HeroHeader from "./HeroHeader";
+import HeroHeader from ".";
 
 describe("HeroHeader component", () => {
   it("renders with login class", () => {
