@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InputField from "/src/stories/InputField";
+import InputField from "../stories/InputField";
 
 function FieldForm() {
   const [username, setUsername] = useState("");
@@ -7,9 +7,10 @@ function FieldForm() {
   return (
     <div>
       <InputField
-        class="test"
         value={username}
-        handleChange={(e) => setUsername(e.target.value)}
+        handleChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          setUsername(event.target.value)
+        }
         label="Username"
         darkMode={false}
         isReadOnly={false}
@@ -18,7 +19,9 @@ function FieldForm() {
       <br />
       <InputField
         value={email}
-        handleChange={(e) => setEmail(e.target.value)}
+        handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setEmail(e.target.value)
+        }
         label="Email"
         darkMode={false}
         isReadOnly={false}

@@ -12,6 +12,7 @@ const LandingPage = () => {
       <h3 className="landing-page__title">Welcome to </h3>
       <LogoImage variant="yellow" customStyle="landing-page__logo" />
       <Button
+        type="button"
         text="LOG IN"
         handleClick={() => navigate(`/${Routes.AUTHENTICATE}`)}
         variant="secondary"
@@ -22,6 +23,7 @@ const LandingPage = () => {
         <span className="landing-page__dash">&#8212;</span>
       </p>
       <Button
+        type="button"
         text="REGISTER"
         handleClick={() => navigate(`/${Routes.REGISTER}`)}
         customStyle="landing-page__registerButton"

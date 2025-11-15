@@ -1,4 +1,4 @@
-import React, { useState, useMemo, FormEvent } from "react";
+import { useState, useMemo, type FormEvent } from "react";
 import { useAuth } from "../../Services/Auth/AuthContext";
 import InputField from "../../stories/InputField/";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,15 @@ import "./index.scss";
 import Button from "../../stories/Button/";
 import { Routes } from "../../Routes";
 import HttpService from "../../Services/httpService";
+
+interface UserRecord {
+  fields: {
+    Name: string;
+    Email: string;
+    Password: string;
+  };
+  id: string;
+}
 
 function AuthenticationPage() {
   const [username, setUsername] = useState("");
@@ -51,7 +60,7 @@ function AuthenticationPage() {
   ) {
     const data = await httpService.fetchAllRecords();
     const userFound = data.some(
-      (user: string) => user.fields.Name === username
+      (user: UserRecord) => user.fields.Name === username
     );
 
     if (userFound) {
@@ -176,10 +185,11 @@ function AuthenticationPage() {
                     <br />
                     <br />
                     <Button
-                      type="primary"
+                      type="submit"
                       isDisabled={!isApproved}
                       text={loading ? "Signing up..." : "Sign Up"}
                       variant="primary"
+                      handleClick={() => {}}
                     />
                   </div>
                 </form>
@@ -225,10 +235,11 @@ function AuthenticationPage() {
                     <br />
                     <br />
                     <Button
-                      type="primary"
+                      type="submit"
                       isDisabled={!isApproved}
                       text={loading ? "Loggin in..." : "Login"}
                       variant="primary"
+                      handleClick={() => {}}
                     />
                   </div>
                 </form>

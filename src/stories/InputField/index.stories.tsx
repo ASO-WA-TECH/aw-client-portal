@@ -64,27 +64,29 @@ export const WithValidation: Story = {
     const [value, setValue] = useState("");
     const [error, setError] = useState<string | null>(null);
 
-    const validate = (val: string) => {
+    const validate = (val: string): string | null => {
       if (!val) return "This field is required";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val))
-        return console.log("working");
+        return "Invalid email format";
       return null;
     };
 
     return (
-      <InputField
-        label="Email"
-        value={value}
-        handleChange={(e) => {
-          setValue(e.target.value);
-          setError(null);
-        }}
-        onBlur={() => setError(validate(value))}
-        placeholder="Enter your email"
-        required
-        errorMessage={error}
-        type="text"
-      />
+      <div>
+        <InputField
+          label="Email"
+          value={value}
+          handleChange={(e) => {
+            setValue(e.target.value);
+            const validationError = validate(e.target.value);
+            setError(validationError);
+          }}
+          placeholder="Enter your email"
+          required
+          type="text"
+        />
+        {error && <div style={{ color: "red", marginTop: "4px" }}>{error}</div>}
+      </div>
     );
   },
 };
