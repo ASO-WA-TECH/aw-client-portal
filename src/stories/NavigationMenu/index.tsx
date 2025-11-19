@@ -17,7 +17,7 @@ const NavigationMenu = ({ toggleDarkMode, darkMode }: Props) => {
                 <DesktopNavigationMenu toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
                 <div>
                     <div className={`${isOpen ? 'navigation-menu__opened' : 'navigation-menu__closed'}`}>
-                        <button className="navigation-menu__closed__hamburger-button" onClick={() => setIsOpen(true)}>
+                        <button className="navigation-menu__closed__hamburger-button" onClick={() => setIsOpen(true)} data-testid='menu-button'>
                             <span className="navigation-menu__closed__hamburger-button__bar"></span>
                             <span className="navigation-menu__closed__hamburger-button__bar"></span>
                             <span className="navigation-menu__closed__hamburger-button__bar"></span>
@@ -26,7 +26,7 @@ const NavigationMenu = ({ toggleDarkMode, darkMode }: Props) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

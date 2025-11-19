@@ -24,7 +24,6 @@ const ListingPage = () => {
                     id,
                     createdTime,
                 }))
-                console.log(flattenedData);
 
                 setListingData(flattenedData)
                 const defaultFilter = groupByKeyValue(flattenedData, "Gender", activeFilter)
@@ -33,6 +32,7 @@ const ListingPage = () => {
                 setFilteredData(defaultFilter)
                 setIsLoadingData(false)
             } catch (error) {
+                console.error(error)
                 setIsDataError(true)
             } finally {
                 setIsLoadingData(false)

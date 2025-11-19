@@ -5,30 +5,30 @@ import NavigationMenu from '.';
 
 describe('NavigationMenu', () => {
     test('snapshot', () => {
-        const { container } = render(<NavigationMenu />);
+        const { container } = render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
 
         expect(container).toMatchSnapshot()
     })
     test('renders desktop menu ', () => {
-        render(<NavigationMenu />);
+        render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
         expect(screen.getByTestId('desktop-menu')).toBeInTheDocument();
     });
 
     test('renders hamburger button', () => {
-        render(<NavigationMenu />);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
+        expect(screen.getByTestId('menu-button')).toBeInTheDocument();
     });
 
     test('shows mobile menu after hamburger is clicked', () => {
-        render(<NavigationMenu />);
-        const hamburgerButton = screen.getByRole('button');
+        render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
+        const hamburgerButton = screen.getByTestId('menu-button');
         fireEvent.click(hamburgerButton);
         expect(screen.getByTestId('mobile-menu')).toBeInTheDocument();
     });
 
     test('closes mobile menu when "Close" is clicked inside it', () => {
-        render(<NavigationMenu />);
-        fireEvent.click(screen.getByRole('button')); // open mobile menu
+        render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
+        fireEvent.click(screen.getByTestId('menu-button')); // open mobile menu
         expect(screen.getByTestId('mobile-menu')).toBeInTheDocument();
 
         const closeButton = screen.getByText('X');

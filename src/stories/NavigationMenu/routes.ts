@@ -1,6 +1,5 @@
 
 import { FiSearch } from "react-icons/fi";
-import { IoPricetagsOutline } from "react-icons/io5";
 import { CiShoppingBasket } from "react-icons/ci";
 import { CiCircleInfo } from "react-icons/ci";
 

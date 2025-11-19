@@ -132,6 +132,12 @@ exports[`NavigationMenu > snapshot 1`] = `
               </span>
             </a>
           </li>
+          <button
+            class="dark-mode-toggle"
+            data-testid="darkmode-toggle"
+          >
+            🌙 Dark Mode
+          </button>
         </ul>
       </nav>
       <div>
@@ -140,6 +146,7 @@ exports[`NavigationMenu > snapshot 1`] = `
         >
           <button
             class="navigation-menu__closed__hamburger-button"
+            data-testid="menu-button"
           >
             <span
               class="navigation-menu__closed__hamburger-button__bar"
