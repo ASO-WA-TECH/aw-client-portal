@@ -6,6 +6,6 @@ import NavigationMenu from "./NavigationMenu";
 export {
     Button,
     LogoImage,
-    NavigationMenu
+    NavigationMenu,
     ButtomNavigationBar
 }

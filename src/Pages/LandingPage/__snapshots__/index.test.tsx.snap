@@ -18,7 +18,7 @@ exports[`LandingPage > renders buttons 1`] = `
       width="184"
     />
     <button
-      class="button button--emeraldGreen--secondary button--secondary  "
+      class="button button--emeraldGreen--secondary button--secondary "
       data-testid="button"
       type="button"
     >
@@ -42,7 +42,8 @@ exports[`LandingPage > renders buttons 1`] = `
       </span>
     </p>
     <button
-      class="button button--emeraldGreen--primary button--primary  landing-page__registerButton"
+      class="button button--emeraldGreen--primary button--primary "
+      customstyle="landing-page__registerButton"
       data-testid="button"
       type="button"
     >
