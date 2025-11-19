@@ -1,0 +1,14 @@
+@use '../../variables.scss' as vars;
+
+.layout-container {
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px;
+    }
+
+    &__main {
+        margin: 20px;
+    }
+}
