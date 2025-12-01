@@ -11,7 +11,7 @@ function LogoutButton() {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate(Routes.HOME); // or Routes.AUTHENTICATE, depending on where you want to redirect
+      navigate(Routes.INITIAL); // or Routes.AUTHENTICATE, depending on where you want to redirect
     } catch (error) {
       console.error("Failed to log out:", error);
     }
