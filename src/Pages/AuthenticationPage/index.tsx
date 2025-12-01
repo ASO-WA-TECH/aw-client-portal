@@ -20,7 +20,6 @@ function AuthenticationPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [isApproved, setIsApproved] = useState<boolean>(false);
@@ -77,23 +76,19 @@ function AuthenticationPage() {
     e.preventDefault();
 
     if (isAlreadyRegistered === true) {
-      if (password === passwordConfirmation) {
-        try {
-          setError("");
-          setLoading(true);
-          await checkIfUsernameAlreadyExists(email, password, username);
-          navigate(fromPreviousPath, { replace: true });
-        } catch (err) {
-          if (err instanceof Error) {
-            setError(`Failed to create account: ", ${err.message}`);
-          } else {
-            setError("Failed to create account");
-          }
-        } finally {
-          setLoading(false);
+      try {
+        setError("");
+        setLoading(true);
+        await checkIfUsernameAlreadyExists(email, password, username);
+        navigate(fromPreviousPath, { replace: true });
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(`Failed to create account: ", ${err.message}`);
+        } else {
+          setError("Failed to create account");
         }
-      } else {
-        setError("Passwords do not match");
+      } finally {
+        setLoading(false);
       }
     } else {
       try {
@@ -156,19 +151,6 @@ function AuthenticationPage() {
                     darkMode={false}
                     isReadOnly={false}
                     placeholder="Password..."
-                    required={true}
-                  />
-                  <br />
-                  <InputField
-                    value={passwordConfirmation}
-                    type="text"
-                    handleChange={(e) =>
-                      setPasswordConfirmation(e.target.value)
-                    }
-                    label="Confirm Password"
-                    darkMode={false}
-                    isReadOnly={false}
-                    placeholder="Confirm Password..."
                     required={true}
                   />
                   <br />

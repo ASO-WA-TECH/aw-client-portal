@@ -9,7 +9,7 @@ export enum Routes {
   USER_LISTING = "/my-account/my-listings",
   CREATE_LISTINGS = "/my-account/create-listing",
   EDIT_LISTINGS = "/my-account/edit/listing",
-  EDIT_LISTINGS_IMAGE_UPLOAD = "/my-account/edit/image-upload",
+  EDIT_LISTINGS_IMAGE_UPLOAD = "/my-account/edit/listing/image-upload",
   LANDING = "/landing",
   LOG_IN = "/log-in",
   AUTHENTICATE = "/authenticate",

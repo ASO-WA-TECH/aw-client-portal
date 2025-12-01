@@ -1,5 +1,5 @@
 import UserRequests from "../Components/UserRequests";
-import LogoutButton from "../Components/LogoutButton";
+import LogoutLink from "../Components/LogoutLink";
 
 const Homepage = () => {
   return (
@@ -7,7 +7,8 @@ const Homepage = () => {
       <div>Homepage</div>
       <div>
         <UserRequests />
-        <LogoutButton />
+        {/* Added here for testing purposes, will be moved into menu once available */}
+        <LogoutLink />
       </div>
     </>
   );
