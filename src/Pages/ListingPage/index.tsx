@@ -4,7 +4,7 @@ import HttpService from "../../Services/httpService";
 import './index.scss'
 import type { FlattenedListing, ListingRecord } from "./types";
 import groupByKeyValue from "./utils/groupByKeyValue";
-import ListingDisplayImage from "../../stories/ListingDisplayImage/ListingDisplayImage";
+import ListingDisplayImage from "../../ListingDisplayImage/ListingDisplayImage";
 
 const ListingPage = () => {
     const httpService = useMemo(() => new HttpService("Listings"), [])
@@ -15,7 +15,7 @@ const ListingPage = () => {
     const [activeFilter, setActiveFilter] = useState('Man')
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchListings = async () => {
             setIsLoadingData(true)
             try {
                 const data: ListingRecord[] = await httpService.fetchAllRecords();
@@ -38,7 +38,7 @@ const ListingPage = () => {
                 setIsLoadingData(false)
             }
         };
-        fetchUsers();
+        fetchListings();
     }, [httpService]);
 
     const handleGenderFiltering = (gender: string) => {
@@ -75,7 +75,7 @@ const ListingPage = () => {
             </div>
             <div className="listing-page__container__listings">
                 {filteredData.map(data => (
-                    <ListingDisplayImage imageUrl={data.Images[0].url} title={data.Title} subtitle={`£${data.Price.toFixed(2)}`} />
+                    <ListingDisplayImage imageUrl={data.Images[0].url} title={data.Title} subtitle={`£${data.Price.toFixed(2)}`} listingId={data.id} />
                 ))}
             </div>
 

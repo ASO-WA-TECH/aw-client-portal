@@ -18,7 +18,7 @@ export default class HttpService {
       return;
     }
     const response = await apiClient.get(`/${this.tableName}/${entity}`);
-    return response.data.records;
+    return response.data;
   }
 
   async createRecords<T extends object>(entity: T) {
