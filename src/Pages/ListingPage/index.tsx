@@ -5,6 +5,7 @@ import './index.scss'
 import type { FlattenedListing, ListingRecord } from "./types";
 import groupByKeyValue from "./utils/groupByKeyValue";
 import ListingDisplayImage from "../../ListingDisplayImage/ListingDisplayImage";
+import Loading from "./Loading";
 
 const ListingPage = () => {
     const httpService = useMemo(() => new HttpService("Listings"), [])
@@ -47,7 +48,7 @@ const ListingPage = () => {
     }
 
     if (isLoadingData) {
-        return <p>Loading</p> //TODO: replace with a spinner
+        return <Loading />
     }
 
     if (isDataError) {

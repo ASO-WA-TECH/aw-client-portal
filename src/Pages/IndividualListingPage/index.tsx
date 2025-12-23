@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import Image from './Image';
 import Details from './Details';
 import "./index.scss";
+import LoadingListing from './LoadingListing';
 
 
 const ASO_WA_EMAIL = import.meta.env.VITE_ASO_WA_EMAIL;
@@ -58,7 +59,7 @@ const IndividualListingPage = () => {
     }, [urlParams.id]);
 
 
-    if (isLoadingData) return <p>Loading...</p>;
+    if (isLoadingData) return <LoadingListing />;
 
     if (isDataError || !listingData)
         return (
