@@ -27,7 +27,6 @@ const ListingPage = () => {
 
                 setListingData(flattenedData)
                 const defaultFilter = groupByKeyValue(flattenedData, "Gender", activeFilter)
-                console.log(defaultFilter);
 
                 setFilteredData(defaultFilter)
                 setIsLoadingData(false)
@@ -64,8 +63,6 @@ const ListingPage = () => {
                     </p>
                 </button>
                 <button className="listing-page__container__filters__option" onClick={() => {
-                    console.log("hii");
-
                     handleGenderFiltering('Woman')
                 }} data-testid="women-filter-btn">
                     <p className={`listing-page__container__filters__option__name ${activeFilter === 'Woman' ? 'active' : ''}`}>

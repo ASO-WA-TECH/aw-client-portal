@@ -6,28 +6,46 @@ import Image from './Image';
 import Details from './Details';
 import "./index.scss";
 
+
+const ASO_WA_EMAIL = import.meta.env.VITE_ASO_WA_EMAIL;
+
 const IndividualListingPage = () => {
-    const httpService = useMemo(() => new HttpService("Listings"), []);
+    const listingHttpService = useMemo(() => new HttpService("Listings"), []);
+    const ownerHttpService = useMemo(() => new HttpService("Users"), []);
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [listingData, setListingData] = useState<ListingFields>();
     const [isDataError, setIsDataError] = useState(false);
+    const [ownerEmail, setOwnerEmail] = useState<string>();
     const urlParams = useParams();
 
     useEffect(() => {
         if (!urlParams.id) return;
 
-        const fetchListing = async () => {
+        const fetchListingAndOwner = async () => {
             setIsLoadingData(true);
 
             try {
-                const data = await httpService.fetchRecord(urlParams.id!);
-                if (!data || !data.fields) {
-                    console.error("Data missing fields:", data);
-                    setIsDataError(true);
-                    return;
-                }
+                // Fetch listing
+                const listing = await listingHttpService.fetchRecord(urlParams.id!);
+                if (!listing?.fields) throw new Error('Invalid listing');
 
-                setListingData(data.fields);
+                setListingData(listing.fields);
+
+                // Fetch owner (if exists)
+                const ownerIds = listing.fields.Owner;
+                if (ownerIds && ownerIds.length > 0) {
+                    const ownerRecord = await ownerHttpService.fetchRecord(
+                        ownerIds[0]
+                    );
+
+                    if (!ownerRecord.fields.Email) {
+                        console.error("Owner email not found");
+                        setIsDataError(true);
+                        return;
+                    }
+
+                    setOwnerEmail(ownerRecord.fields.Email);
+                }
             } catch (error) {
                 console.error(error);
                 setIsDataError(true);
@@ -36,8 +54,9 @@ const IndividualListingPage = () => {
             }
         };
 
-        fetchListing();
+        fetchListingAndOwner();
     }, [urlParams.id]);
+
 
     if (isLoadingData) return <p>Loading...</p>;
 
@@ -53,7 +72,7 @@ const IndividualListingPage = () => {
             {listingData.Images?.[0]?.url && (
                 <Image imageUrl={listingData.Images[0].url} title={listingData.Title} />
             )}
-            <Details listing={listingData} />
+            <Details listing={listingData} ownerEmail={ownerEmail || ASO_WA_EMAIL} />
         </div>
     );
 };

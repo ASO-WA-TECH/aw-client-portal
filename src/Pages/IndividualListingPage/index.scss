@@ -1,3 +1,5 @@
+@use '../../variables.scss' as vars;
+
 .individual-listing-page {
     min-height: 100vh;
 
@@ -48,8 +50,8 @@
 
 
         &__brand {
-            font-size: 12px;
-            color: #f1b6c1;
+            font-size: 0.8rem;
+            color: vars.$pink;
             letter-spacing: 0.5px;
         }
 
@@ -60,31 +62,33 @@
             margin: 8px 0 16px;
 
             &__text {
-                font-size: 20px;
+                font-size: 1.1rem;
                 font-weight: 700;
                 margin: 0;
             }
 
             &__number {
-                font-size: 20px;
+                font-size: 1rem;
                 font-weight: 700;
 
                 small {
-                    font-size: 12px;
-                    color: #9fe0b4;
+                    font-size: 0.8rem;
+                    color: vars.$emeraldGreen;
                 }
             }
         }
 
         &__description-title {
-            font-size: 14px;
+            font-size: 1rem;
             margin-bottom: 8px;
+            color: vars.$mustardYellow;
+            font-weight: normal;
         }
 
         &__description-data {
-            font-size: 14px;
+            font-size: 1rem;
             line-height: 1.6;
-            color: #d1d1d1;
+
         }
 
         &__enquiry-button {
@@ -96,7 +100,7 @@
             background: #2f6f57;
             border-radius: 28px;
             color: #fff;
-            font-size: 16px;
+            font-size: 1.2rem;
             font-weight: 600;
             text-decoration: none;
             display: flex;
@@ -108,6 +112,18 @@
             &:hover {
                 background: #3a7b65;
             }
+
+            &.is-disabled {
+                background: #555;
+                cursor: not-allowed;
+                opacity: 0.7;
+            }
+
+        }
+
+        &__icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
         }
     }
 
@@ -117,7 +133,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
         }
 
         &__image-wrapper {
@@ -131,6 +146,7 @@
         }
 
         &__details {
+            width: 100%;
             margin-top: -24px;
             max-width: 520px;
             padding: 28px;
@@ -150,14 +166,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 40px 20px;
             gap: 32px;
         }
 
         &__image-wrapper {
             height: auto;
             flex: 1;
-            max-width: 520px;
+            max-width: 550px;
             border-radius: 24px;
 
             &__image {
@@ -174,7 +189,6 @@
             border-radius: 24px;
             background: white;
             color: black;
-            align-self: baseline;
 
             &__enquiry-button {
                 position: static;

@@ -1,11 +1,40 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import {
+    MdOutlineMailOutline,
+    MdCheckCircleOutline,
+} from "react-icons/md";
 import type { ListingFields } from '../ListingPage/types';
 
 type DetailsProps = {
     listing: ListingFields;
+    ownerEmail: string;
 };
 
-const Details: React.FC<DetailsProps> = ({ listing }) => {
+const Details = ({ listing, ownerEmail }: DetailsProps) => {
+    const storageKey = `enquiry:${listing.Title}`;
+    const [hasEnquired, setHasEnquired] = useState(false);
+
+    useEffect(() => {
+        const checkStoredValue = () => {
+            const stored = localStorage.getItem(storageKey);
+            setHasEnquired(stored === 'true');
+        };
+
+        checkStoredValue();
+
+        const handleStorageChange = (event: StorageEvent) => {
+            if (event.key === storageKey) {
+                setHasEnquired(event.newValue === 'true');
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [storageKey]);
+
     const emailSubject = encodeURIComponent(`Order Request: ${listing.Title}`);
 
     const emailBody = encodeURIComponent(
@@ -16,41 +45,54 @@ I would like to order the following item:
 Product: ${listing.Title}
 Price: £${listing.Price.toFixed(2)} GBP
 
-Please reply to this email with the following details:
-- Size:
-- Quantity:
-- Delivery address:
-- Phone number:
-
 Thank you.`
     );
 
-    const handleAddToCartClick = () => {
-        const mailtoLink = `mailto:orders@asowa.com?cc=sales@asowa.com&subject=${emailSubject}&body=${emailBody}`;
-        window.location.href = mailtoLink; // Forces browser to open mail client
+    const handleEnquiryClick = () => {
+        localStorage.setItem(storageKey, 'true');
+        setHasEnquired(true); // same-tab update
     };
-
 
     return (
         <div className="individual-listing-page__details">
-            <span className="individual-listing-page__details__brand">ASO WA Mens</span>
+            <span className="individual-listing-page__details__brand">
+                ASO WA {listing.Gender === 'Man' ? 'Men' : 'Women'}
+            </span>
 
             <div className="individual-listing-page__details__price">
-                <h3 className="individual-listing-page__details__price__text">{listing.Title}</h3>
+                <h3 className="individual-listing-page__details__price__text">
+                    {listing.Title.toUpperCase()}
+                </h3>
                 <span className="individual-listing-page__details__price__number">
                     £{listing.Price.toFixed(2)} <small>GBP</small>
                 </span>
             </div>
 
-            <h4 className="individual-listing-page__details__description-title">Description</h4>
-            <p className="individual-listing-page__details__description-data">{listing.Description}</p>
+            <h4 className="individual-listing-page__details__description-title">
+                Description
+            </h4>
+            <p className="individual-listing-page__details__description-data">
+                {listing.Description}
+            </p>
 
-            <a
-                className="individual-listing-page__details__enquiry-button"
-                href={`mailto:orders@asowa.com?cc=sales@asowa.com&subject=${emailSubject}&body=${emailBody}`}
-            >
-                🛒 ADD TO CART
-            </a>
+            {hasEnquired ? (
+                <button
+                    className="individual-listing-page__details__enquiry-button is-disabled"
+                    disabled
+                >
+                    <MdCheckCircleOutline className="individual-listing-page__details__icon" />
+                    Enquiry sent
+                </button>
+            ) : (
+                <a
+                    className="individual-listing-page__details__enquiry-button"
+                    href={`mailto:${ownerEmail}?cc=aso.wa.uk@gmail.com&subject=${emailSubject}&body=${emailBody}`}
+                    onClick={handleEnquiryClick}
+                >
+                    <MdOutlineMailOutline className="individual-listing-page__details__icon" />
+                    Make an enquiry
+                </a>
+            )}
         </div>
     );
 };

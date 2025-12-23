@@ -5,12 +5,10 @@ import Button from "../Button";
 
 interface MobileNavigationMenuProps {
     setIsOpen: (isOpen: boolean) => void;
-    toggleDarkMode: () => void;
-    darkMode: boolean
 }
 
 
-const MobileNavigationMenu = ({ setIsOpen, toggleDarkMode, darkMode }: MobileNavigationMenuProps) => {
+const MobileNavigationMenu = ({ setIsOpen }: MobileNavigationMenuProps) => {
     return (
         <div className="navigation-menu__mobile" data-testid="mobile-menu">
             <Button customStyle="navigation-menu__mobile__close-button" handleClick={() => setIsOpen(false)} variant="tertiary" text="X" />
@@ -29,7 +27,6 @@ const MobileNavigationMenu = ({ setIsOpen, toggleDarkMode, darkMode }: MobileNav
                         </li>
                     );
                 })}
-                <Button handleClick={toggleDarkMode} customStyle="dark-mode-toggle" data-testid="darkmode-toggle" text={darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'} variant="secondary" />
 
             </ul>
         </div>

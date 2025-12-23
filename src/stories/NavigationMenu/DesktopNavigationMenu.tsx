@@ -2,12 +2,7 @@ import { routes } from "./routes";
 
 import './index.scss'
 
-interface Props {
-    toggleDarkMode: () => void;
-    darkMode: boolean
-}
-
-const DesktopNavigationMenu = ({ toggleDarkMode, darkMode }: Props) => {
+const DesktopNavigationMenu = () => {
 
     return (
         <nav className="navigation-menu__desktop" data-testid="desktop-menu">
@@ -26,9 +21,6 @@ const DesktopNavigationMenu = ({ toggleDarkMode, darkMode }: Props) => {
                         </li>
                     );
                 })}
-                <button onClick={toggleDarkMode} className="dark-mode-toggle" data-testid="darkmode-toggle">
-                    {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-                </button>
             </ul>
         </nav>
     );
