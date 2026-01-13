@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "axios": "^1.10.0",
+    "firebase": "12.3.0",
     "prop-types": "^15.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -31,7 +32,7 @@
     "@storybook/addon-vitest": "^9.0.16",
     "@storybook/jest": "^0.2.2",
     "@storybook/react-vite": "^9.1.1",
-    "@storybook/test-runner": "^0.23.0",
+    "@storybook/test-runner": "0.17.0",
     "@storybook/testing-library": "^0.2.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
