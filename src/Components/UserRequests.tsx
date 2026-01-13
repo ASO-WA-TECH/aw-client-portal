@@ -24,7 +24,6 @@ const UserRequests = () => {
     const fetchUsers = async () => {
       try {
         const data = await httpService.fetchAllRecords();
-        console.log(data);
         setUsers(data);
       } catch (error) {
         if (error instanceof Error) {

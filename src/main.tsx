@@ -26,6 +26,9 @@ import UserListingPage from "./Pages/UserListingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { Routes } from "./Routes";
 
+import './main.scss'
+import IndividualListingPage from "./Pages/IndividualListingPage";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
