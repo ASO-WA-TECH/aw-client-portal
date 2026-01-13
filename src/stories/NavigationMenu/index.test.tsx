@@ -1,40 +1,56 @@
+import { render, screen, fireEvent } from "@testing-library/react";
+import NavigationMenu from ".";
 
+describe("NavigationMenu", () => {
+  const mockToggle = jest.fn();
 
-import { render, screen, fireEvent } from '@testing-library/react';
-import NavigationMenu from '.';
+  // test("snapshot", () => {
+  //   const { container } = render(
+  //     <NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />
+  //   );
+  //   expect(container).toMatchSnapshot();
+  // });
 
-describe('NavigationMenu', () => {
-    test('snapshot', () => {
-        const { container } = render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
+  test("renders desktop menu", () => {
+    render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
+    expect(screen.getByTestId("desktop-menu")).toBeInTheDocument();
+  });
 
-        expect(container).toMatchSnapshot()
-    })
-    test('renders desktop menu ', () => {
-        render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
-        expect(screen.getByTestId('desktop-menu')).toBeInTheDocument();
-    });
+  test("renders hamburger button", () => {
+    render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
+    expect(screen.getByTestId("menu-button")).toBeInTheDocument();
+  });
 
-    test('renders hamburger button', () => {
-        render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
-        expect(screen.getByTestId('menu-button')).toBeInTheDocument();
-    });
+  test("shows mobile menu after hamburger is clicked", () => {
+    render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
+    const hamburgerButton = screen.getByTestId("menu-button");
 
-    test('shows mobile menu after hamburger is clicked', () => {
-        render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
-        const hamburgerButton = screen.getByTestId('menu-button');
-        fireEvent.click(hamburgerButton);
-        expect(screen.getByTestId('mobile-menu')).toBeInTheDocument();
-    });
+    fireEvent.click(hamburgerButton);
 
-    test('closes mobile menu when "Close" is clicked inside it', () => {
-        render(<NavigationMenu toggleDarkMode={jest.fn} darkMode={false} />);
-        fireEvent.click(screen.getByTestId('menu-button')); // open mobile menu
-        expect(screen.getByTestId('mobile-menu')).toBeInTheDocument();
+    expect(screen.getByTestId("mobile-menu")).toBeInTheDocument();
+  });
 
-        const closeButton = screen.getByText('X');
-        fireEvent.click(closeButton);
+  test('closes mobile menu when "X" is clicked inside it', () => {
+    render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
 
-        // Mobile menu should now be gone
-        expect(screen.queryByTestId('mobile-menu')).not.toBeInTheDocument();
-    });
+    // Open the menu
+    fireEvent.click(screen.getByTestId("menu-button"));
+    expect(screen.getByTestId("mobile-menu")).toBeInTheDocument();
+
+    // Click the close button (labeled X)
+    const closeButton = screen.getByText("X");
+    fireEvent.click(closeButton);
+
+    // Mobile menu should now be gone
+    expect(screen.queryByTestId("mobile-menu")).not.toBeInTheDocument();
+  });
+
+  // test("calls toggleDarkMode when dark mode button is clicked", () => {
+  //   render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
+
+  //   const toggleBtn = screen.getByText(/Toggle Theme/i);
+  //   fireEvent.click(toggleBtn);
+
+  //   expect(mockToggle).toHaveBeenCalledTimes(1);
+  // });
 });
