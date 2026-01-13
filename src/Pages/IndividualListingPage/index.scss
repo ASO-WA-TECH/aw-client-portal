@@ -1,0 +1,200 @@
+@use '../../variables.scss' as vars;
+
+.individual-listing-page {
+    min-height: 100vh;
+
+    &__image-wrapper {
+        position: relative;
+        height: 55vh;
+        overflow: hidden;
+        border-top-left-radius: 32px;
+        border-top-right-radius: 32px;
+
+        &__image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        &__back-btn {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.6);
+            font-size: 18px;
+
+            a {
+                color: #fff;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+        }
+    }
+
+    &__details {
+        position: relative;
+        margin-top: -32px;
+        background: #2b2b2b;
+        color: #fff;
+        padding: 24px 20px 110px;
+        border-radius: 32px;
+        border-top-left-radius: 32px;
+        border-top-right-radius: 32px;
+
+
+        &__brand {
+            font-size: 0.8rem;
+            color: vars.$pink;
+            letter-spacing: 0.5px;
+        }
+
+        &__price {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 8px 0 16px;
+
+            &__text {
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            &__number {
+                font-size: 1rem;
+                font-weight: 700;
+
+                small {
+                    font-size: 0.8rem;
+                    color: vars.$emeraldGreen;
+                }
+            }
+        }
+
+        &__description-title {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: vars.$mustardYellow;
+            font-weight: normal;
+        }
+
+        &__description-data {
+            font-size: 1rem;
+            line-height: 1.6;
+
+        }
+
+        &__enquiry-button {
+            position: fixed; // mobile: stays at bottom
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            height: 56px;
+            background: #2f6f57;
+            border-radius: 28px;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+
+            &:hover {
+                background: #3a7b65;
+            }
+
+            &.is-disabled {
+                background: #555;
+                cursor: not-allowed;
+                opacity: 0.7;
+            }
+
+        }
+
+        &__icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+    }
+
+    // TABLET LAYOUT (768px–1024px)
+    @media (min-width: 768px) and (max-width: 1024px) {
+        & {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        &__image-wrapper {
+            max-width: 600px;
+            height: auto;
+            border-radius: 28px;
+
+            &__image {
+                min-height: 360px;
+            }
+        }
+
+        &__details {
+            width: 100%;
+            margin-top: -24px;
+            max-width: 520px;
+            padding: 28px;
+            border-radius: 28px;
+
+            &__enquiry-button {
+                position: static;
+                width: 100%;
+                margin-top: 28px;
+            }
+        }
+    }
+
+    // DESKTOP LAYOUT (≥1024px)
+    @media (min-width: 1024px) {
+        & {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 32px;
+        }
+
+        &__image-wrapper {
+            height: auto;
+            flex: 1;
+            max-width: 550px;
+            border-radius: 24px;
+
+            &__image {
+                min-height: 420px;
+                border-radius: 24px;
+            }
+        }
+
+        &__details {
+            margin-top: 0;
+            flex: 1;
+            max-width: 480px;
+            padding: 32px;
+            border-radius: 24px;
+            background: white;
+            color: black;
+
+            &__enquiry-button {
+                position: static;
+                width: 100%;
+                margin-top: 32px;
+            }
+        }
+    }
+}

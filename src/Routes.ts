@@ -2,6 +2,7 @@ export enum Routes {
     INITIAL = '/',
     HOME = 'home',
     LISTING = 'listing',
+    INDIVIDUAL_LISTING = 'listing/:id',
     ACCOUNT = 'account',
     CREATE_ACCOUNT = 'account/create',
     EDIT_ACCOUNT = 'account/edit',

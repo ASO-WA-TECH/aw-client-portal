@@ -25,6 +25,9 @@ import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
 import UserListingPage from "./Pages/UserListingPage";
 import { Routes } from "./Routes";
 
+import './main.scss'
+import IndividualListingPage from "./Pages/IndividualListingPage";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -32,6 +35,7 @@ const router = createBrowserRouter(
         <Route index element={<HomePage />} /> {/* default page at "/" */}
         <Route path={Routes.HOME} element={<HomePage />} />
         <Route path={Routes.LISTING} element={<ListingPage />} />
+        <Route path={Routes.INDIVIDUAL_LISTING} element={<IndividualListingPage />} />
         <Route path={Routes.ACCOUNT} element={<UserAccountPage />} />
         <Route path={Routes.CREATE_ACCOUNT} element={<UserAccountCreatePage />} />
         <Route path={Routes.EDIT_ACCOUNT} element={<UserAccountEditPage />} />

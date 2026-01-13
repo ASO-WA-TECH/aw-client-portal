@@ -1,6 +1,6 @@
 import apiClient from "./apiClient";
 
-class HttpService {
+export default class HttpService {
   private tableName: string;
 
   constructor(tableName: string) {
@@ -18,7 +18,7 @@ class HttpService {
       return;
     }
     const response = await apiClient.get(`/${this.tableName}/${entity}`);
-    return response.data.records;
+    return response.data;
   }
 
   async createRecords<T extends object>(entity: T) {
@@ -46,4 +46,4 @@ class HttpService {
   }
 }
 
-export default HttpService;
+
