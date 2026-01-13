@@ -1,31 +1,73 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import "./index.scss";
 
-import './index.scss'
+interface NavigationMenuProps {
+  toggleDarkMode: () => void;
+  darkMode: boolean;
+}
 
-import DesktopNavigationMenu from "./DesktopNavigationMenu";
-import MobileNavigationMenu from "./MobileNavigationMenu";
+const NavigationMenu: React.FC<NavigationMenuProps> = ({
+  toggleDarkMode,
+  darkMode,
+}) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-const NavigationMenu = () => {
-    const [isOpen, setIsOpen] = useState(false);
+  return (
+    <nav className={`navigation-menu ${darkMode ? "dark" : ""}`}>
+      {/* Desktop Menu */}
+      <div className="navigation-menu__desktop" data-testid="desktop-menu">
+        <ul className="navigation-menu__desktop__links">
+          <li className="navigation-menu__desktop__links__item">
+            <a href="/" className="navigation-menu__desktop__links__item__link">
+              Home
+            </a>
+          </li>
+        </ul>
+      </div>
 
-    return (
-        <div className="navigation-menu" >
-            <div>
-                <DesktopNavigationMenu />
-                <div>
-                    <div className={`${isOpen ? 'navigation-menu__opened' : 'navigation-menu__closed'}`}>
-                        <button className="navigation-menu__closed__hamburger-button" onClick={() => setIsOpen(true)} data-testid='menu-button'>
-                            <span className="navigation-menu__closed__hamburger-button__bar"></span>
-                            <span className="navigation-menu__closed__hamburger-button__bar"></span>
-                            <span className="navigation-menu__closed__hamburger-button__bar"></span>
-                        </button>
-                        {isOpen ? <MobileNavigationMenu setIsOpen={setIsOpen} /> : <></>}
-                    </div>
-                </div>
-            </div>
-        </div >
-    );
+      {/* Hamburger Button (Closed State) */}
+      {!isMobileMenuOpen && (
+        <div className="navigation-menu__closed">
+          <button
+            className="navigation-menu__closed__hamburger-button"
+            onClick={toggleMenu}
+            data-testid="menu-button"
+          >
+            <span className="navigation-menu__closed__hamburger-button__bar"></span>
+            <span className="navigation-menu__closed__hamburger-button__bar"></span>
+            <span className="navigation-menu__closed__hamburger-button__bar"></span>
+          </button>
+        </div>
+      )}
+
+      {/* Mobile Menu (Open State) */}
+      {isMobileMenuOpen && (
+        <div className="navigation-menu__mobile" data-testid="mobile-menu">
+          <button
+            className="navigation-menu__mobile__close-button"
+            onClick={toggleMenu}
+          >
+            X
+          </button>
+          <ul className="navigation-menu__mobile__links">
+            <li className="navigation-menu__mobile__links__item">
+              <a
+                href="/"
+                className="navigation-menu__mobile__links__item__link"
+              >
+                Home
+              </a>
+            </li>
+            <li className="navigation-menu__mobile__links__item">
+              <button onClick={toggleDarkMode}>Toggle Dark Mode</button>
+            </li>
+          </ul>
+        </div>
+      )}
+    </nav>
+  );
 };
 
-export default NavigationMenu
+export default NavigationMenu;

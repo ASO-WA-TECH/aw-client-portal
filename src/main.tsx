@@ -26,9 +26,6 @@ import UserListingPage from "./Pages/UserListingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { Routes } from "./Routes";
 
-import './main.scss'
-import IndividualListingPage from "./Pages/IndividualListingPage";
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -39,7 +36,7 @@ const router = createBrowserRouter(
         <Route path={Routes.LANDING} element={<LandingPage />} />
         <Route path={Routes.AUTHENTICATE} element={<AuthenticationPage />} />
         <Route path={Routes.FAQ} element={<FAQ />} />
-        <Route path={Routes.ERROR} element={<ErrorPage />} />
+        <Route path={Routes.ANYTHING_ELSE} element={<ErrorPage />} />
         <Route
           path={Routes.ACCOUNT}
           element={
@@ -65,7 +62,7 @@ const router = createBrowserRouter(
           }
         />
         <Route
-          path={Routes.ALL_USER_LISTINGS}
+          path={Routes.ALL_MY_LISTINGS}
           element={
             <ProtectedRoute>
               <AllUserListingsPage />
@@ -73,7 +70,7 @@ const router = createBrowserRouter(
           }
         />
         <Route
-          path={Routes.USER_LISTING}
+          path={Routes.INDIVIDUAL_LISTING}
           element={
             <ProtectedRoute>
               <UserListingPage />
