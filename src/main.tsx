@@ -7,7 +7,7 @@ import {
   Route,
   createRoutesFromElements,
 } from "react-router-dom";
-import { AuthProvider } from "./Services/Auth/AuthContext"; // Add this import
+import { AuthProvider } from "./Services/Auth/AuthContext";
 import Layout from "./Pages/Layout";
 import ErrorPage from "./Pages/ErrorPage";
 import HomePage from "./Pages/Homepage";
@@ -23,6 +23,7 @@ import AllUserListingsPage from "./Pages/AllUserListingsPage";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
 import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
 import UserListingPage from "./Pages/UserListingPage";
+import ProtectedRoute from "./Components/ProtectedRoute";
 import { Routes } from "./Routes";
 
 import './main.scss'
@@ -35,32 +36,75 @@ const router = createBrowserRouter(
         <Route index element={<HomePage />} /> {/* default page at "/" */}
         <Route path={Routes.HOME} element={<HomePage />} />
         <Route path={Routes.LISTING} element={<ListingPage />} />
-        <Route path={Routes.INDIVIDUAL_LISTING} element={<IndividualListingPage />} />
-        <Route path={Routes.ACCOUNT} element={<UserAccountPage />} />
+        <Route path={Routes.LANDING} element={<LandingPage />} />
+        <Route path={Routes.AUTHENTICATE} element={<AuthenticationPage />} />
+        <Route path={Routes.FAQ} element={<FAQ />} />
+        <Route path={Routes.ERROR} element={<ErrorPage />} />
+        <Route
+          path={Routes.ACCOUNT}
+          element={
+            <ProtectedRoute>
+              <UserAccountPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path={Routes.CREATE_ACCOUNT}
-          element={<UserAccountCreatePage />}
+          element={
+            <ProtectedRoute>
+              <UserAccountCreatePage />
+            </ProtectedRoute>
+          }
         />
-        <Route path={Routes.EDIT_ACCOUNT} element={<UserAccountEditPage />} />
         <Route
-          path={Routes.ALL_MY_LISTINGS}
-          element={<AllUserListingsPage />}
+          path={Routes.EDIT_ACCOUNT}
+          element={
+            <ProtectedRoute>
+              <UserAccountEditPage />
+            </ProtectedRoute>
+          }
         />
-        <Route path={Routes.MY_LISTINGS} element={<UserListingPage />} />
+        <Route
+          path={Routes.ALL_USER_LISTINGS}
+          element={
+            <ProtectedRoute>
+              <AllUserListingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={Routes.USER_LISTING}
+          element={
+            <ProtectedRoute>
+              <UserListingPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path={Routes.CREATE_LISTINGS}
-          element={<UserListingsCreatePage />}
+          element={
+            <ProtectedRoute>
+              <UserListingsCreatePage />
+            </ProtectedRoute>
+          }
         />
-        <Route path={Routes.EDIT_LISTINGS} element={<UserListingsEditPage />} />
+        <Route
+          path={Routes.EDIT_LISTINGS}
+          element={
+            <ProtectedRoute>
+              <UserListingsEditPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path={Routes.EDIT_LISTINGS_IMAGE_UPLOAD}
-          element={<ImageUploadPage />}
+          element={
+            <ProtectedRoute>
+              <ImageUploadPage />
+            </ProtectedRoute>
+          }
         />
       </Route>
-      <Route path={Routes.LANDING} element={<LandingPage />} />
-      <Route path={Routes.AUTHENTICATE} element={<AuthenticationPage />} />
-      <Route path={Routes.FAQ} element={<FAQ />} />
-      <Route path={Routes.ANYTHING_ELSE} element={<ErrorPage />} />
     </>
   )
 );

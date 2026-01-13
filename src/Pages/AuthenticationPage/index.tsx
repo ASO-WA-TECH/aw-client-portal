@@ -1,7 +1,7 @@
 import { useState, useMemo, type FormEvent } from "react";
 import { useAuth } from "../../Services/Auth/AuthContext";
 import InputField from "../../stories/InputField/";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./index.scss";
 import Button from "../../stories/Button/";
 import { Routes } from "../../Routes";
@@ -20,16 +20,17 @@ function AuthenticationPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [isApproved, setIsApproved] = useState<boolean>(false);
   const { signup, login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isAlreadyRegistered, setisAlreadyRegistered] =
     useState<boolean>(false);
 
   const httpService = useMemo(() => new HttpService("Users"), []);
+  const fromPreviousPath = location.state?.from?.pathname || Routes.INITIAL;
 
   async function createUsers(
     email: string,
@@ -75,30 +76,26 @@ function AuthenticationPage() {
     e.preventDefault();
 
     if (isAlreadyRegistered === true) {
-      if (password === passwordConfirmation) {
-        try {
-          setError("");
-          setLoading(true);
-          await checkIfUsernameAlreadyExists(email, password, username);
-          navigate(`/${Routes.HOME}`);
-        } catch (err) {
-          if (err instanceof Error) {
-            setError(`Failed to create account: ", ${err.message}`);
-          } else {
-            setError("Failed to create account");
-          }
-        } finally {
-          setLoading(false);
+      try {
+        setError("");
+        setLoading(true);
+        await checkIfUsernameAlreadyExists(email, password, username);
+        navigate(fromPreviousPath, { replace: true });
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(`Failed to create account: ", ${err.message}`);
+        } else {
+          setError("Failed to create account");
         }
-      } else {
-        setError("Passwords do not match");
+      } finally {
+        setLoading(false);
       }
     } else {
       try {
         setError("");
         setLoading(true);
         await login(email, password);
-        navigate(`/${Routes.HOME}`);
+        navigate(fromPreviousPath, { replace: true });
       } catch (err) {
         if (err instanceof Error) {
           setError(`Failed to create account: ${err.message}`);
@@ -154,19 +151,6 @@ function AuthenticationPage() {
                     darkMode={false}
                     isReadOnly={false}
                     placeholder="Password..."
-                    required={true}
-                  />
-                  <br />
-                  <InputField
-                    value={passwordConfirmation}
-                    type="text"
-                    handleChange={(e) =>
-                      setPasswordConfirmation(e.target.value)
-                    }
-                    label="Confirm Password"
-                    darkMode={false}
-                    isReadOnly={false}
-                    placeholder="Confirm Password..."
                     required={true}
                   />
                   <br />
