@@ -1,8 +1,9 @@
-@use '../../variables.scss' as vars;
+@use '../../variables.scss' as *;
 
 .listing-page {
     &__container {
         margin-top: 40px;
+        padding: 0px 20px 0px 24px;
 
         &__filters {
             border-bottom: 2px solid #F1F4FB;
@@ -27,7 +28,7 @@
                         left: 0%;
                         width: 50%;
                         height: 3px;
-                        background-color: vars.$emeraldGreen;
+                        background-color: $emeraldGreen;
                         border-radius: 20px;
                     }
                 }

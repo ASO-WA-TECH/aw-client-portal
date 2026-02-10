@@ -1,4 +1,4 @@
-@use '../../variables' as vars;
+@use '../../variables' as *;
 
 .button {
   display: inline-block;
@@ -14,115 +14,115 @@
   width: 250px;
 
   &--emeraldGreen--primary {
-    background-color: vars.$emeraldGreen;
+    background-color: $emeraldGreen;
     color: white;
 
     &:hover {
-      color: vars.$emeraldGreen;
+      color: $emeraldGreen;
       background-color: white;
-      border: 1px solid vars.$emeraldGreen;
+      border: 1px solid $emeraldGreen;
     }
   }
 
   &--emeraldGreen--secondary {
     background-color: white;
-    border: 1px solid vars.$emeraldGreen;
-    color: vars.$emeraldGreen;
+    border: 1px solid $emeraldGreen;
+    color: $emeraldGreen;
 
     &:hover {
       color: white;
-      border: 1px solid vars.$emeraldGreen;
-      background-color: vars.$emeraldGreen;
+      border: 1px solid $emeraldGreen;
+      background-color: $emeraldGreen;
     }
   }
 
   &--emeraldGreen--tertiary {
-    color: vars.$emeraldGreen;
+    color: $emeraldGreen;
 
   }
 
   &--mustardYellow--primary {
-    background-color: vars.$mustardYellow;
+    background-color: $mustardYellow;
     color: white;
 
     &:hover {
-      color: vars.$mustardYellow;
+      color: $mustardYellow;
       background-color: white;
-      border: 1px solid vars.$mustardYellow;
+      border: 1px solid $mustardYellow;
     }
   }
 
   &--mustardYellow--secondary {
     background-color: white;
-    border: 1px solid vars.$mustardYellow;
-    color: vars.$mustardYellow;
+    border: 1px solid $mustardYellow;
+    color: $mustardYellow;
 
     &:hover {
       color: white;
-      border: 1px solid vars.$mustardYellow;
-      background-color: vars.$mustardYellow;
+      border: 1px solid $mustardYellow;
+      background-color: $mustardYellow;
     }
   }
 
 
   &--mustardYellow--tertiary {
-    color: vars.$mustardYellow;
+    color: $mustardYellow;
 
   }
 
   &--cream--primary {
-    background-color: vars.$cream;
+    background-color: $cream;
     color: white;
 
     &:hover {
-      color: vars.$cream;
+      color: $cream;
       background-color: white;
-      border: 1px solid vars.$cream;
+      border: 1px solid $cream;
     }
   }
 
   &--cream--secondary {
     background-color: white;
-    border: 1px solid vars.$cream;
-    color: vars.$cream;
+    border: 1px solid $cream;
+    color: $cream;
 
     &:hover {
       color: white;
-      border: 1px solid vars.$cream;
-      background-color: vars.$cream;
+      border: 1px solid $cream;
+      background-color: $cream;
     }
   }
 
   &--cream--tertiary {
-    color: vars.$cream;
+    color: $cream;
 
   }
 
   &--pink--primary {
-    background-color: vars.$pink;
+    background-color: $pink;
     color: white;
 
     &:hover {
-      color: vars.$pink;
+      color: $pink;
       background-color: white;
-      border: 1px solid vars.$pink;
+      border: 1px solid $pink;
     }
   }
 
   &--pink--secondary {
     background-color: white;
-    border: 1px solid vars.$pink;
-    color: vars.$pink;
+    border: 1px solid $pink;
+    color: $pink;
 
     &:hover {
       color: white;
-      border: 1px solid vars.$pink;
-      background-color: vars.$pink;
+      border: 1px solid $pink;
+      background-color: $pink;
     }
   }
 
   &--pink--tertiary {
-    color: vars.$pink;
+    color: $pink;
   }
 
   &--tertiary {

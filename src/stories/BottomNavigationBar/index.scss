@@ -1,7 +1,7 @@
-@use '../../variables' as vars;
+@use '../../variables' as *;
 
 .bottom-navigation-bar {
-    background-color: vars.$emeraldGreen;
+    background-color: $emeraldGreen;
     padding: 10px;
     border-radius: 15px;
     color: white;
@@ -22,7 +22,7 @@
 
         :active,
         :hover {
-            color: vars.$pink;
+            color: $pink;
             cursor: pointer;
         }
 
@@ -32,7 +32,7 @@
         }
 
         &__plus-icon {
-            background-color: vars.$pink;
+            background-color: $pink;
             border-radius: 50%;
             padding: 10px;
             font-weight: bold;

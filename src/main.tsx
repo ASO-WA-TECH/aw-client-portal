@@ -22,19 +22,20 @@ import UserAccountCreatePage from "./Pages/UserAccountCreatePage";
 import AllUserListingsPage from "./Pages/AllUserListingsPage";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
 import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
-import UserListingPage from "./Pages/UserListingPage";
+//import UserListingPage from "./Pages/UserListingPage"; to be used asa account page
+import IndividualListingPage from "./Pages/IndividualListingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { Routes } from "./Routes";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+      <Route path={Routes.AUTHENTICATE} element={<AuthenticationPage />} />
       <Route path={Routes.INITIAL} element={<Layout />}>
         <Route index element={<HomePage />} /> {/* default page at "/" */}
         <Route path={Routes.HOME} element={<HomePage />} />
         <Route path={Routes.LISTING} element={<ListingPage />} />
         <Route path={Routes.LANDING} element={<LandingPage />} />
-        <Route path={Routes.AUTHENTICATE} element={<AuthenticationPage />} />
         <Route path={Routes.FAQ} element={<FAQ />} />
         <Route path={Routes.ANYTHING_ELSE} element={<ErrorPage />} />
         <Route
@@ -69,11 +70,19 @@ const router = createBrowserRouter(
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path={Routes.INDIVIDUAL_LISTING}
           element={
             <ProtectedRoute>
               <UserListingPage />
+            </ProtectedRoute>
+          }
+        /> */}
+        <Route
+          path={Routes.INDIVIDUAL_LISTING}
+          element={
+            <ProtectedRoute>
+              <IndividualListingPage />
             </ProtectedRoute>
           }
         />

@@ -1,4 +1,25 @@
-@use '../../variables.scss' as vars;
+@use '../../variables.scss' as *;
+
+h1 {
+    font-family: $h1-font-family;
+    font-weight: $h1-font-weight;
+    font-size: $h1-font-optical-sizing;
+    font-style: $h1-font-style;
+}
+
+h2 {
+    font-family: $h2-font-family;
+    font-weight: $h2-font-weight;
+    font-size: $h2-font-optical-sizing;
+    font-style: $h2-font-style;
+}
+
+span {
+   font-family: $p-font-family;
+   font-weight: $p-font-weight;
+   font-size: $p-font-optical-sizing;
+   font-style : $p-font-style;
+}
 
 .individual-listing-page {
     min-height: 100vh;
@@ -39,94 +60,61 @@
     }
 
     &__details {
-        position: relative;
-        margin-top: -32px;
-        background: #2b2b2b;
-        color: #fff;
-        padding: 24px 20px 110px;
-        border-radius: 32px;
-        border-top-left-radius: 32px;
-        border-top-right-radius: 32px;
+   position: relative;
+    margin-top: -32px;
+    background: #2b2b2b;
+    color: #fff;
+    padding: 24px 20px 110px;
+    border-radius: 32px;
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
+    background: #fff; 
+    color: #000; 
 
+    .rental-card {
+        border: 1px solid #eee;
+        padding: 16px;
+        text-align: center;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        .price { font-size: 1.2rem; margin: 4px 0; }
+    }
 
-        &__brand {
-            font-size: 0.8rem;
-            color: vars.$pink;
-            letter-spacing: 0.5px;
-        }
+    .rental-price {
+        border: 1px solid black;
+        width: 50%;
+        padding: 20px;
+        margin-left: 73px;
+    }
 
-        &__price {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 8px 0 16px;
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 24px;
+    }
 
-            &__text {
-                font-size: 1.1rem;
-                font-weight: 700;
-                margin: 0;
-            }
-
-            &__number {
-                font-size: 1rem;
-                font-weight: 700;
-
-                small {
-                    font-size: 0.8rem;
-                    color: vars.$emeraldGreen;
-                }
-            }
-        }
-
-        &__description-title {
-            font-size: 1rem;
-            margin-bottom: 8px;
-            color: vars.$mustardYellow;
-            font-weight: normal;
-        }
-
-        &__description-data {
-            font-size: 1rem;
-            line-height: 1.6;
-
-        }
-
-        &__enquiry-button {
-            position: fixed; // mobile: stays at bottom
-            bottom: 20px;
-            left: 16px;
-            right: 16px;
-            height: 56px;
-            background: #2f6f57;
-            border-radius: 28px;
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-
+    &__enquiry-button {
+        position: static !important;
+        width: 100%;
+        border-radius: 15px;
+        background: black;
+        height: 56px;
+        padding-bottom: 10px;
+        cursor: pointer;
+        color: white;
             &:hover {
-                background: #3a7b65;
-            }
+                background: #2f6f57;
+             }
 
-            &.is-disabled {
+             &.is-disabled {
                 background: #555;
                 cursor: not-allowed;
                 opacity: 0.7;
             }
-
-        }
-
-        &__icon {
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
     }
-
+}
     // TABLET LAYOUT (768px–1024px)
     @media (min-width: 768px) and (max-width: 1024px) {
         & {

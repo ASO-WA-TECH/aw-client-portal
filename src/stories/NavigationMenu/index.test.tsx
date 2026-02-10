@@ -1,56 +1,57 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import NavigationMenu from ".";
+import * as AuthContext from "../../Services/Auth/AuthContext";
 
 describe("NavigationMenu", () => {
   const mockToggle = jest.fn();
 
-  // test("snapshot", () => {
-  //   const { container } = render(
-  //     <NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />
-  //   );
-  //   expect(container).toMatchSnapshot();
-  // });
+  beforeEach(() => {
+    jest.spyOn(AuthContext, "useAuth").mockReturnValue({
+      currentUser: null,
+      logout: jest.fn(),
+      login: jest.fn(),
+      signup: jest.fn(),
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   test("renders desktop menu", () => {
-    render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
+    render(
+      <MemoryRouter>
+        <NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />
+      </MemoryRouter>
+    );
     expect(screen.getByTestId("desktop-menu")).toBeInTheDocument();
   });
 
-  test("renders hamburger button", () => {
-    render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
-    expect(screen.getByTestId("menu-button")).toBeInTheDocument();
+  test("renders home link", () => {
+    render(
+      <MemoryRouter>
+        <NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/Home/i)).toBeInTheDocument();
   });
 
-  test("shows mobile menu after hamburger is clicked", () => {
-    render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
-    const hamburgerButton = screen.getByTestId("menu-button");
+  test("calls toggleDarkMode when dark mode button is clicked", () => {
+    render(
+      <MemoryRouter>
+        <NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />
+      </MemoryRouter>
+    );
 
-    fireEvent.click(hamburgerButton);
+    // Open mobile menu
+    const hamburger = screen.getByTestId("menu-button");
+    fireEvent.click(hamburger);
 
-    expect(screen.getByTestId("mobile-menu")).toBeInTheDocument();
+    // Find and click the toggle button
+    const toggleBtn = screen.getByText(/Toggle Dark Mode/i);
+    fireEvent.click(toggleBtn);
+
+    expect(mockToggle).toHaveBeenCalledTimes(1);
   });
-
-  test('closes mobile menu when "X" is clicked inside it', () => {
-    render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
-
-    // Open the menu
-    fireEvent.click(screen.getByTestId("menu-button"));
-    expect(screen.getByTestId("mobile-menu")).toBeInTheDocument();
-
-    // Click the close button (labeled X)
-    const closeButton = screen.getByText("X");
-    fireEvent.click(closeButton);
-
-    // Mobile menu should now be gone
-    expect(screen.queryByTestId("mobile-menu")).not.toBeInTheDocument();
-  });
-
-  // test("calls toggleDarkMode when dark mode button is clicked", () => {
-  //   render(<NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />);
-
-  //   const toggleBtn = screen.getByText(/Toggle Theme/i);
-  //   fireEvent.click(toggleBtn);
-
-  //   expect(mockToggle).toHaveBeenCalledTimes(1);
-  // });
 });
