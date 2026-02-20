@@ -16,7 +16,7 @@ import ImageUploadPage from "./Pages/ImageUploadPage";
 import LandingPage from "./Pages/LandingPage";
 import ListingPage from "./Pages/ListingPage";
 import AuthenticationPage from "./Pages/AuthenticationPage";
-import UserAccountPage from "./Pages/UserAccountPage";
+import UserAccountPage from "./Pages/UserAccountPage/index";
 import UserAccountEditPage from "./Pages/UserAccountEditPage";
 import UserAccountCreatePage from "./Pages/UserAccountCreatePage";
 import AllUserListingsPage from "./Pages/AllUserListingsPage";
