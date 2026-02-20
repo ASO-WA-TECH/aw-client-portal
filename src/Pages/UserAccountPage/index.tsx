@@ -1,17 +1,12 @@
 import React, { useState } from "react";
 import "./index.scss";
+import Button from "../../stories/Button/";
 
 const UserAccountPage = () => {
   const [activeTab, setActiveTab] = useState("RENTING & LENDING");
-  const [rentalSubTab, setRentalSubTab] = useState("LENDING");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const menuItems = [
-    //"DASHBOARD",
-    "MY ACCOUNT",
-    "RENTING & LENDING",
-    "BUYING & SELLING",
-  ];
+  const menuItems = ["MY ACCOUNT", "RENTALS", "LISTINGS"];
 
   return (
     <div className="account-container">
@@ -55,24 +50,16 @@ const UserAccountPage = () => {
         {/* Main Content */}
         <main className="main-content">
           {activeTab === "MY ACCOUNT" && <AccountDetails />}
-          {activeTab === "RENTING & LENDING" && (
-            <RentingLending subTab={rentalSubTab} setSubTab={setRentalSubTab} />
-          )}
+          {activeTab === "RENTALS" && <Rentals />}
+          {activeTab === "LISTINGS" && <Listings />}
         </main>
       </div>
-
-      {/* Floating Help Button */}
-      <div className="floating-help">?</div>
     </div>
   );
 };
 
 const AccountDetails = () => (
   <section className="card-section">
-    <div className="header-links">
-      <a href="#">DELIVERY DETAILS</a>
-      <a href="#">CARD DETAILS</a>
-    </div>
     <h2>ACCOUNT DETAILS</h2>
     <div className="form-group row">
       <div className="text-info">
@@ -93,31 +80,12 @@ const AccountDetails = () => (
         <input type="text" defaultValue="Thomp" />
       </div>
       <div className="input-field full-width">
-        <label>PHONE NUMBER*</label>
-        <input type="text" />
-        <small>
-          Please enter a valid phone number only using numeric values.
-        </small>
-      </div>
-    </div>
-    <button className="btn-save">SAVE</button>
-
-    <div className="email-section">
-      <div className="input-field">
         <label>EMAIL ADDRESS</label>
-        <div className="flex-row">
-          <input type="email" defaultValue="bukithompson@hotmail.co.uk" />
-          <a href="#" className="link-action">
-            CHANGE
-          </a>
-        </div>
-        <small>
-          Your new email address will only be active after confirming the email
-          that we sent.
-        </small>
+        <input type="email" defaultValue="bukithompson@hotmail.co.uk" />
+        <small>Please enter a valid Email address.</small>
       </div>
     </div>
-
+    <br />
     <div className="password-section">
       <h3>CHANGE PASSWORD</h3>
       <div className="form-grid">
@@ -134,33 +102,37 @@ const AccountDetails = () => (
           <input type="password" />
         </div>
       </div>
-      <button className="btn-save">SAVE</button>
+      <Button
+        customStyle="btn-save"
+        type="submit"
+        text="Save"
+        variant="primary"
+        handleClick={() => {}}
+      />
     </div>
   </section>
 );
 
-const RentingLending = ({ subTab, setSubTab }) => (
+const Rentals = () => (
   <section className="renting-lending">
-    <div className="tab-switcher">
-      <button
-        className={subTab === "LENDING" ? "active" : ""}
-        onClick={() => setSubTab("LENDING")}
-      >
-        LENDING
-      </button>
-      <button
-        className={subTab === "RENTING" ? "active" : ""}
-        onClick={() => setSubTab("RENTING")}
-      >
-        RENTING
-      </button>
-    </div>
-
+    RENTALSS
     <div className="empty-state">
       <h3>
-        ONCE YOU START {subTab},<br /> ALL YOUR ORDERS WILL BE ACCESSIBLE HERE.
+        ONCE YOU START renting
+        <br /> ALL YOUR ORDERS WILL BE ACCESSIBLE HERE.
       </h3>
-      <button className="btn-black-large">VIEW NEW ARRIVALS</button>
+    </div>
+  </section>
+);
+
+const Listings = () => (
+  <section className="renting-lending">
+    LISTINGS
+    <div className="empty-state">
+      <h3>
+        ONCE YOU START LISTING
+        <br /> ALL YOUR ORDERS WILL BE ACCESSIBLE HERE.
+      </h3>
     </div>
   </section>
 );
