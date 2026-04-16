@@ -18,6 +18,10 @@ html, body {
     min-height: 100vh; 
     width: 100%; /* instead of 100vw */
   }  
+
+  .button {
+    width: 100%;
+  }
   
   .background {
     flex: 2 1 400px; /* grow=2, shrink=1, basis=400px */

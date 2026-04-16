@@ -1,10 +1,24 @@
-@use '../../variables' as vars;
+@use '../../variables' as *;
 
+a {
+    font-family: $p-font-family;
+    font-optical-sizing: $p-font-optical-sizing;
+    font-weight: $p-font-weight;
+    font-style: $p-font-style;
+  }
+
+.header-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
 .navigation-menu {
     position: relative;
 
     &__closed {
         display: block;
+        padding: 12px;
 
         &__hamburger-button {
             display: flex;
@@ -35,7 +49,7 @@
         position: fixed;
         top: 0;
         right: 0;
-        background-color: vars.$emeraldGreen;
+        background-color: $emeraldGreen;
         color: white;
         width: 70%;
         height: 100vh;
@@ -98,7 +112,7 @@
 
                         &:hover {
                             text-decoration: underline;
-                            color: vars.$emeraldGreen;
+                            color: $emeraldGreen;
                         }
 
                         &__text {

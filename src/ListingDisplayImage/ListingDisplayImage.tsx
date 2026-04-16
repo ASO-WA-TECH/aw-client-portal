@@ -2,7 +2,7 @@ import React from "react";
 import "./ListingDisplayImage.scss";
 
 interface ListingDisplayImageProps {
-  imageUrl: string; //Url of image
+  imageUrl?: string; //Url of image
   title: string; // Title of image card
   subtitle: string; //subtitle or description of image card
   darkMode?: boolean;
@@ -14,7 +14,7 @@ const ListingDisplayImage: React.FC<ListingDisplayImageProps> = ({
   title,
   subtitle,
   darkMode,
-  listingId
+  listingId,
 }) => {
   const cardClasses = `listing-display-image ${darkMode ? "dark-mode" : ""}`;
 
