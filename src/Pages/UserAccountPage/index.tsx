@@ -1,16 +1,123 @@
-import React, { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./index.scss";
-import Button from "../../stories/Button/";
+import HttpService from "../../Services/httpService";
+import AccountDetails from "./components/AccountDetails";
+import Rentals from "./components/Rentals";
+import Listings from "./components/Listings";
+
+interface Response {
+  id: string;
+  createdTime: string;
+  fields: T;
+}
+
+interface UserData {
+  id: string;
+  createdTime: string;
+  Name: string;
+  Lastname: string;
+  Email: string;
+  Rentals?: string[];
+  Listings?: string[];
+}
+
+interface RentalData {
+  id: string;
+  createdTime: string;
+  Images?: { url: string }[];
+  Title?: string;
+  Price?: number;
+  Status?: string;
+}
+
+interface ListingData {
+  id: string;
+  createdTime: string;
+  Images?: { url: string }[];
+  Title?: string;
+  Price?: number;
+  Status?: string;
+}
 
 const UserAccountPage = () => {
-  const [activeTab, setActiveTab] = useState("RENTING & LENDING");
+  const usersHttpService = useMemo(() => new HttpService("Users"), []);
+  const rentalHttpService = useMemo(() => new HttpService("Rentals"), []);
+  const listingsHttpService = useMemo(() => new HttpService("Listings"), []);
+
+  const [user, setUser] = useState<UserData | null>(null);
+  const [rentals, setRentals] = useState<RentalData[]>([]);
+  const [listings, setListings] = useState<ListingData[]>([]);
+  const [activeTab, setActiveTab] = useState("MY ACCOUNT");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const menuItems = ["MY ACCOUNT", "RENTALS", "LISTINGS"];
+  const userId = 1;
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        setLoading(true);
+        const allUsers = await usersHttpService.fetchAllRecords();
+        const userData = allUsers
+          .filter(
+            (item: Response<{ UserId: number }>) =>
+              item.fields.UserId === userId,
+          )
+          .map(({ id, createdTime, fields }: Response<{ UserId: number }>) => ({
+            ...fields,
+            id,
+            createdTime,
+          }))[0];
+
+        if (!userData) throw new Error("User not found");
+        setUser(userData);
+
+        const rentalIds: string[] = userData.Rentals || [];
+        if (rentalIds.length > 0) {
+          const rentalResults = await Promise.all(
+            rentalIds.map((id) => rentalHttpService.fetchRecord(id)),
+          );
+          const flatRentals = rentalResults
+            .filter(Boolean)
+            .map((data: Response) => ({
+              ...data.fields,
+              id: data.id,
+              createdTime: data.createdTime,
+            }));
+          setRentals(flatRentals);
+        }
+
+        const listingIds: string[] = userData.Listings || [];
+        if (listingIds.length > 0) {
+          const listingResults = await Promise.all(
+            listingIds.map((id) => listingsHttpService.fetchRecord(id)),
+          );
+          const flatListings = listingResults
+            .filter(Boolean)
+            .map((data: Response) => ({
+              ...data.fields,
+              id: data.id,
+              createdTime: data.createdTime,
+            }));
+          setListings(flatListings);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Error fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAll();
+  }, [usersHttpService, rentalHttpService, listingsHttpService]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="account-container">
-      {/* Mobile Header Toggle */}
       <div
         className="mobile-header"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -20,13 +127,14 @@ const UserAccountPage = () => {
       </div>
 
       <div className="layout-body">
-        {/* Sidebar */}
         <aside className={`sidebar ${isMobileMenuOpen ? "open" : ""}`}>
           <div className="profile-section">
             <div className="profile-header">
               <div className="avatar-circle"></div>
               <div className="user-info">
-                <h3>Buki T.</h3>
+                <h3>
+                  {user?.Name} {user?.Lastname?.[0]}.
+                </h3>
               </div>
             </div>
           </div>
@@ -47,94 +155,18 @@ const UserAccountPage = () => {
           </nav>
         </aside>
 
-        {/* Main Content */}
         <main className="main-content">
-          {activeTab === "MY ACCOUNT" && <AccountDetails />}
-          {activeTab === "RENTALS" && <Rentals />}
-          {activeTab === "LISTINGS" && <Listings />}
+          {activeTab === "MY ACCOUNT" && user && (
+            <AccountDetails userData={user} />
+          )}
+          {activeTab === "RENTALS" && rentals && <Rentals rentals={rentals} />}
+          {activeTab === "LISTINGS" && listings && (
+            <Listings listings={listings} />
+          )}
         </main>
       </div>
     </div>
   );
 };
-
-const AccountDetails = () => (
-  <section className="card-section">
-    <h2>ACCOUNT DETAILS</h2>
-    <div className="form-group row">
-      <div className="text-info">
-        Upload your own photo to personalize your account.
-      </div>
-      <a href="#" className="link-action">
-        Upload my own
-      </a>
-    </div>
-    <hr />
-    <div className="form-grid">
-      <div className="input-field">
-        <label>FIRST NAME*</label>
-        <input type="text" defaultValue="Buki" />
-      </div>
-      <div className="input-field">
-        <label>LAST NAME*</label>
-        <input type="text" defaultValue="Thomp" />
-      </div>
-      <div className="input-field full-width">
-        <label>EMAIL ADDRESS</label>
-        <input type="email" defaultValue="bukithompson@hotmail.co.uk" />
-        <small>Please enter a valid Email address.</small>
-      </div>
-    </div>
-    <br />
-    <div className="password-section">
-      <h3>CHANGE PASSWORD</h3>
-      <div className="form-grid">
-        <div className="input-field full-width">
-          <label>CURRENT PASSWORD</label>
-          <input type="password" />
-        </div>
-        <div className="input-field">
-          <label>NEW PASSWORD</label>
-          <input type="password" />
-        </div>
-        <div className="input-field">
-          <label>CONFIRM NEW PASSWORD</label>
-          <input type="password" />
-        </div>
-      </div>
-      <Button
-        customStyle="btn-save"
-        type="submit"
-        text="Save"
-        variant="primary"
-        handleClick={() => {}}
-      />
-    </div>
-  </section>
-);
-
-const Rentals = () => (
-  <section className="renting-lending">
-    RENTALSS
-    <div className="empty-state">
-      <h3>
-        ONCE YOU START renting
-        <br /> ALL YOUR ORDERS WILL BE ACCESSIBLE HERE.
-      </h3>
-    </div>
-  </section>
-);
-
-const Listings = () => (
-  <section className="renting-lending">
-    LISTINGS
-    <div className="empty-state">
-      <h3>
-        ONCE YOU START LISTING
-        <br /> ALL YOUR ORDERS WILL BE ACCESSIBLE HERE.
-      </h3>
-    </div>
-  </section>
-);
 
 export default UserAccountPage;

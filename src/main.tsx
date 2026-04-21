@@ -17,12 +17,9 @@ import LandingPage from "./Pages/LandingPage";
 import ListingPage from "./Pages/ListingPage";
 import AuthenticationPage from "./Pages/AuthenticationPage";
 import UserAccountPage from "./Pages/UserAccountPage/index";
-import UserAccountEditPage from "./Pages/UserAccountEditPage";
-import UserAccountCreatePage from "./Pages/UserAccountCreatePage";
 import AllUserListingsPage from "./Pages/AllUserListingsPage";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
 import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
-//import UserListingPage from "./Pages/UserListingPage"; to be used asa account page
 import IndividualListingPage from "./Pages/IndividualListingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { Routes } from "./Routes";
@@ -47,22 +44,6 @@ const router = createBrowserRouter(
           }
         />
         <Route
-          path={Routes.CREATE_ACCOUNT}
-          element={
-            <ProtectedRoute>
-              <UserAccountCreatePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={Routes.EDIT_ACCOUNT}
-          element={
-            <ProtectedRoute>
-              <UserAccountEditPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path={Routes.ALL_MY_LISTINGS}
           element={
             <ProtectedRoute>
@@ -70,14 +51,6 @@ const router = createBrowserRouter(
             </ProtectedRoute>
           }
         />
-        {/* <Route
-          path={Routes.INDIVIDUAL_LISTING}
-          element={
-            <ProtectedRoute>
-              <UserListingPage />
-            </ProtectedRoute>
-          }
-        /> */}
         <Route
           path={Routes.INDIVIDUAL_LISTING}
           element={
@@ -111,8 +84,8 @@ const router = createBrowserRouter(
           }
         />
       </Route>
-    </>
-  )
+    </>,
+  ),
 );
 
 createRoot(document.getElementById("root")!).render(
@@ -120,5 +93,5 @@ createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <RouterProvider router={router} />
     </AuthProvider>
-  </StrictMode>
+  </StrictMode>,
 );
