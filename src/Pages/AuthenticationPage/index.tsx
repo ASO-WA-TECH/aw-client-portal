@@ -145,7 +145,7 @@ function AuthenticationPage() {
                   <br />
                   <InputField
                     value={password}
-                    type="text"
+                    type="password"
                     handleChange={(e) => setPassword(e.target.value)}
                     label="Password"
                     darkMode={false}
@@ -173,7 +173,7 @@ function AuthenticationPage() {
                       isDisabled={!isApproved}
                       text={loading ? "Signing up..." : "Sign Up"}
                       variant="primary"
-                      handleClick={() => {}}
+                      handleClick={() => { }}
                     />
                   </div>
                 </form>
@@ -223,7 +223,7 @@ function AuthenticationPage() {
                       isDisabled={!isApproved}
                       text={loading ? "Loggin in..." : "Login"}
                       variant="primary"
-                      handleClick={() => {}}
+                      handleClick={() => { }}
                     />
                   </div>
                 </form>

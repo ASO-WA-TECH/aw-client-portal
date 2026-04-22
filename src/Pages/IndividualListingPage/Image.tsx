@@ -14,7 +14,7 @@ const Image: React.FC<ImageProps> = ({ imageUrl, title }) => {
                 className="individual-listing-page__image-wrapper__image"
             />
             <button className="individual-listing-page__image-wrapper__back-btn">
-                <a href="/listing">←</a>
+                <a href="/listings">←</a>
             </button>
         </div>
     );

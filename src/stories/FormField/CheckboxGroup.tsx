@@ -51,14 +51,18 @@ const CheckboxGroup = ({
 
             <div className="checkbox-group">
                 {options.map(option => (
-                    <label key={option} className="checkbox-item">
+                    <>
+
+                        <label key={option} htmlFor={`checkbox-${option}`} className="checkbox-item">
+                            <span>{option}</span>
+                        </label>
                         <input
                             type="checkbox"
+                            id={`checkbox-${option}`}
                             checked={values.includes(option)}
                             onChange={() => toggleValue(option)}
                         />
-                        <span>{option}</span>
-                    </label>
+                    </>
                 ))}
             </div>
 

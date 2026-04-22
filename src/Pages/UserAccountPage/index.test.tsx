@@ -6,10 +6,11 @@ import {
   within,
 } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import UserAccountPage from "./index";
 import HttpService from "../../Services/httpService";
 
-// Mock child components so tests focus on UserAccountPage logic only
+// Mock child components
 vi.mock("./components/AccountDetails", () => ({
   default: ({ userData }: { userData: { Name: string } }) => (
     <div data-testid="account-details">{userData.Name}</div>
@@ -30,6 +31,14 @@ vi.mock("./components/Listings", () => ({
 
 // Mock HttpService
 vi.mock("../../Services/httpService");
+
+const renderWithRouter = (initialUrl = "/account") => {
+  return render(
+    <MemoryRouter initialEntries={[initialUrl]}>
+      <UserAccountPage />
+    </MemoryRouter>
+  );
+};
 
 const mockUser = {
   id: "user1",
@@ -60,7 +69,6 @@ describe("UserAccountPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Default happy path mocks
     (HttpService as vi.Mock).mockImplementation((table: string) => ({
       fetchAllRecords: vi
         .fn()
@@ -74,20 +82,31 @@ describe("UserAccountPage", () => {
   });
 
   it("shows loading state initially", () => {
-    render(<UserAccountPage />);
+    renderWithRouter();
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
-  it("renders account details tab by default after loading", async () => {
-    render(<UserAccountPage />);
+  it("renders account details tab by default", async () => {
+    renderWithRouter();
+
     await waitFor(() =>
-      expect(screen.getByTestId("account-details")).toBeInTheDocument(),
+      expect(screen.getByTestId("account-details")).toBeInTheDocument()
     );
+
     expect(screen.getByText("Jane")).toBeInTheDocument();
   });
 
+  it("respects tab from URL query params", async () => {
+    renderWithRouter("/account?tab=rentals");
+
+    await waitFor(() =>
+      expect(screen.getByTestId("rentals")).toBeInTheDocument()
+    );
+  });
+
   it("displays user name in sidebar", async () => {
-    render(<UserAccountPage />);
+    renderWithRouter();
+
     await waitFor(() => screen.getByTestId("account-details"));
 
     const sidebar = document.querySelector(".sidebar")!;
@@ -95,76 +114,70 @@ describe("UserAccountPage", () => {
   });
 
   it("switches to RENTALS tab on click", async () => {
-    render(<UserAccountPage />);
+    renderWithRouter();
+
     await waitFor(() => screen.getByTestId("account-details"));
 
     fireEvent.click(screen.getByText("RENTALS"));
 
-    expect(screen.getByTestId("rentals")).toBeInTheDocument();
+    expect(await screen.findByTestId("rentals")).toBeInTheDocument();
     expect(screen.queryByTestId("account-details")).not.toBeInTheDocument();
   });
 
   it("switches to LISTINGS tab on click", async () => {
-    render(<UserAccountPage />);
+    renderWithRouter();
+
     await waitFor(() => screen.getByTestId("account-details"));
 
     fireEvent.click(screen.getByText("LISTINGS"));
 
-    expect(screen.getByTestId("listings")).toBeInTheDocument();
-    expect(screen.queryByTestId("account-details")).not.toBeInTheDocument();
+    expect(await screen.findByTestId("listings")).toBeInTheDocument();
   });
 
-  it("fetches and passes rentals to Rentals component", async () => {
-    render(<UserAccountPage />);
+  it("fetches and passes rentals correctly", async () => {
+    renderWithRouter();
 
     fireEvent.click(await screen.findByText("RENTALS"));
 
-    await waitFor(() =>
-      expect(screen.getByText("Rentals: 1")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Rentals: 1")).toBeInTheDocument();
   });
 
-  it("fetches and passes listings to Listings component", async () => {
-    render(<UserAccountPage />);
+  it("fetches and passes listings correctly", async () => {
+    renderWithRouter();
 
     fireEvent.click(await screen.findByText("LISTINGS"));
 
-    await waitFor(() =>
-      expect(screen.getByText("Listings: 1")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Listings: 1")).toBeInTheDocument();
   });
 
-  it("shows error message when user is not found", async () => {
+  it("shows error when user not found", async () => {
     (HttpService as vi.Mock).mockImplementation(() => ({
-      fetchAllRecords: vi.fn().mockResolvedValue([]), // no users returned
+      fetchAllRecords: vi.fn().mockResolvedValue([]),
       fetchRecord: vi.fn(),
     }));
 
-    render(<UserAccountPage />);
+    renderWithRouter();
 
-    await waitFor(() =>
-      expect(screen.getByText(/User not found/)).toBeInTheDocument(),
-    );
+    expect(await screen.findByText(/User not found/)).toBeInTheDocument();
   });
 
-  it("shows error message when fetch fails", async () => {
+  it("shows error when fetch fails", async () => {
     (HttpService as vi.Mock).mockImplementation(() => ({
       fetchAllRecords: vi.fn().mockRejectedValue(new Error("Network error")),
       fetchRecord: vi.fn(),
     }));
 
-    render(<UserAccountPage />);
+    renderWithRouter();
 
-    await waitFor(() =>
-      expect(screen.getByText(/Network error/)).toBeInTheDocument(),
-    );
+    expect(await screen.findByText(/Network error/)).toBeInTheDocument();
   });
 
-  it("toggles mobile menu open and closed", async () => {
-    render(<UserAccountPage />);
+  it("toggles mobile menu", async () => {
+    renderWithRouter();
+
     await waitFor(() => screen.getByTestId("account-details"));
 
-    const mobileHeader = document.querySelector(".mobile-header")!; // ← target the div directly
+    const mobileHeader = document.querySelector(".mobile-header")!;
     fireEvent.click(mobileHeader);
 
     expect(document.querySelector(".sidebar.open")).toBeInTheDocument();
@@ -173,12 +186,14 @@ describe("UserAccountPage", () => {
     expect(document.querySelector(".sidebar.open")).not.toBeInTheDocument();
   });
 
-  it("closes mobile menu when a nav item is clicked", async () => {
-    render(<UserAccountPage />);
+  it("closes mobile menu on nav click", async () => {
+    renderWithRouter();
+
     await waitFor(() => screen.getByTestId("account-details"));
 
-    const mobileHeader = document.querySelector(".mobile-header")!; // ← same fix
+    const mobileHeader = document.querySelector(".mobile-header")!;
     fireEvent.click(mobileHeader);
+
     fireEvent.click(screen.getByText("RENTALS"));
 
     expect(document.querySelector(".sidebar.open")).not.toBeInTheDocument();

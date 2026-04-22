@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import "./index.scss";
+
 import HttpService from "../../Services/httpService";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
 
-interface Response {
+interface Response<T> {
   id: string;
   createdTime: string;
   fields: T;
@@ -44,26 +46,35 @@ const UserAccountPage = () => {
   const rentalHttpService = useMemo(() => new HttpService("Rentals"), []);
   const listingsHttpService = useMemo(() => new HttpService("Listings"), []);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "my-account";
+
   const [user, setUser] = useState<UserData | null>(null);
   const [rentals, setRentals] = useState<RentalData[]>([]);
   const [listings, setListings] = useState<ListingData[]>([]);
-  const [activeTab, setActiveTab] = useState("MY ACCOUNT");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const menuItems = ["MY ACCOUNT", "RENTALS", "LISTINGS"];
+  const menuItems = [
+    { label: "MY ACCOUNT", key: "my-account" },
+    { label: "RENTALS", key: "rentals" },
+    { label: "LISTINGS", key: "listings" },
+  ];
+
   const userId = 1;
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
         setLoading(true);
+
         const allUsers = await usersHttpService.fetchAllRecords();
+
         const userData = allUsers
           .filter(
             (item: Response<{ UserId: number }>) =>
-              item.fields.UserId === userId,
+              item.fields.UserId === userId
           )
           .map(({ id, createdTime, fields }: Response<{ UserId: number }>) => ({
             ...fields,
@@ -72,13 +83,16 @@ const UserAccountPage = () => {
           }))[0];
 
         if (!userData) throw new Error("User not found");
+
         setUser(userData);
+
 
         const rentalIds: string[] = userData.Rentals || [];
         if (rentalIds.length > 0) {
           const rentalResults = await Promise.all(
-            rentalIds.map((id) => rentalHttpService.fetchRecord(id)),
+            rentalIds.map((id) => rentalHttpService.fetchRecord(id))
           );
+
           const flatRentals = rentalResults
             .filter(Boolean)
             .map((data: Response) => ({
@@ -86,14 +100,17 @@ const UserAccountPage = () => {
               id: data.id,
               createdTime: data.createdTime,
             }));
+
           setRentals(flatRentals);
         }
+
 
         const listingIds: string[] = userData.Listings || [];
         if (listingIds.length > 0) {
           const listingResults = await Promise.all(
-            listingIds.map((id) => listingsHttpService.fetchRecord(id)),
+            listingIds.map((id) => listingsHttpService.fetchRecord(id))
           );
+
           const flatListings = listingResults
             .filter(Boolean)
             .map((data: Response) => ({
@@ -101,6 +118,7 @@ const UserAccountPage = () => {
               id: data.id,
               createdTime: data.createdTime,
             }));
+
           setListings(flatListings);
         }
       } catch (err) {
@@ -116,13 +134,17 @@ const UserAccountPage = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  const activeLabel =
+    menuItems.find((item) => item.key === activeTab)?.label ||
+    "MY ACCOUNT";
+
   return (
     <div className="account-container">
       <div
         className="mobile-header"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        <span>{activeTab}</span>
+        <span>{activeLabel}</span>
         <i className={`arrow ${isMobileMenuOpen ? "up" : "down"}`}></i>
       </div>
 
@@ -142,25 +164,29 @@ const UserAccountPage = () => {
           <nav className="side-nav">
             {menuItems.map((item) => (
               <button
-                key={item}
-                className={activeTab === item ? "active" : ""}
+                key={item.key}
+                className={activeTab === item.key ? "active" : ""}
                 onClick={() => {
-                  setActiveTab(item);
+                  setSearchParams({ tab: item.key });
                   setIsMobileMenuOpen(false);
                 }}
               >
-                {item}
+                {item.label}
               </button>
             ))}
           </nav>
         </aside>
 
         <main className="main-content">
-          {activeTab === "MY ACCOUNT" && user && (
+          {activeTab === "my-account" && user && (
             <AccountDetails userData={user} />
           )}
-          {activeTab === "RENTALS" && rentals && <Rentals rentals={rentals} />}
-          {activeTab === "LISTINGS" && listings && (
+
+          {activeTab === "rentals" && (
+            <Rentals rentals={rentals} />
+          )}
+
+          {activeTab === "listings" && (
             <Listings listings={listings} />
           )}
         </main>
