@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./index.scss";
 import HttpService from "../../Services/httpService";
-import ListingDisplayImage from "../../ListingDisplayImage/ListingDisplayImage";
+import ListingDisplayImage from "../../stories/ListingDisplayImage/ListingDisplayImage";
 import { Routes } from "../../Routes";
 
 interface ListingRecord {
@@ -18,7 +18,7 @@ interface ListingRecord {
 
 const LandingPage = () => {
   const httpService = useMemo(() => new HttpService("Listings"), []);
-
+  const navigate = useNavigate();
   const [listings, setListings] = useState<ListingRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,18 +55,21 @@ const LandingPage = () => {
         <div className="carouselContainer">
           <div className="productGrid">
             {listings.length > 0
-              ? listings
-                  .slice(-3)
-                  .map((listing, index) => (
+              ? listings.slice(-3).map((listing, index) => (
+                  <div
+                    key={listing.id || index}
+                    onClick={() => navigate(`/listing/${listing.id}`)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <ListingDisplayImage
-                      key={listing.id || index}
                       listingId={listing.id}
                       title={listing.fields.Title}
                       subtitle={`£${listing.fields.Price}`}
-                      imageUrl={listing.fields.Images?.[0]?.url}
+                      imageUrl={listing.fields.Images?.[0]?.url ?? ""}
                       darkMode={false}
                     />
-                  ))
+                  </div>
+                ))
               : !loading && <p>No listings found.</p>}
           </div>
         </div>

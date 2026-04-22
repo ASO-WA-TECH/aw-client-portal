@@ -46,10 +46,10 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
             </li>
             <li>
               <Link
-                to="/my-listings"
+                to="/listings"
                 className="navigation-menu__desktop__links__item__link"
               >
-                My Listings
+                Listings
               </Link>
             </li>
             <li>
@@ -107,10 +107,10 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
               </li>
               <li className="navigation-menu__mobile__links__item">
                 <Link
-                  to="/my-listings"
+                  to="/listings"
                   className="navigation-menu__mobile__links__item__link"
                 >
-                  My Listings
+                  Listings
                 </Link>
               </li>
               <li className="navigation-menu__mobile__links__item">
