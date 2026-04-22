@@ -1,43 +1,62 @@
 import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import Logo from "../../stories/LogoImage";
 import { NavigationMenu } from "../../stories";
-import './index.scss';
+import "./index.scss";
 
 export default function Layout() {
-    const [darkMode, setDarkMode] = useState(() => {
-        // Optional: persist theme
-        return localStorage.getItem('theme') === 'dark';
-    });
+  const [darkMode, setDarkMode] = useState(() => {
+    // Optional: persist theme
+    return localStorage.getItem("theme") === "dark";
+  });
 
-    useEffect(() => {
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light');
-        }
-    }, [darkMode]);
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
-    const toggleDarkMode = () => setDarkMode(prev => !prev);
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
-    return (
-        <div className="layout-container">
-            <header className="layout-container__header">
-                <Logo width={100} height={90} />
-                <NavigationMenu toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+  return (
+    <div className="layout-container">
+      <header>
+        <NavigationMenu toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+      </header>
 
-            </header>
+      <main className="layout-container__main">
+        <Outlet />
+      </main>
 
-            <main className="layout-container__main">
-                <Outlet />
-            </main>
+      <footer className={"footerSection"}>
+        <p className={"invitationText"}>
+          Get to know <span className={"handle"}>@ASO.WA</span>
+        </p>
 
-            <footer>
-                <p>My footer</p>
-            </footer>
+        <div className="footerGrid">
+          <div className="contactItem">
+            <p>
+              Contact us: <a href="mailto:aso.wa@gmail.com">aso.wa@gmail.com</a>
+            </p>
+          </div>
+
+          <div className="footerLinks">
+            <a href="/">ABOUT US</a>
+            <a href="/">FAQ</a>
+            <a href="/">PRIVACY POLICY</a>
+            <a href="/">TERMS & CONDITIONS</a>
+          </div>
         </div>
-    );
+
+        <div className={"brandFooter"}>
+          <h2 className={"footerLogo"}>ASO WA</h2>
+          <p className={"copyright"}>© 2026 ASO WA.</p>
+        </div>
+      </footer>
+    </div>
+  );
 }

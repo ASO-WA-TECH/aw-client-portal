@@ -3,11 +3,16 @@ import { useAuth } from "../../Services/Auth/AuthContext";
 import { Routes } from "../../Routes";
 import "./index.scss";
 
-function LogoutLink() {
+interface LogoutLinkProps {
+  className?: string;
+}
+
+function LogoutLink({ className }: LogoutLinkProps) {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
     console.log("logged out");
     try {
       await logout();
@@ -18,7 +23,7 @@ function LogoutLink() {
   };
 
   return (
-    <a className="link" onClick={handleLogout}>
+    <a className={`link ${className || ""}`} onClick={handleLogout} href="#">
       Log out
     </a>
   );

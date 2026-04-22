@@ -16,25 +16,23 @@ import ImageUploadPage from "./Pages/ImageUploadPage";
 import LandingPage from "./Pages/LandingPage";
 import ListingPage from "./Pages/ListingPage";
 import AuthenticationPage from "./Pages/AuthenticationPage";
-import UserAccountPage from "./Pages/UserAccountPage";
-import UserAccountEditPage from "./Pages/UserAccountEditPage";
-import UserAccountCreatePage from "./Pages/UserAccountCreatePage";
+import UserAccountPage from "./Pages/UserAccountPage/index";
 import AllUserListingsPage from "./Pages/AllUserListingsPage";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
 import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
-import UserListingPage from "./Pages/UserListingPage";
+import IndividualListingPage from "./Pages/IndividualListingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { Routes } from "./Routes";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+      <Route path={Routes.AUTHENTICATE} element={<AuthenticationPage />} />
       <Route path={Routes.INITIAL} element={<Layout />}>
         <Route index element={<HomePage />} /> {/* default page at "/" */}
         <Route path={Routes.HOME} element={<HomePage />} />
         <Route path={Routes.LISTING} element={<ListingPage />} />
         <Route path={Routes.LANDING} element={<LandingPage />} />
-        <Route path={Routes.AUTHENTICATE} element={<AuthenticationPage />} />
         <Route path={Routes.FAQ} element={<FAQ />} />
         <Route path={Routes.ANYTHING_ELSE} element={<ErrorPage />} />
         <Route
@@ -42,22 +40,6 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoute>
               <UserAccountPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={Routes.CREATE_ACCOUNT}
-          element={
-            <ProtectedRoute>
-              <UserAccountCreatePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={Routes.EDIT_ACCOUNT}
-          element={
-            <ProtectedRoute>
-              <UserAccountEditPage />
             </ProtectedRoute>
           }
         />
@@ -73,7 +55,7 @@ const router = createBrowserRouter(
           path={Routes.INDIVIDUAL_LISTING}
           element={
             <ProtectedRoute>
-              <UserListingPage />
+              <IndividualListingPage />
             </ProtectedRoute>
           }
         />
@@ -102,8 +84,8 @@ const router = createBrowserRouter(
           }
         />
       </Route>
-    </>
-  )
+    </>,
+  ),
 );
 
 createRoot(document.getElementById("root")!).render(
@@ -111,5 +93,5 @@ createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <RouterProvider router={router} />
     </AuthProvider>
-  </StrictMode>
+  </StrictMode>,
 );
