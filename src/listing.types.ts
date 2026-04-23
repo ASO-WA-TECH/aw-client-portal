@@ -10,6 +10,7 @@ export type CategoryOption =
     | "Corset"
     | "Fila";
 
+// TODO: confirm which values are predefined on airtabele and update accordingly
 export type GenderOption =
     | "Male"
     | "Female"

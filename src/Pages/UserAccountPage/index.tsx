@@ -6,6 +6,7 @@ import HttpService from "../../Services/httpService";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
+import AddListing from "./components/AddListing";
 
 interface Response<T> {
   id: string;
@@ -60,6 +61,7 @@ const UserAccountPage = () => {
     { label: "MY ACCOUNT", key: "my-account" },
     { label: "RENTALS", key: "rentals" },
     { label: "LISTINGS", key: "listings" },
+    { label: "ADD LISTING", key: "add-listing" },
   ];
 
   const userId = 1;
@@ -188,6 +190,10 @@ const UserAccountPage = () => {
 
           {activeTab === "listings" && (
             <Listings listings={listings} />
+          )}
+
+          {activeTab === "add-listing" && (
+            <AddListing />
           )}
         </main>
       </div>

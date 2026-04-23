@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import HttpService from "../../Services/httpService";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import HttpService from "../../../Services/httpService";
 
 import type {
     ListingFormData,
@@ -8,13 +8,13 @@ import type {
     CategoryOption,
     GenderOption,
     StatusOption,
-} from "../../listing.types";
+} from "../../../listing.types";
 
-import "./index.scss";
-import InputField from "../../stories/InputField";
-import CheckboxGroup from "../../stories/FormField/CheckboxGroup";
-import InputDropdown from "../../stories/FormField/InputDropdown";
-import Button from "../../stories/Button";
+import "../index.scss";
+import InputField from "../../../stories/InputField";
+import CheckboxGroup from "../../../stories/FormField/CheckboxGroup";
+import InputDropdown from "../../../stories/FormField/InputDropdown";
+import Button from "../../../stories/Button";
 
 const SIZE_OPTIONS: SizeOption[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
@@ -54,7 +54,7 @@ const EMPTY_FORM: ListingFormData = {
     Images: [],
 };
 
-const UserListingsEditPage = () => {
+const AddListing = () => {
     const navigate = useNavigate();
 
     const listingHttpService = useMemo(
@@ -62,53 +62,14 @@ const UserListingsEditPage = () => {
         []
     );
 
-    const { id } = useParams<{ id: string }>();
-
     const [formData, setFormData] =
         useState<ListingFormData>(EMPTY_FORM);
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-
     const [toast, setToast] = useState<{
         message: string;
         type: "success" | "error";
     } | null>(null);
-
-    useEffect(() => {
-        if (!id) return;
-
-        const fetchListing = async () => {
-            setIsLoading(true);
-            try {
-                const record = await listingHttpService.fetchRecord(id);
-
-                if (record?.fields) {
-                    setFormData((prev) => ({
-                        ...prev,
-                        ...record.fields,
-                        Price: record.fields.Price ?? "",
-                        Category: (record.fields.Category ?? []) as CategoryOption[],
-                        Images: record.fields.Images ?? [], // ✅ ensure images exist
-                    }));
-                }
-            } catch (err) {
-                console.error(err);
-                setIsError(true);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchListing();
-    }, [id, listingHttpService]);
-
-    useEffect(() => {
-        if (!toast) return;
-        const timer = setTimeout(() => setToast(null), 3000);
-        return () => clearTimeout(timer);
-    }, [toast]);
 
     const updateField = <K extends keyof ListingFormData>(
         field: K,
@@ -117,95 +78,118 @@ const UserListingsEditPage = () => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleSave = async () => {
-        if (!id || isSaving) return;
+    // OPTIONAL IMAGE (preview only for now)
+    const handleImageUpload = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            const base64 = reader.result as string;
+
+            updateField("Images", [
+                {
+                    url: base64, // ⚠️ preview only (not sent to Airtable) - NEED TO IMPLEMENT PROPER UPLOAD IN THE FUTURE
+                },
+            ]);
+        };
+
+        reader.readAsDataURL(file);
+    };
+
+    const validateForm = () => {
+        const {
+            Title,
+            Description,
+            Size,
+            Category,
+            Gender,
+            Status,
+            Location,
+            Price,
+        } = formData;
+
+        return (
+            Title &&
+            Description &&
+            Size &&
+            Category.length > 0 &&
+            Gender &&
+            Status &&
+            Location &&
+            Price !== ""
+        );
+    };
+
+    const handleSubmit = async () => {
+        if (isSaving) return;
+
+        if (!validateForm()) {
+            setToast({
+                message: "Please fill all required fields.",
+                type: "error",
+            });
+            return;
+        }
 
         setIsSaving(true);
 
         try {
-            const {
-                Title,
-                Description,
-                Size,
-                Category,
-                Gender,
-                Status,
-                Location,
-                Price,
-            } = formData;
+            const payload: Partial<ListingFormData> = {
+                ...formData,
+            };
+            // IMAGE HANDLING: if the image is a base64 preview, don't send it to Airtable (since we don't have upload functionality yet)
+            if (
+                !formData.Images?.length ||
+                formData.Images[0].url.startsWith("data:")
+            ) {
+                delete payload.Images;
+            }
 
-            await listingHttpService.updateRecord({
-                id,
-                fields: {
-                    Title,
-                    Description,
-                    Size,
-                    Category,
-                    Gender,
-                    Status,
-                    Location,
-                    Price,
-                },
-            });
+            await listingHttpService.createRecord(
+                payload as ListingFormData
+            );
 
             setToast({
-                message: "Listing updated successfully!",
+                message: "Listing created successfully!",
                 type: "success",
             });
 
             setTimeout(() => navigate("/listings"), 1000);
 
         } catch (err) {
-            console.error("Update failed:", err);
+            console.error(err);
 
             setToast({
-                message: "Failed to update listing.",
+                message: "Failed to create listing.",
                 type: "error",
             });
         } finally {
             setIsSaving(false);
         }
     };
-
-    if (isLoading) return <p>Loading...</p>;
-    if (isError) return <p>Failed to load listing.</p>;
-
-
-    const imageUrl = formData.Images?.[0]?.url;
+    // TODO: implement proper image upload flow in the future (currently just a base64 preview that isn't sent to Airtable)
+    const imagePreview = formData.Images?.[0]?.url;
 
     return (
-        <div className="edit-listing-page">
-            <div className="edit-listing-page__container">
+        <div className="create-listing-page">
+            <div className="create-listing-page__container">
 
-                {toast && (
-                    <div className={`toast toast--${toast.type}`}>
-                        {toast.message}
-                    </div>
+                <h2>Create Listing</h2>
+
+                {imagePreview && (
+                    <div
+                        className="create-listing-page__image-preview"
+                        style={{
+                            backgroundImage: `url(${imagePreview})`,
+                        }}
+                    />
                 )}
 
-                {/* LEFT COLUMN */}
-                <div className="edit-listing-page__container__left">
-                    <div className="edit-listing-page__container__header">
-                        <button onClick={() => navigate(-1)}>←</button>
-
-                        <h2>
-                            Edit Listing <span>- {formData.Title}</span>
-                        </h2>
-                    </div>
-
-
-                    {imageUrl && (
-                        <div
-                            className="edit-listing-page__container__cover"
-                            style={{
-                                backgroundImage: `url(${imageUrl})`,
-                            }}
-                        />
-                    )}
-                </div>
-
-                {/* RIGHT COLUMN */}
-                <div className="edit-listing-page__container__form">
+                <div className="create-listing-page__form">
 
                     <InputField
                         label="Title"
@@ -222,6 +206,7 @@ const UserListingsEditPage = () => {
                         handleChange={(e) =>
                             updateField("Description", e.target.value)
                         }
+                        required
                     />
 
                     <InputDropdown
@@ -261,6 +246,7 @@ const UserListingsEditPage = () => {
                         handleChange={(e) =>
                             updateField("Status", e.target.value as StatusOption)
                         }
+                        required
                     />
 
                     <InputField
@@ -269,6 +255,7 @@ const UserListingsEditPage = () => {
                         handleChange={(e) =>
                             updateField("Location", e.target.value)
                         }
+                        required
                     />
 
                     <InputField
@@ -281,20 +268,34 @@ const UserListingsEditPage = () => {
                                 e.target.value === "" ? "" : Number(e.target.value)
                             )
                         }
+                        required
                     />
+
+                    {/* OPTIONAL IMAGE */}
+                    <label>Upload Image (optional)</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                    />
+
+                    {toast && (
+                        <div className={`toast toast--${toast.type}`}>
+                            {toast.message}
+                        </div>
+                    )}
 
                     <Button
-                        handleClick={handleSave}
+                        handleClick={handleSubmit}
                         isDisabled={isSaving}
                         variant="primary"
-                        text={isSaving ? "Saving..." : "Save Changes"}
+                        text={isSaving ? "Creating..." : "Create Listing"}
                         type="button"
                     />
-
                 </div>
             </div>
         </div>
     );
 };
 
-export default UserListingsEditPage;
+export default AddListing;
