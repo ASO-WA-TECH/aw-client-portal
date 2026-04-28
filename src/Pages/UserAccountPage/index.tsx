@@ -88,7 +88,23 @@ const UserAccountPage = () => {
               id: data.id,
               createdTime: data.createdTime,
             }));
-          setRentals(flatRentals);
+
+          const rentalsWithListings = await Promise.all(
+            flatRentals.map(async (rental) => {
+              const listingId = rental.Listing?.[0];
+              if (!listingId) return { ...rental, listingDetails: null };
+
+              const listingData =
+                await listingsHttpService.fetchRecord(listingId);
+              const listingDetails = listingData
+                ? { ...listingData.fields, id: listingData.id }
+                : null;
+
+              return { ...rental, listingDetails };
+            }),
+          );
+          console.log("Rentals with Listings:", rentalsWithListings);
+          setRentals(rentalsWithListings);
         }
 
         const listingIds: string[] = userData.Listings || [];

@@ -4,10 +4,18 @@ import ListingDisplayImage from "../../../stories/ListingDisplayImage/ListingDis
 interface RentalItem {
   id: string;
   createdTime: string;
-  Images?: { url: string }[];
-  Title?: string;
-  Price?: number;
+  RentalId?: number;
   Status?: string;
+  Listing?: string[];
+  Rentee?: string[];
+  "Created At"?: string;
+  listingDetails?: {
+    id: string;
+    Images?: { url: string }[];
+    Title?: string;
+    Price?: number;
+    Status?: string;
+  } | null;
 }
 interface RentalsProps {
   rentals: RentalItem[];
@@ -36,9 +44,10 @@ const Rentals: React.FC<RentalsProps> = ({ rentals }) => {
         {rentals.map((rental) => (
           <ListingDisplayImage
             key={rental.id}
-            imageUrl={rental.Images?.[0]?.url ?? ""}
-            title={rental.Title ?? "Untitled"}
-            subtitle={`£${rental.Price?.toFixed(2) ?? "0.00"}`}
+            imageUrl={rental.listingDetails?.Images?.[0]?.url ?? ""}
+            title={rental.listingDetails?.Title ?? "Untitled"}
+            subtitle={`£${rental.listingDetails?.Price?.toFixed(2) ?? "0.00"}`}
+            status={rental.listingDetails?.Status ?? "Unknown"}
           />
         ))}
       </div>
