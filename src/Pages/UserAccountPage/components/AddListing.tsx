@@ -15,6 +15,7 @@ import InputField from "../../../stories/InputField";
 import CheckboxGroup from "../../../stories/FormField/CheckboxGroup";
 import InputDropdown from "../../../stories/FormField/InputDropdown";
 import Button from "../../../stories/Button";
+import ImageUploader from "../../../Components/ImageUploader";
 
 const SIZE_OPTIONS: SizeOption[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
@@ -78,28 +79,6 @@ const AddListing = () => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    // OPTIONAL IMAGE (preview only for now)
-    const handleImageUpload = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            const base64 = reader.result as string;
-
-            updateField("Images", [
-                {
-                    url: base64, // ⚠️ preview only (not sent to Airtable) - NEED TO IMPLEMENT PROPER UPLOAD IN THE FUTURE
-                },
-            ]);
-        };
-
-        reader.readAsDataURL(file);
-    };
-
     const validateForm = () => {
         const {
             Title,
@@ -138,20 +117,11 @@ const AddListing = () => {
         setIsSaving(true);
 
         try {
-            const payload: Partial<ListingFormData> = {
+            const payload: ListingFormData = {
                 ...formData,
             };
-            // IMAGE HANDLING: if the image is a base64 preview, don't send it to Airtable (since we don't have upload functionality yet)
-            if (
-                !formData.Images?.length ||
-                formData.Images[0].url.startsWith("data:")
-            ) {
-                delete payload.Images;
-            }
 
-            await listingHttpService.createRecord(
-                payload as ListingFormData
-            );
+            await listingHttpService.createRecord(payload);
 
             setToast({
                 message: "Listing created successfully!",
@@ -159,7 +129,6 @@ const AddListing = () => {
             });
 
             setTimeout(() => navigate("/listings"), 1000);
-
         } catch (err) {
             console.error(err);
 
@@ -171,26 +140,18 @@ const AddListing = () => {
             setIsSaving(false);
         }
     };
-    // TODO: implement proper image upload flow in the future (currently just a base64 preview that isn't sent to Airtable)
-    const imagePreview = formData.Images?.[0]?.url;
 
     return (
         <div className="create-listing-page">
             <div className="create-listing-page__container">
-
                 <h2>Create Listing</h2>
 
-                {imagePreview && (
-                    <div
-                        className="create-listing-page__image-preview"
-                        style={{
-                            backgroundImage: `url(${imagePreview})`,
-                        }}
-                    />
-                )}
+                <ImageUploader
+                    images={formData.Images ?? []}
+                    onChange={(imgs: { url: string; }[]) => updateField("Images", imgs)}
+                />
 
                 <div className="create-listing-page__form">
-
                     <InputField
                         label="Title"
                         value={formData.Title}
@@ -234,7 +195,10 @@ const AddListing = () => {
                         value={formData.Gender}
                         options={GENDER_OPTIONS}
                         handleChange={(e) =>
-                            updateField("Gender", e.target.value as GenderOption)
+                            updateField(
+                                "Gender",
+                                e.target.value as GenderOption
+                            )
                         }
                         required
                     />
@@ -244,7 +208,10 @@ const AddListing = () => {
                         value={formData.Status}
                         options={STATUS_OPTIONS}
                         handleChange={(e) =>
-                            updateField("Status", e.target.value as StatusOption)
+                            updateField(
+                                "Status",
+                                e.target.value as StatusOption
+                            )
                         }
                         required
                     />
@@ -265,18 +232,12 @@ const AddListing = () => {
                         handleChange={(e) =>
                             updateField(
                                 "Price",
-                                e.target.value === "" ? "" : Number(e.target.value)
+                                e.target.value === ""
+                                    ? ""
+                                    : Number(e.target.value)
                             )
                         }
                         required
-                    />
-
-                    {/* OPTIONAL IMAGE */}
-                    <label>Upload Image (optional)</label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
                     />
 
                     {toast && (
