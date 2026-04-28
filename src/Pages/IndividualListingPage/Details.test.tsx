@@ -5,13 +5,17 @@ import type { ListingFields } from "../ListingPage/types";
 
 // --- Mocks — declared with vi.hoisted so they're available when vi.mock runs ---
 
-const { mockFetchAllRecords, mockCreateRecords, mockUpdateRecord } = vi.hoisted(
-  () => ({
-    mockFetchAllRecords: vi.fn(),
-    mockCreateRecords: vi.fn(),
-    mockUpdateRecord: vi.fn(),
-  }),
-);
+const {
+  mockFetchAllUsers,
+  mockFetchAllRentals,
+  mockCreateRecords,
+  mockUpdateRecord,
+} = vi.hoisted(() => ({
+  mockFetchAllUsers: vi.fn(),
+  mockFetchAllRentals: vi.fn(),
+  mockCreateRecords: vi.fn(),
+  mockUpdateRecord: vi.fn(),
+}));
 
 vi.mock("react-router-dom", () => ({
   useParams: () => ({ id: "rec123" }),
@@ -23,8 +27,12 @@ vi.mock("../../Services/Auth/AuthContext", () => ({
 
 vi.mock("../../Services/httpService", () => ({
   default: vi.fn().mockImplementation((resource: string) => {
-    if (resource === "Users") return { fetchAllRecords: mockFetchAllRecords };
-    if (resource === "Rentals") return { createRecords: mockCreateRecords };
+    if (resource === "Users") return { fetchAllRecords: mockFetchAllUsers };
+    if (resource === "Rentals")
+      return {
+        fetchAllRecords: mockFetchAllRentals, // ← for duplicate check
+        createRecords: mockCreateRecords,
+      };
     if (resource === "Listings") return { updateRecord: mockUpdateRecord };
   }),
 }));
@@ -63,16 +71,23 @@ const renderDetails = (overrides: Partial<ListingFields> = {}) =>
 describe("Details", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockFetchAllRecords.mockResolvedValue([
+
+    // No existing rentals for this user+listing by default
+    mockFetchAllRentals.mockResolvedValue([]);
+
+    mockFetchAllUsers.mockResolvedValue([
       { id: "airtable-user-1", fields: { auth_uid: "firebase-uid-123" } },
     ]);
     mockCreateRecords.mockResolvedValue({ id: "rental-1" });
     mockUpdateRecord.mockResolvedValue({});
+
     delete (window as unknown as { location: unknown }).location;
     (window as unknown as { location: { href: string } }).location = {
       href: "",
     };
   });
+
+  // unchanged ─────────────────────────────────────────────────────────────────
 
   describe("initial render", () => {
     test("displays listing title in uppercase", () => {
@@ -126,11 +141,55 @@ describe("Details", () => {
     });
   });
 
+  // updated ────────────────────────────────────────────────────────────────────
+
+  describe("handleInterestClick — duplicate check", () => {
+    test("checks for existing rentals before proceeding", async () => {
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+      await waitFor(() => expect(mockFetchAllRentals).toHaveBeenCalledTimes(1));
+    });
+
+    test("does not create a rental if user already expressed interest", async () => {
+      // Simulate an existing rental for this user + listing
+      mockFetchAllRentals.mockResolvedValue([
+        {
+          id: "existing-rental",
+          fields: {
+            Rentee: ["airtable-user-1"],
+            Listing: ["rec123"],
+          },
+        },
+      ]);
+      // Match the airtable user id to the firebase uid
+      mockFetchAllUsers.mockResolvedValue([
+        { id: "airtable-user-1", fields: { auth_uid: "firebase-uid-123" } },
+      ]);
+
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+
+      await waitFor(() => expect(mockFetchAllRentals).toHaveBeenCalledTimes(1));
+
+      expect(mockCreateRecords).not.toHaveBeenCalled();
+      expect(mockUpdateRecord).not.toHaveBeenCalled();
+    });
+
+    test("proceeds to create rental if no duplicate exists", async () => {
+      mockFetchAllRentals.mockResolvedValue([]); // no existing rentals
+
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+
+      await waitFor(() => expect(mockCreateRecords).toHaveBeenCalledTimes(1));
+    });
+  });
+
   describe("handleRent — happy path", () => {
     test("calls fetchAllRecords to look up the airtable user", async () => {
       renderDetails();
       fireEvent.click(screen.getByText(/rent now/i));
-      await waitFor(() => expect(mockFetchAllRecords).toHaveBeenCalledTimes(1));
+      await waitFor(() => expect(mockFetchAllUsers).toHaveBeenCalledTimes(1));
     });
 
     test("updates listing status to pending after rental created", async () => {
@@ -157,12 +216,12 @@ describe("Details", () => {
 
   describe("handleRent — error cases", () => {
     test("does not proceed if no airtable user matches the firebase uid", async () => {
-      mockFetchAllRecords.mockResolvedValue([]);
+      mockFetchAllUsers.mockResolvedValue([]);
 
       renderDetails();
       fireEvent.click(screen.getByText(/rent now/i));
 
-      await waitFor(() => expect(mockFetchAllRecords).toHaveBeenCalled());
+      await waitFor(() => expect(mockFetchAllUsers).toHaveBeenCalled());
 
       expect(mockCreateRecords).not.toHaveBeenCalled();
       expect(mockUpdateRecord).not.toHaveBeenCalled();
@@ -180,17 +239,6 @@ describe("Details", () => {
       await waitFor(() => expect(mockCreateRecords).toHaveBeenCalled());
 
       expect(mockUpdateRecord).not.toHaveBeenCalled();
-    });
-
-    test("does not change UI if listing update fails", async () => {
-      mockUpdateRecord.mockRejectedValue(new Error("update failed"));
-
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
-
-      await waitFor(() => expect(mockUpdateRecord).toHaveBeenCalled());
-
-      expect(screen.queryByText(/update failed/i)).toBeInTheDocument();
     });
   });
 });

@@ -19,9 +19,34 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
   const [status, setStatus] = useState(listing.Status);
   const [error, setError] = useState<string | null>(null);
 
-  const handleRent = async () => {
-    if (!id || !currentUser?.uid) return;
+  const handleInterestClick = async (listingId: string) => {
+    if (!currentUser?.uid) return;
 
+    const [existingRentals, allUsers] = await Promise.all([
+      rentalHttpService.fetchAllRecords(),
+      userHttpService.fetchAllRecords(),
+    ]);
+
+    const airtableUser = allUsers.find(
+      (user: { id: string; fields: { auth_uid: string } }) =>
+        user.fields.auth_uid === currentUser.uid,
+    );
+
+    if (!airtableUser) return;
+
+    const alreadyInterested = existingRentals.some(
+      (r: { fields: { Rentee?: string[]; Listing?: string[] } }) =>
+        r.fields.Rentee?.[0] === airtableUser.id &&
+        r.fields.Listing?.[0] === listingId,
+    );
+
+    if (alreadyInterested) return;
+
+    handleRent();
+  };
+
+  const handleRent = async () => {
+    if (!id || !currentUser?.uid) return; // we need to create a toast modal to show this error to the user instead of just silently failing
     try {
       // 1. Find the Airtable User record matching the Firebase UID
       const allUsers = await userHttpService.fetchAllRecords();
@@ -88,7 +113,7 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
     return (
       <button
         className="individual-listing-page__details__enquiry-button"
-        onClick={handleRent}
+        onClick={() => handleInterestClick(id!)}
       >
         <h2>RENT NOW</h2>
       </button>

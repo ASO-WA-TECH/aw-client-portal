@@ -6,14 +6,16 @@ import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
 
-interface Response {
+interface Response<T extends Record<string, unknown>> {
   id: string;
   createdTime: string;
   fields: T;
 }
 
 interface UserData {
+  [key: string]: unknown;
   id: string;
+  auth_uid: string;
   createdTime: string;
   Name: string;
   Lastname: string;
@@ -23,8 +25,11 @@ interface UserData {
 }
 
 interface RentalData {
+  [key: string]: unknown;
   id: string;
   createdTime: string;
+  Listing?: string[];
+  Rentee?: string[];
   Images?: { url: string }[];
   Title?: string;
   Price?: number;
@@ -32,6 +37,7 @@ interface RentalData {
 }
 
 interface ListingData {
+  [key: string]: unknown;
   id: string;
   createdTime: string;
   Images?: { url: string }[];
@@ -63,11 +69,8 @@ const UserAccountPage = () => {
         setLoading(true);
         const allUsers = await usersHttpService.fetchAllRecords();
         const userData = allUsers
-          .filter(
-            (item: Response<{ UserId: number }>) =>
-              item.fields.auth_uid === userId,
-          )
-          .map(({ id, createdTime, fields }: Response<{ UserId: number }>) => ({
+          .filter((item: Response<UserData>) => item.fields.auth_uid === userId)
+          .map(({ id, createdTime, fields }: Response<UserData>) => ({
             ...fields,
             id,
             createdTime,
@@ -83,7 +86,7 @@ const UserAccountPage = () => {
           );
           const flatRentals = rentalResults
             .filter(Boolean)
-            .map((data: Response) => ({
+            .map((data: Response<RentalData>) => ({
               ...data.fields,
               id: data.id,
               createdTime: data.createdTime,
@@ -114,7 +117,7 @@ const UserAccountPage = () => {
           );
           const flatListings = listingResults
             .filter(Boolean)
-            .map((data: Response) => ({
+            .map((data: Response<ListingData>) => ({
               ...data.fields,
               id: data.id,
               createdTime: data.createdTime,

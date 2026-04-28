@@ -162,18 +162,26 @@ describe("IndividualListingPage", () => {
       .mockResolvedValueOnce({ fields: mockListingData })
       .mockResolvedValueOnce({ fields: mockOwnerFields });
 
-    vi.spyOn(HttpService.prototype, "fetchAllRecords").mockResolvedValueOnce([
-      { id: "airtable-user-id", fields: { auth_uid: "test-uid" } },
-    ]);
+    vi.spyOn(HttpService.prototype, "fetchAllRecords")
+      .mockResolvedValueOnce([]) // 1. Rentals duplicate check
+      .mockResolvedValueOnce([
+        // 2. Users lookup (duplicate check)
+        { id: "airtable-user-id", fields: { auth_uid: "test-uid" } },
+      ])
+      .mockResolvedValueOnce([
+        // 3. Users lookup (handleRent)
+        { id: "airtable-user-id", fields: { auth_uid: "test-uid" } },
+      ]);
 
     vi.spyOn(HttpService.prototype, "createRecords").mockResolvedValueOnce({});
     vi.spyOn(HttpService.prototype, "updateRecord").mockResolvedValueOnce();
 
-    // Mock window.location.href setter
+    // Mock window.location.href
     const locationSpy = vi.spyOn(window, "location", "get").mockReturnValue({
       ...window.location,
       href: "",
     } as Location);
+
     let capturedHref = "";
     Object.defineProperty(window, "location", {
       value: {
