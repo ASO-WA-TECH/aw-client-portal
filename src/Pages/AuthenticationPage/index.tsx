@@ -24,6 +24,17 @@ function AuthenticationPage() {
   const httpService = useMemo(() => new HttpService("Users"), []);
   const fromPreviousPath = location.state?.from?.pathname || Routes.INITIAL;
 
+  async function checkIfUsernameAlreadyExists(username: string) {
+    const data = await httpService.fetchAllRecords();
+    const userFound = data.some(
+      (user: UserRecord) => user.fields.Name === username,
+    );
+    if (userFound) {
+      setError("Username already exists");
+      throw new Error("Username already exists");
+    }
+  }
+
   async function createUserWithGuards(
     email: string,
     password: string,
@@ -33,6 +44,7 @@ function AuthenticationPage() {
     setLoading(true);
 
     try {
+      await checkIfUsernameAlreadyExists(username);
       const userCredential = await signup(email, password);
 
       const uid = userCredential?.user?.uid;
