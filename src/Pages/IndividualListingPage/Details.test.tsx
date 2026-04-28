@@ -1,6 +1,35 @@
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { vi, describe, beforeEach, test, expect } from "vitest";
 import Details from "./Details";
 import type { ListingFields } from "../ListingPage/types";
+
+// --- Mocks — declared with vi.hoisted so they're available when vi.mock runs ---
+
+const { mockFetchAllRecords, mockCreateRecords, mockUpdateRecord } = vi.hoisted(
+  () => ({
+    mockFetchAllRecords: vi.fn(),
+    mockCreateRecords: vi.fn(),
+    mockUpdateRecord: vi.fn(),
+  }),
+);
+
+vi.mock("react-router-dom", () => ({
+  useParams: () => ({ id: "rec123" }),
+}));
+
+vi.mock("../../Services/Auth/AuthContext", () => ({
+  useAuth: () => ({ currentUser: { uid: "firebase-uid-123" } }),
+}));
+
+vi.mock("../../Services/httpService", () => ({
+  default: vi.fn().mockImplementation((resource: string) => {
+    if (resource === "Users") return { fetchAllRecords: mockFetchAllRecords };
+    if (resource === "Rentals") return { createRecords: mockCreateRecords };
+    if (resource === "Listings") return { updateRecord: mockUpdateRecord };
+  }),
+}));
+
+// --- Test data ---
 
 const mockListing: ListingFields = {
   Title: "Test Jacket",
@@ -12,56 +41,156 @@ const mockListing: ListingFields = {
   Owner: [],
   Category: "",
   Size: "",
-  Status: "Available",
+  Status: "available",
   "Creation Date": "",
   Location: "",
 };
 
 const ownerEmail = "owner@test.com";
 
-const STORAGE_KEY = `enquiry:${mockListing.Title}`;
+// --- Helpers ---
 
-describe("Details – enquiry localStorage sync", () => {
+const renderDetails = (overrides: Partial<ListingFields> = {}) =>
+  render(
+    <Details
+      listing={{ ...mockListing, ...overrides }}
+      ownerEmail={ownerEmail}
+    />,
+  );
+
+// --- Tests ---
+
+describe("Details", () => {
   beforeEach(() => {
-    localStorage.clear();
+    vi.clearAllMocks();
+    mockFetchAllRecords.mockResolvedValue([
+      { id: "airtable-user-1", fields: { auth_uid: "firebase-uid-123" } },
+    ]);
+    mockCreateRecords.mockResolvedValue({ id: "rental-1" });
+    mockUpdateRecord.mockResolvedValue({});
+    delete (window as unknown as { location: unknown }).location;
+    (window as unknown as { location: { href: string } }).location = {
+      href: "",
+    };
   });
 
-  test("shows enquiry button when no enquiry exists", () => {
-    render(<Details listing={mockListing} ownerEmail={ownerEmail} />);
+  describe("initial render", () => {
+    test("displays listing title in uppercase", () => {
+      renderDetails();
+      expect(screen.getByText("TEST JACKET")).toBeInTheDocument();
+    });
 
-    expect(screen.getByText(/Rent Now/i)).toBeInTheDocument();
+    test("displays price per day", () => {
+      renderDetails();
+      expect(
+        screen.getByText(/Rent from £120.00 per day/i),
+      ).toBeInTheDocument();
+    });
+
+    test("displays description", () => {
+      renderDetails();
+      expect(screen.getByText("Warm jacket")).toBeInTheDocument();
+    });
+
+    test("displays Men for Gender Man", () => {
+      renderDetails({ Gender: "Man" });
+      expect(screen.getByText(/ASO WA Men/i)).toBeInTheDocument();
+    });
+
+    test("displays Women for other genders", () => {
+      renderDetails({ Gender: "Woman" });
+      expect(screen.getByText(/ASO WA Women/i)).toBeInTheDocument();
+    });
   });
 
-  test("clicking enquiry stores value and disables button", () => {
-    render(<Details listing={mockListing} ownerEmail={ownerEmail} />);
+  describe("status rendering", () => {
+    test("shows Rent Now button when status is Available", () => {
+      renderDetails({ Status: "available" });
+      expect(screen.getByText(/rent now/i)).toBeInTheDocument();
+    });
 
-    const enquiryLink = screen.getByText(/Rent Now/i);
+    test("shows pending message when status is pending", () => {
+      renderDetails({ Status: "pending" });
+      expect(
+        screen.getByText(/this item is currently pending/i),
+      ).toBeInTheDocument();
+      expect(screen.queryByText(/rent now/i)).not.toBeInTheDocument();
+    });
 
-    fireEvent.click(enquiryLink);
-
-    expect(localStorage.getItem(STORAGE_KEY)).toBe("true");
-
-    expect(screen.getByText(/enquiry sent/i)).toBeInTheDocument();
-
-    expect(
-      screen.getByRole("button", { name: /enquiry sent/i })
-    ).toBeDisabled();
+    test("shows unavailable message when status is unavailable", () => {
+      renderDetails({ Status: "unavailable" });
+      expect(
+        screen.getByText(/this item is currently unavailable/i),
+      ).toBeInTheDocument();
+      expect(screen.queryByText(/rent now/i)).not.toBeInTheDocument();
+    });
   });
 
-  test("updates UI when storage event fires (cross-tab sync)", () => {
-    render(<Details listing={mockListing} ownerEmail={ownerEmail} />);
+  describe("handleRent — happy path", () => {
+    test("calls fetchAllRecords to look up the airtable user", async () => {
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+      await waitFor(() => expect(mockFetchAllRecords).toHaveBeenCalledTimes(1));
+    });
 
-    act(() => {
-      localStorage.setItem(STORAGE_KEY, "true");
-
-      window.dispatchEvent(
-        new StorageEvent("storage", {
-          key: STORAGE_KEY,
-          newValue: "true",
-        })
+    test("updates listing status to pending after rental created", async () => {
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+      await waitFor(() =>
+        expect(mockUpdateRecord).toHaveBeenCalledWith({
+          id: "rec123",
+          fields: { Status: "pending" },
+        }),
       );
     });
 
-    expect(screen.getByText(/enquiry sent/i)).toBeInTheDocument();
+    test("shows pending message after successful rental", async () => {
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+      await waitFor(() =>
+        expect(
+          screen.getByText(/this item is currently pending/i),
+        ).toBeInTheDocument(),
+      );
+    });
+  });
+
+  describe("handleRent — error cases", () => {
+    test("does not proceed if no airtable user matches the firebase uid", async () => {
+      mockFetchAllRecords.mockResolvedValue([]);
+
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+
+      await waitFor(() => expect(mockFetchAllRecords).toHaveBeenCalled());
+
+      expect(mockCreateRecords).not.toHaveBeenCalled();
+      expect(mockUpdateRecord).not.toHaveBeenCalled();
+      expect(screen.getByText(/rent now/i)).toBeInTheDocument();
+    });
+
+    test("does not update listing if rental creation fails", async () => {
+      mockCreateRecords.mockRejectedValue({
+        response: { status: 422, data: {} },
+      });
+
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+
+      await waitFor(() => expect(mockCreateRecords).toHaveBeenCalled());
+
+      expect(mockUpdateRecord).not.toHaveBeenCalled();
+    });
+
+    test("does not change UI if listing update fails", async () => {
+      mockUpdateRecord.mockRejectedValue(new Error("update failed"));
+
+      renderDetails();
+      fireEvent.click(screen.getByText(/rent now/i));
+
+      await waitFor(() => expect(mockUpdateRecord).toHaveBeenCalled());
+
+      expect(screen.queryByText(/update failed/i)).toBeInTheDocument();
+    });
   });
 });

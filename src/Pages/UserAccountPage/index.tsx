@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./index.scss";
 import HttpService from "../../Services/httpService";
+import { useAuth } from "../../Services/Auth/AuthContext";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
@@ -51,9 +52,10 @@ const UserAccountPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { currentUser } = useAuth();
 
   const menuItems = ["MY ACCOUNT", "RENTALS", "LISTINGS"];
-  const userId = 1;
+  const userId = currentUser?.uid;
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -63,7 +65,7 @@ const UserAccountPage = () => {
         const userData = allUsers
           .filter(
             (item: Response<{ UserId: number }>) =>
-              item.fields.UserId === userId,
+              item.fields.auth_uid === userId,
           )
           .map(({ id, createdTime, fields }: Response<{ UserId: number }>) => ({
             ...fields,

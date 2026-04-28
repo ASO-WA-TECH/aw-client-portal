@@ -22,9 +22,10 @@ export default class HttpService {
   }
 
   async createRecords<T extends object>(entity: T) {
-    await apiClient.post(`/${this.tableName}`, {
+    const response = await apiClient.post(`/${this.tableName}`, {
       fields: entity,
     });
+    return response.data;
   }
 
   async updateRecord<T extends { id: string; fields: object }>(entity: T) {
@@ -45,5 +46,3 @@ export default class HttpService {
     await apiClient.delete(`/${this.tableName}/${entity}`);
   }
 }
-
-

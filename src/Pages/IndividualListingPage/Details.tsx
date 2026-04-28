@@ -1,92 +1,115 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import type { ListingFields } from "../ListingPage/types";
+import HttpService from "../../Services/httpService";
+import { useAuth } from "../../Services/Auth/AuthContext";
 
 type DetailsProps = {
   listing: ListingFields;
   ownerEmail: string;
 };
 
+const listingHttpService = new HttpService("Listings");
+const rentalHttpService = new HttpService("Rentals");
+const userHttpService = new HttpService("Users");
+
 const Details = ({ listing, ownerEmail }: DetailsProps) => {
-  const storageKey = `enquiry:${listing.Title}`;
-  const [hasEnquired, setHasEnquired] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const { currentUser } = useAuth();
+  const [status, setStatus] = useState(listing.Status);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const checkStoredValue = () => {
-      const stored = localStorage.getItem(storageKey);
-      setHasEnquired(stored === "true");
-    };
+  const handleRent = async () => {
+    if (!id || !currentUser?.uid) return;
 
-    checkStoredValue();
+    try {
+      // 1. Find the Airtable User record matching the Firebase UID
+      const allUsers = await userHttpService.fetchAllRecords();
+      const airtableUser = allUsers.find(
+        (user: { id: string; fields: { auth_uid: string } }) =>
+          user.fields.auth_uid === currentUser.uid,
+      );
 
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === storageKey) {
-        setHasEnquired(event.newValue === "true");
+      if (!airtableUser) {
+        console.error(
+          "No matching Airtable user found for uid:",
+          currentUser.uid,
+        );
+        return;
       }
-    };
 
-    window.addEventListener("storage", handleStorageChange);
+      // 2. Create Rental record
+      const rentalPayload = {
+        Listing: [id],
+        Rentee: [airtableUser.id],
+        Status: "pending",
+      };
+      try {
+        await rentalHttpService.createRecords(rentalPayload);
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Failed to process rental request",
+        );
+        return;
+      }
 
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [storageKey]);
+      // 3. Update Listing status — only reached if rental succeeded
+      await listingHttpService.updateRecord({
+        id,
+        fields: {
+          Status: "pending",
+        },
+      });
+      setStatus("pending");
 
-  const emailSubject = encodeURIComponent(
-    `ASO WA - RENTAL REQUEST: ${listing.Title}`
-  );
+      // 4. Open mailto — only reached if everything succeeded
+      window.location.href = `mailto:${ownerEmail}?subject=Rental Request: ${listing.Title}&body=Hello,%0D%0A%0D%0AI would like to rent: ${listing.Title}%0D%0APrice: £${listing.Price?.toFixed(2)}%0D%0A%0D%0AThank you.`;
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to process rental request",
+      );
+    }
+  };
 
-  const emailBody = encodeURIComponent(
-    `Hello,
-
-  I would like to rent the following item:
-
-  Product: ${listing.Title}
-  Price: £${listing.Price.toFixed(2)} GBP
-
-  Thank you.`
-  );
-
-  const handleEnquiryClick = () => {
-    localStorage.setItem(storageKey, "true");
-    setHasEnquired(true); // same-tab update
+  const renderStatus = () => {
+    if (status === "pending") {
+      return <h2>This item is currently pending</h2>;
+    }
+    if (status === "unavailable") {
+      return <h2>This item is currently unavailable</h2>;
+    }
+    if (error) {
+      return <p>Error: {error}</p>;
+    }
+    return (
+      <button
+        className="individual-listing-page__details__enquiry-button"
+        onClick={handleRent}
+      >
+        <h2>RENT NOW</h2>
+      </button>
+    );
   };
 
   return (
-    <>
-      <div className="individual-listing-page__details ">
-        <div className="rental-card">
-          <span className="individual-listing-page__details__brand">
-            ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
-          </span>
-
-          <div>
-            <h1>{listing.Title?.toUpperCase()}</h1>
-            <div className="rental-price">
-              <span>Rent from £{listing.Price?.toFixed(2)} per day</span>
-            </div>
-          </div>
-          <h2>Description</h2>
-          <p>{listing.Description}</p>
-
-          {hasEnquired ? (
-            <button
-              className="individual-listing-page__details__enquiry-button is-disabled"
-              disabled
-            >
-              <h2>Enquiry sent</h2>
-            </button>
-          ) : (
-            <a
-              className="individual-listing-page__details__enquiry-button"
-              href={`mailto:${ownerEmail}?bcc=aso.wa.uk@gmail.com&subject=${emailSubject}&body=${emailBody}`}
-              onClick={handleEnquiryClick}
-            >
-              <h2> RENT NOW</h2>
-            </a>
-          )}
+    <div className="individual-listing-page__details">
+      <div className="rental-card">
+        <span className="individual-listing-page__details__brand">
+          ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
+        </span>
+        <h1>{listing.Title?.toUpperCase()}</h1>
+        <div className="rental-price">
+          <span>Rent from £{listing.Price?.toFixed(2)} per day</span>
         </div>
+        <h2>Description</h2>
+        <p>{listing.Description}</p>
+        {renderStatus()}
       </div>
-    </>
+    </div>
   );
 };
 
