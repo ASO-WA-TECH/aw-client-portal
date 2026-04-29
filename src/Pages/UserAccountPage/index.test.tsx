@@ -83,7 +83,7 @@ describe("UserAccountPage", () => {
 
   it("shows loading state initially", () => {
     renderWithRouter();
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(screen.getByTestId("loading-account")).toBeInTheDocument();
   });
 
   it("renders account details tab by default", async () => {

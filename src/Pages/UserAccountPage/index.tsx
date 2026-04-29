@@ -7,6 +7,7 @@ import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
 import AddListing from "./components/AddListing";
+import LoadingAccount from "./LoadingAccount";
 
 interface Response<T> {
   id: string;
@@ -133,7 +134,7 @@ const UserAccountPage = () => {
     fetchAll();
   }, [usersHttpService, rentalHttpService, listingsHttpService]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingAccount />;
   if (error) return <p>Error: {error}</p>;
 
   const activeLabel =

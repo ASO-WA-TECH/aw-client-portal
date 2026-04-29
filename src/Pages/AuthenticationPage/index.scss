@@ -1,4 +1,4 @@
-@import '../../variables';
+@use '../../variables' as v;
 
 
 html, body {
@@ -61,20 +61,20 @@ html, body {
   }
   
     h1 {
-    font-family: $h1-font-family;
-    font-optical-sizing: $h1-font-optical-sizing;
-    font-weight: $h1-font-weight;
-    font-style: $h1-font-style;
+    font-family: v.$h1-font-family;
+    font-optical-sizing: v.$h1-font-optical-sizing;
+    font-weight: v.$h1-font-weight;
+    font-style: v.$h1-font-style;
     padding-left: 47px;
   }
   
   .paragraph,
   p,
   .input-error-message {
-    font-family: $p-font-family;
-    font-optical-sizing: $p-font-optical-sizing;
-    font-weight: $p-font-weight;
-    font-style: $p-font-style;
+    font-family: v.$p-font-family;
+    font-optical-sizing: v.$p-font-optical-sizing;
+    font-weight: v.$p-font-weight;
+    font-style: v.$p-font-style;
   }
 
   .input-error-message {

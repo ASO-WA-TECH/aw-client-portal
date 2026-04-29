@@ -1,4 +1,4 @@
-@import '../../variables';
+@use '../../variables' as v;
 
 :root {
   --background-color-light: #fff;
@@ -15,9 +15,9 @@
   gap: 8px;
   width: 100%;
   max-width: 400px;
-  font-family: $p-font-family;
-  font-weight: $p-font-weight;
-  font-style: $p-font-style;
+  font-family: v.$p-font-family;
+  font-weight: v.$p-font-weight;
+  font-style: v.$p-font-style;
 
   .input-field-label {
     font-size: 16px;
