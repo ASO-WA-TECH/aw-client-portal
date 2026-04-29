@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useAuth } from "../../Services/Auth/AuthContext";
 import "./index.scss";
 
 import HttpService from "../../Services/httpService";
@@ -44,6 +45,7 @@ interface ListingData {
 }
 
 const UserAccountPage = () => {
+  const { currentUser } = useAuth();
   const usersHttpService = useMemo(() => new HttpService("Users"), []);
   const rentalHttpService = useMemo(() => new HttpService("Rentals"), []);
   const listingsHttpService = useMemo(() => new HttpService("Listings"), []);
@@ -65,9 +67,13 @@ const UserAccountPage = () => {
     { label: "ADD LISTING", key: "add-listing" },
   ];
 
-  const userId = 1;
-
   useEffect(() => {
+    if (!currentUser?.email) {
+      setError("No authenticated user");
+      setLoading(false);
+      return;
+    }
+
     const fetchAll = async () => {
       try {
         setLoading(true);
@@ -76,10 +82,10 @@ const UserAccountPage = () => {
 
         const userData = allUsers
           .filter(
-            (item: Response<{ UserId: number }>) =>
-              item.fields.UserId === userId
+            (item: Response<{ auth_uid: string }>) =>
+              item.fields.auth_uid === currentUser.uid
           )
-          .map(({ id, createdTime, fields }: Response<{ UserId: number }>) => ({
+          .map(({ id, createdTime, fields }: Response<{ auth_uid: string }>) => ({
             ...fields,
             id,
             createdTime,

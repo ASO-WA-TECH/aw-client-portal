@@ -29,6 +29,15 @@ vi.mock("./components/Listings", () => ({
   ),
 }));
 
+// Mock AuthContext with mutable ref
+const mockAuth = vi.hoisted(() => ({
+  useAuth: vi.fn(),
+}));
+
+vi.mock("../../Services/Auth/AuthContext", () => ({
+  useAuth: mockAuth.useAuth,
+}));
+
 // Mock HttpService
 vi.mock("../../Services/httpService");
 
@@ -44,7 +53,7 @@ const mockUser = {
   id: "user1",
   createdTime: "2024-01-01",
   fields: {
-    UserId: 1,
+    auth_uid: "firebase-uid-123",
     Name: "Jane",
     Lastname: "Doe",
     Email: "jane@example.com",
@@ -68,6 +77,11 @@ const mockListing = {
 describe("UserAccountPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Mock the authenticated Firebase user
+    mockAuth.useAuth.mockReturnValue({
+      currentUser: { uid: "firebase-uid-123", email: "jane@example.com" },
+    });
 
     (HttpService as vi.Mock).mockImplementation((table: string) => ({
       fetchAllRecords: vi
@@ -151,6 +165,10 @@ describe("UserAccountPage", () => {
   });
 
   it("shows error when user not found", async () => {
+    mockAuth.useAuth.mockReturnValue({
+      currentUser: { uid: "unknown-uid", email: "unknown@example.com" },
+    });
+
     (HttpService as vi.Mock).mockImplementation(() => ({
       fetchAllRecords: vi.fn().mockResolvedValue([]),
       fetchRecord: vi.fn(),
