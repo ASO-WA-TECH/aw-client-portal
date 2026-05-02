@@ -19,7 +19,6 @@ import AuthenticationPage from "./Pages/AuthenticationPage";
 import UserAccountPage from "./Pages/UserAccountPage/index";
 import AllUserListingsPage from "./Pages/AllUserListingsPage";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
-import UserListingsCreatePage from "./Pages/UserListingsCreatePage";
 import IndividualListingPage from "./Pages/IndividualListingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { Routes } from "./Routes";
@@ -56,14 +55,6 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoute>
               <IndividualListingPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={Routes.CREATE_LISTINGS}
-          element={
-            <ProtectedRoute>
-              <UserListingsCreatePage />
             </ProtectedRoute>
           }
         />

@@ -1,5 +1,6 @@
 import React from "react";
 import ListingDisplayImage from "../../../stories/ListingDisplayImage/ListingDisplayImage";
+import { useNavigate } from "react-router-dom";
 
 interface ListingItem {
   id: string;
@@ -15,6 +16,12 @@ interface ListingsProps {
 }
 
 const Listings: React.FC<ListingsProps> = ({ listings }) => {
+  const navigate = useNavigate();
+
+  const handleEditListing = (id: string) => {
+    navigate(`/listing/${id}/edit`);
+  };
+
   if (!listings || listings.length === 0) {
     return (
       <section className="renting-lending">
@@ -43,6 +50,7 @@ const Listings: React.FC<ListingsProps> = ({ listings }) => {
               subtitle={`£${listing.Price?.toFixed(2) ?? "0.00"}`}
               status={listing.Status ?? "Pending"}
               buttonText={"Edit Listing"}
+              onButtonClick={() => handleEditListing(listing.id)}
             />
           ))}
         </div>

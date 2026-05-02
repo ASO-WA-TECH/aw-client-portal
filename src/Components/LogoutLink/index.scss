@@ -1,12 +1,12 @@
-@import '../../variables';
+@use '../../variables' as v;
 
 .link {
-    font-family: $p-font-family;
-    font-optical-sizing: $p-font-optical-sizing;
-    font-weight: $p-font-weight;
-    font-style: $p-font-style;
+    font-family: v.$p-font-family;
+    font-optical-sizing: v.$p-font-optical-sizing;
+    font-weight: v.$p-font-weight;
+    font-style: v.$p-font-style;
     text-decoration: "underline";
-    color: $mustardYellow;
+    color: v.$mustardYellow;
     cursor: pointer;
     padding-left: 47px;
   }

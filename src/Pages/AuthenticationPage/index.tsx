@@ -35,15 +35,16 @@ function AuthenticationPage() {
   async function createUsers(
     email: string,
     password: string,
-    username: string
+    username: string,
+    firebaseUid: string,
   ) {
     const userDetails = {
       Name: username,
       Email: email,
-      Password: password,
+      auth_uid: firebaseUid,
     };
     try {
-      await httpService.createRecords(userDetails);
+      await httpService.createRecord(userDetails);
       console.log("POST successful");
     } catch (error) {
       if (error instanceof Error) {
@@ -57,19 +58,19 @@ function AuthenticationPage() {
   async function checkIfUsernameAlreadyExists(
     email: string,
     password: string,
-    username: string
+    username: string,
   ) {
     const data = await httpService.fetchAllRecords();
     const userFound = data.some(
-      (user: UserRecord) => user.fields.Name === username
+      (user: UserRecord) => user.fields.Name === username,
     );
 
     if (userFound) {
       setError("Username Already exists");
       throw new Error("Username Already exists");
     }
-    await signup(email, password);
-    await createUsers(email, password, username);
+    const cred = await signup(email, password);
+    await createUsers(email, password, username, cred.user.uid);
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -145,7 +146,7 @@ function AuthenticationPage() {
                   <br />
                   <InputField
                     value={password}
-                    type="text"
+                    type="password"
                     handleChange={(e) => setPassword(e.target.value)}
                     label="Password"
                     darkMode={false}

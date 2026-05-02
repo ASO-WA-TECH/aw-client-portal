@@ -1,0 +1,36 @@
+.image-uploader {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .button {
+        width: 100%;
+    }
+
+    .image-grid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+
+    .image-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .image-preview {
+        width: 100%;
+        height: 120px;
+        border-radius: 12px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .button--emeraldGreen--secondary {
+        width: 100%;
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+}
