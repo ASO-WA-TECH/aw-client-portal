@@ -2,9 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../Services/Auth/AuthContext";
 import "./index.scss";
-
 import HttpService from "../../Services/httpService";
-import { useAuth } from "../../Services/Auth/AuthContext";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";

@@ -87,6 +87,16 @@ html, body {
     padding-left: 47px;
   }
 
+  .show-password-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: v.$p-font-family;
+    font-optical-sizing: v.$p-font-optical-sizing;
+    font-weight: v.$p-font-weight;
+    font-style: v.$p-font-style;                    
+  }
+
   @media (max-width: 800px) {
     .flex-container {
       flex-direction: column;
