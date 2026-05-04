@@ -27,8 +27,6 @@ vi.mock("./components/Listings", () => ({
 
 const MockedHttpService = vi.mocked(HttpServiceModule);
 
-// ─── ✅ Mock Factory (THE FIX) ─────────────────────────────────────────────────
-
 function createMockHttpService(
   overrides: Partial<InstanceType<typeof HttpServiceModule>> = {},
 ): InstanceType<typeof HttpServiceModule> {

@@ -72,6 +72,8 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       try {
         await rentalHttpService.createRecords(rentalPayload);
       } catch (error) {
+        console.error("Full error object:", error);
+        console.error("Error response data:", error?.response?.data);
         setError(
           error instanceof Error
             ? error.message
