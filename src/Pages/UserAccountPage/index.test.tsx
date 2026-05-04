@@ -5,6 +5,7 @@ import UserAccountPage from "./index";
 import HttpService from "../../Services/httpService";
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
+
 vi.mock("../../Services/httpService");
 vi.mock("./LoadingAccount", () => ({
   default: () => <div data-testid="loading-account">Loading...</div>,
@@ -143,7 +144,8 @@ describe("UserAccountPage", () => {
     expect(screen.queryByTestId("account-details")).not.toBeInTheDocument();
   });
 
-    renderPage();
+  it("switches to LISTINGS tab on click", async () => {
+    renderWithRouter();
 
     await waitFor(() => screen.getByTestId("account-details"));
 
