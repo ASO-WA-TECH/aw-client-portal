@@ -10,14 +10,14 @@ import LoadingListing from "./LoadingListing";
 const ASO_WA_EMAIL = import.meta.env.VITE_ASO_WA_EMAIL;
 
 const IndividualListingPage = () => {
-  const listingHttpService = useMemo(() => new HttpService("Listings"), []);
-  const ownerHttpService = useMemo(() => new HttpService("Users"), []);
+  const listingHttpService = useMemo(() => new HttpService<ListingFields>("Listings"), []);
+  const ownerHttpService = useMemo(() => new HttpService<{ Email?: string }>("Users"), []);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [listingData, setListingData] = useState<ListingFields>();
   const [isDataError, setIsDataError] = useState(false);
   const [ownerEmail, setOwnerEmail] = useState<string>();
   const urlParams = useParams();
-
+  console.log("here");
   useEffect(() => {
     if (!urlParams.id) return;
 
@@ -67,8 +67,8 @@ const IndividualListingPage = () => {
 
   return (
     <div className="individual-listing-page">
-      {listingData.Images?.[0]?.url && (
-        <Image imageUrl={listingData.Images[0].url} title={listingData.Title} />
+      {listingData.Images && (
+        <Image images={listingData.Images || []} title={listingData.Title} />
       )}
       <Details listing={listingData} ownerEmail={ownerEmail || ASO_WA_EMAIL} />
     </div>

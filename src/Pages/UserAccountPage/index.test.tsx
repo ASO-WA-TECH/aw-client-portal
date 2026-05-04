@@ -1,14 +1,22 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import UserAccountPage from "./index";
 import HttpServiceModule from "../../Services/httpService";
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
-
 vi.mock("../../Services/httpService");
+
 vi.mock("../../Services/Auth/AuthContext", () => ({
-  useAuth: () => ({ currentUser: { uid: "test-uid-123" } }),
+  useAuth: () => ({
+    currentUser: { uid: "test-uid-123", email: "test@example.com" },
+  }),
 }));
+
+vi.mock("./LoadingAccount", () => ({
+  default: () => <div>Loading...</div>,
+}));
+
 vi.mock("./components/AccountDetails", () => ({
   default: ({ userData }: { userData: { Name: string } }) => (
     <div data-testid="account-details">{userData.Name}</div>
@@ -27,20 +35,16 @@ vi.mock("./components/Listings", () => ({
 
 const MockedHttpService = vi.mocked(HttpServiceModule);
 
-// ─── ✅ Mock Factory (THE FIX) ─────────────────────────────────────────────────
-
 function createMockHttpService(
   overrides: Partial<InstanceType<typeof HttpServiceModule>> = {},
 ): InstanceType<typeof HttpServiceModule> {
   return {
     tableName: "mock",
-
     fetchAllRecords: vi.fn(),
     fetchRecord: vi.fn(),
     createRecords: vi.fn(),
     updateRecord: vi.fn(),
     deleteRecord: vi.fn(),
-
     ...overrides,
   } as unknown as InstanceType<typeof HttpServiceModule>;
 }
@@ -92,6 +96,12 @@ const mockListing = {
 };
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
+const renderPage = () =>
+  render(
+    <MemoryRouter>
+      <UserAccountPage />
+    </MemoryRouter>,
+  );
 
 function setupHttpServiceMock() {
   const fetchAllRecords = vi.fn().mockResolvedValue([mockUser]);
@@ -120,8 +130,6 @@ describe("UserAccountPage", () => {
     vi.clearAllMocks();
   });
 
-  // ── Loading ────────────────────────────────────────────────────────────────
-
   it("shows loading indicator while fetching data", () => {
     MockedHttpService.mockImplementation(() =>
       createMockHttpService({
@@ -129,11 +137,9 @@ describe("UserAccountPage", () => {
       }),
     );
 
-    render(<UserAccountPage />);
+    renderPage();
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
-
-  // ── Error ──────────────────────────────────────────────────────────────────
 
   it("shows error when user not found", async () => {
     MockedHttpService.mockImplementation(() =>
@@ -142,7 +148,7 @@ describe("UserAccountPage", () => {
       }),
     );
 
-    render(<UserAccountPage />);
+    renderPage();
     await waitFor(() =>
       expect(screen.getByText(/User not found/i)).toBeInTheDocument(),
     );
@@ -155,17 +161,15 @@ describe("UserAccountPage", () => {
       }),
     );
 
-    render(<UserAccountPage />);
+    renderPage();
     await waitFor(() =>
       expect(screen.getByText(/Network error/i)).toBeInTheDocument(),
     );
   });
 
-  // ── Success ────────────────────────────────────────────────────────────────
-
   it("renders user name", async () => {
     setupHttpServiceMock();
-    render(<UserAccountPage />);
+    renderPage();
 
     await waitFor(() =>
       expect(screen.getByText(/Aso W\./i)).toBeInTheDocument(),
@@ -174,7 +178,7 @@ describe("UserAccountPage", () => {
 
   it("switches tabs correctly", async () => {
     setupHttpServiceMock();
-    render(<UserAccountPage />);
+    renderPage();
 
     await waitFor(() => screen.getByText("RENTALS"));
     fireEvent.click(screen.getByText("RENTALS"));
@@ -182,11 +186,9 @@ describe("UserAccountPage", () => {
     expect(screen.getByTestId("rentals")).toBeInTheDocument();
   });
 
-  // ── Data ───────────────────────────────────────────────────────────────────
-
   it("fetches rental + listing data", async () => {
     const { fetchRecord } = setupHttpServiceMock();
-    render(<UserAccountPage />);
+    renderPage();
 
     await waitFor(() => screen.getByTestId("account-details"));
 
@@ -206,7 +208,7 @@ describe("UserAccountPage", () => {
       }),
     );
 
-    render(<UserAccountPage />);
+    renderPage();
 
     await waitFor(() => screen.getByText("RENTALS"));
     fireEvent.click(screen.getByText("RENTALS"));
@@ -222,7 +224,7 @@ describe("UserAccountPage", () => {
       }),
     );
 
-    render(<UserAccountPage />);
+    renderPage();
 
     await waitFor(() => screen.getByTestId("account-details"));
     fireEvent.click(screen.getByText("RENTALS"));
@@ -230,11 +232,9 @@ describe("UserAccountPage", () => {
     expect(screen.getByText("Rentals: 0")).toBeInTheDocument();
   });
 
-  // ── Mobile ────────────────────────────────────────────────────────────────
-
   it("toggles mobile menu", async () => {
     setupHttpServiceMock();
-    render(<UserAccountPage />);
+    renderPage();
 
     await waitFor(() => screen.getByTestId("account-details"));
 

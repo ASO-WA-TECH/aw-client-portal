@@ -1,48 +1,73 @@
 import apiClient from "./apiClient";
 
-export default class HttpService {
+export interface AirtableRecord<T> {
+  id: string;
+  fields: T;
+}
+
+export interface AirtableListResponse<T> {
+  records: AirtableRecord<T>[];
+}
+
+export default class HttpService<T extends object> {
   private tableName: string;
 
   constructor(tableName: string) {
     this.tableName = tableName;
   }
 
-  async fetchAllRecords() {
-    const response = await apiClient.get(`/${this.tableName}`);
+  async fetchAllRecords(): Promise<AirtableRecord<T>[]> {
+    const response = await apiClient.get<AirtableListResponse<T>>(
+      `/${this.tableName}`,
+    );
     return response.data.records;
   }
 
-  async fetchRecord(entity: string) {
-    if (!entity) {
-      alert("Please enter a valid id");
-      return;
+  async fetchRecord(id: string): Promise<AirtableRecord<T>> {
+    if (!id) {
+      throw new Error("Invalid ID");
     }
-    const response = await apiClient.get(`/${this.tableName}/${entity}`);
+
+    const response = await apiClient.get<AirtableRecord<T>>(
+      `/${this.tableName}/${id}`,
+    );
     return response.data;
   }
 
-  async createRecords<T extends object>(entity: T) {
-    const response = await apiClient.post(`/${this.tableName}`, {
-      fields: entity,
-    });
+  async createRecord(entity: T): Promise<AirtableRecord<T>> {
+    const response = await apiClient.post<AirtableRecord<T>>(
+      `/${this.tableName}`,
+      {
+        fields: entity,
+      },
+    );
+
     return response.data;
   }
 
-  async updateRecord<T extends { id: string; fields: object }>(entity: T) {
+  async updateRecord(entity: {
+    id: string;
+    fields: Partial<T>;
+  }): Promise<AirtableRecord<T>> {
     if (!entity.id) {
-      alert("Please enter a valid id");
-      return;
+      throw new Error("Invalid ID");
     }
-    await apiClient.patch(`/${this.tableName}/${entity.id}`, {
-      fields: entity.fields,
-    });
+
+    const response = await apiClient.patch<AirtableRecord<T>>(
+      `/${this.tableName}/${entity.id}`,
+      {
+        fields: entity.fields,
+      },
+    );
+
+    return response.data;
   }
 
-  async deleteRecord(entity: string) {
-    if (!entity) {
-      alert("Please enter a valid id");
-      return;
+  async deleteRecord(id: string): Promise<void> {
+    if (!id) {
+      throw new Error("Invalid ID");
     }
-    await apiClient.delete(`/${this.tableName}/${entity}`);
+
+    await apiClient.delete(`/${this.tableName}/${id}`);
   }
 }
