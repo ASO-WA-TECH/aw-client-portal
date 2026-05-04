@@ -10,7 +10,7 @@ export enum Routes {
   ALL_MY_LISTINGS = "/my-listings",
   MY_LISTING = "/my-listings/listing",
   CREATE_LISTINGS = "/listing/create",
-  EDIT_LISTINGS = "/listing/edit",
+  EDIT_LISTINGS = "/listing/:id/edit",
   EDIT_LISTINGS_IMAGE_UPLOAD = "/listing/edit/image-upload",
   LANDING = "/landing",
   REGISTER = "/register",

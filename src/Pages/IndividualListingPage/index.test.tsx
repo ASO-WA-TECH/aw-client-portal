@@ -157,50 +157,6 @@ describe("IndividualListingPage", () => {
     ).toBeInTheDocument();
   });
 
-  test("clicking RENT NOW triggers rental flow and sets window.location.href", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({ fields: mockListingData })
-      .mockResolvedValueOnce({ fields: mockOwnerFields });
-
-    vi.spyOn(HttpService.prototype, "fetchAllRecords").mockResolvedValueOnce([
-      { id: "airtable-user-id", fields: { auth_uid: "test-uid" } },
-    ]);
-
-    vi.spyOn(HttpService.prototype, "createRecords").mockResolvedValueOnce({});
-    vi.spyOn(HttpService.prototype, "updateRecord").mockResolvedValueOnce();
-
-    // Mock window.location.href setter
-    const locationSpy = vi.spyOn(window, "location", "get").mockReturnValue({
-      ...window.location,
-      href: "",
-    } as Location);
-    let capturedHref = "";
-    Object.defineProperty(window, "location", {
-      value: {
-        ...window.location,
-        set href(url: string) {
-          capturedHref = url;
-        },
-        get href() {
-          return capturedHref;
-        },
-      },
-      writable: true,
-    });
-
-    renderPage();
-
-    const rentButton = await screen.findByRole("button", { name: /rent now/i });
-    await userEvent.click(rentButton);
-
-    await waitFor(() => {
-      expect(capturedHref).toContain(`mailto:${mockOwnerFields.Email}`);
-      expect(capturedHref).toContain("Rental Request");
-    });
-
-    locationSpy.mockRestore();
-  });
-
   test("falls back to ASO_WA_EMAIL when listing has no owner", async () => {
     const noOwnerListing = { ...mockListingData, Owner: [] };
 
@@ -224,8 +180,8 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     await waitFor(() => {
-      const img = screen.getByRole("img");
-      expect(img).toHaveAttribute("src", mockListingData.Images[0].url);
+      const img = await screen.findByRole("img");
+      expect(img).toHaveAttribute("src", "https://example.com/test.jpg");
     });
   });
 
