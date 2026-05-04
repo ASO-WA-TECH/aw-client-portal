@@ -80,14 +80,6 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
   return (
     <section className="card-section">
       <h2>ACCOUNT DETAILS</h2>
-      <div className="form-group row">
-        <div className="text-info">
-          Upload your own photo to personalize your account.
-        </div>
-        <a href="#" className="link-action">
-          Upload my own
-        </a>
-      </div>
       <hr />
       <div className="form-grid">
         <div className="input-field">

@@ -12,7 +12,7 @@ vi.mock("../../Services/httpService");
 // Mock child components that aren't under test
 vi.mock("./Image", () => ({
   default: ({ images, title }: { images: { url: string }[]; title: string }) =>
-    images?.length > 0 ? <img src={images[0].url} alt={title} /> : null,
+    images.length > 0 ? <img src={images[0].url} alt={title} /> : null,
 }));
 
 vi.mock("./LoadingListing", () => ({

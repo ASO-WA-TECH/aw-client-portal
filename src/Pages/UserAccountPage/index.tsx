@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../Services/Auth/AuthContext";
+import "./index.scss";
 import HttpService from "../../Services/httpService";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
@@ -9,8 +10,7 @@ import AddListing from "./components/AddListing";
 import LoadingAccount from "./LoadingAccount";
 import "./index.scss";
 
-//interface Response<T> {
-interface Response<T extends Record<string, unknown>> {
+interface Response<T> {
   id: string;
   createdTime: string;
   fields: T;
@@ -88,14 +88,16 @@ const UserAccountPage = () => {
 
         const userData = allUsers
           .filter(
-            (item: Response<UserData>) =>
-              item.fields.auth_uid === currentUser?.uid,
+            (item: Response<{ auth_uid: string }>) =>
+              item.fields.auth_uid === currentUser.uid,
           )
-          .map(({ id, createdTime, fields }: Response<UserData>) => ({
-            ...fields,
-            id,
-            createdTime,
-          }))[0];
+          .map(
+            ({ id, createdTime, fields }: Response<{ auth_uid: string }>) => ({
+              ...fields,
+              id,
+              createdTime,
+            }),
+          )[0];
 
         if (!userData) throw new Error("User not found");
 
@@ -115,22 +117,7 @@ const UserAccountPage = () => {
               createdTime: data.createdTime,
             }));
 
-          const rentalsWithListings = await Promise.all(
-            flatRentals.map(async (rental) => {
-              const listingId = rental.Listing?.[0];
-              if (!listingId) return { ...rental, listingDetails: null };
-
-              const listingData =
-                await listingsHttpService.fetchRecord(listingId);
-              const listingDetails = listingData
-                ? { ...listingData.fields, id: listingData.id }
-                : null;
-
-              return { ...rental, listingDetails };
-            }),
-          );
-          console.log("Rentals with Listings:", rentalsWithListings);
-          setRentals(rentalsWithListings);
+          setRentals(flatRentals);
         }
 
         const listingIds: string[] = userData.Listings || [];
