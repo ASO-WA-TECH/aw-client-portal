@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+//import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { vi, describe, test, beforeEach, expect } from "vitest";
 import IndividualListingPage from ".";
@@ -10,9 +10,8 @@ vi.mock("./index.scss", () => ({}));
 
 // Mock child components that aren't under test
 vi.mock("./Image", () => ({
-  default: ({ imageUrl, title }: { imageUrl: string; title: string }) => (
-    <img src={imageUrl} alt={title} />
-  ),
+  default: ({ images, title }: { images: { url: string }[]; title: string }) =>
+    images?.length > 0 ? <img src={images[0].url} alt={title} /> : null,
 }));
 
 vi.mock("./LoadingListing", () => ({
@@ -166,7 +165,6 @@ describe("IndividualListingPage", () => {
 
     renderPage();
 
-    // RENT NOW button should still render (no owner fetch, no error)
     expect(
       await screen.findByRole("button", { name: /rent now/i }),
     ).toBeInTheDocument();
@@ -180,7 +178,7 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     await waitFor(() => {
-      const img = await screen.findByRole("img");
+      const img = screen.getByRole("img");
       expect(img).toHaveAttribute("src", "https://example.com/test.jpg");
     });
   });
