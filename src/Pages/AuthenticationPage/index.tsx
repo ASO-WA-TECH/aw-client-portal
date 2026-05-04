@@ -135,7 +135,6 @@ function AuthenticationPage() {
                   />
 
                   <br />
-
                   <InputField
                     value={email}
                     handleChange={(e) => setEmail(e.target.value)}

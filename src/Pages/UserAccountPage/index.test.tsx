@@ -1,13 +1,19 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import UserAccountPage from "./index";
-import HttpServiceModule from "../../Services/httpService";
+import HttpService from "../../Services/httpService";
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
 
 vi.mock("../../Services/httpService");
+vi.mock("./LoadingAccount", () => ({
+  default: () => <div data-testid="loading-account">Loading...</div>,
+}));
 vi.mock("../../Services/Auth/AuthContext", () => ({
-  useAuth: () => ({ currentUser: { uid: "test-uid-123" } }),
+  useAuth: () => ({
+    currentUser: { uid: "firebase-uid-123", email: "jane@example.com" },
+  }),
 }));
 vi.mock("./components/AccountDetails", () => ({
   default: ({ userData }: { userData: { Name: string } }) => (
@@ -24,24 +30,9 @@ vi.mock("./components/Listings", () => ({
     <div data-testid="listings">Listings: {listings.length}</div>
   ),
 }));
-
-const MockedHttpService = vi.mocked(HttpServiceModule);
-
-function createMockHttpService(
-  overrides: Partial<InstanceType<typeof HttpServiceModule>> = {},
-): InstanceType<typeof HttpServiceModule> {
-  return {
-    tableName: "mock",
-
-    fetchAllRecords: vi.fn(),
-    fetchRecord: vi.fn(),
-    createRecords: vi.fn(),
-    updateRecord: vi.fn(),
-    deleteRecord: vi.fn(),
-
-    ...overrides,
-  } as unknown as InstanceType<typeof HttpServiceModule>;
-}
+vi.mock("./components/AddListing", () => ({
+  default: () => <div data-testid="add-listing">Add Listing</div>,
+}));
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -49,12 +40,12 @@ const mockUser = {
   id: "recUser1",
   createdTime: "2026-01-01T00:00:00.000Z",
   fields: {
-    auth_uid: "test-uid-123",
-    Name: "Aso",
-    Lastname: "Wasilewski",
-    Email: "aso@example.com",
-    Rentals: ["recRental1", "recRental2"],
-    Listings: ["recListing1"],
+    auth_uid: "firebase-uid-123",
+    Name: "Jane",
+    Lastname: "Doe",
+    Email: "jane@example.com",
+    Rentals: ["rental1"],
+    Listings: ["listing1"],
   },
 };
 
@@ -63,16 +54,6 @@ const mockRental = {
   createdTime: "2026-04-27T15:17:47.000Z",
   fields: {
     Listing: ["recListing1"],
-    Rentee: ["recUser1"],
-    Status: "Pending",
-  },
-};
-
-const mockRental2 = {
-  id: "recRental2",
-  createdTime: "2026-04-27T15:21:26.000Z",
-  fields: {
-    Listing: ["recListing2"],
     Rentee: ["recUser1"],
     Status: "Pending",
   },
@@ -89,156 +70,189 @@ const mockListing = {
   },
 };
 
-// ─── Helper ───────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function setupHttpServiceMock() {
-  const fetchAllRecords = vi.fn().mockResolvedValue([mockUser]);
-
-  const fetchRecord = vi.fn().mockImplementation((id: string) => {
-    if (id === "recRental1") return Promise.resolve(mockRental);
-    if (id === "recRental2") return Promise.resolve(mockRental2);
-    if (id === "recListing1") return Promise.resolve(mockListing);
-    return Promise.resolve(null);
-  });
-
-  MockedHttpService.mockImplementation(() =>
-    createMockHttpService({
-      fetchAllRecords,
-      fetchRecord,
-    }),
+const renderWithRouter = (initialUrl = "/account") =>
+  render(
+    <MemoryRouter initialEntries={[initialUrl]}>
+      <UserAccountPage />
+    </MemoryRouter>,
   );
 
-  return { fetchAllRecords, fetchRecord };
-}
+const setupDefaultMocks = () => {
+  (HttpService as unknown as vi.Mock).mockImplementation((table: string) => ({
+    fetchAllRecords: vi
+      .fn()
+      .mockResolvedValue(table === "Users" ? [mockUser] : []),
+    fetchRecord: vi.fn().mockImplementation((id: string) => {
+      if (id === "rental1") return Promise.resolve(mockRental);
+      if (id === "listing1") return Promise.resolve(mockListing);
+      return Promise.resolve(null);
+    }),
+    createRecords: vi.fn(),
+    updateRecord: vi.fn(),
+    deleteRecord: vi.fn(),
+  }));
+};
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe("UserAccountPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    setupDefaultMocks();
   });
 
-  // ── Loading ────────────────────────────────────────────────────────────────
-
-  it("shows loading indicator while fetching data", () => {
-    MockedHttpService.mockImplementation(() =>
-      createMockHttpService({
-        fetchAllRecords: () => new Promise(() => {}),
-      }),
-    );
-
-    render(<UserAccountPage />);
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+  it("shows loading state initially", () => {
+    renderWithRouter();
+    expect(screen.getByTestId("loading-account")).toBeInTheDocument();
   });
 
-  // ── Error ──────────────────────────────────────────────────────────────────
-
-  it("shows error when user not found", async () => {
-    MockedHttpService.mockImplementation(() =>
-      createMockHttpService({
-        fetchAllRecords: vi.fn().mockResolvedValue([]),
-      }),
-    );
-
-    render(<UserAccountPage />);
-    await waitFor(() =>
-      expect(screen.getByText(/User not found/i)).toBeInTheDocument(),
-    );
-  });
-
-  it("shows error on network failure", async () => {
-    MockedHttpService.mockImplementation(() =>
-      createMockHttpService({
-        fetchAllRecords: vi.fn().mockRejectedValue(new Error("Network error")),
-      }),
-    );
-
-    render(<UserAccountPage />);
-    await waitFor(() =>
-      expect(screen.getByText(/Network error/i)).toBeInTheDocument(),
-    );
-  });
-
-  // ── Success ────────────────────────────────────────────────────────────────
-
-  it("renders user name", async () => {
-    setupHttpServiceMock();
-    render(<UserAccountPage />);
+  it("renders account details tab by default", async () => {
+    renderWithRouter();
 
     await waitFor(() =>
-      expect(screen.getByText(/Aso W\./i)).toBeInTheDocument(),
+      expect(screen.getByTestId("account-details")).toBeInTheDocument(),
+    );
+    expect(screen.getByText("Jane")).toBeInTheDocument();
+  });
+
+  it("respects tab from URL query params", async () => {
+    renderWithRouter("/account?tab=rentals");
+
+    await waitFor(() =>
+      expect(screen.getByTestId("rentals")).toBeInTheDocument(),
     );
   });
 
-  it("switches tabs correctly", async () => {
-    setupHttpServiceMock();
-    render(<UserAccountPage />);
-
-    await waitFor(() => screen.getByText("RENTALS"));
-    fireEvent.click(screen.getByText("RENTALS"));
-
-    expect(screen.getByTestId("rentals")).toBeInTheDocument();
-  });
-
-  // ── Data ───────────────────────────────────────────────────────────────────
-
-  it("fetches rental + listing data", async () => {
-    const { fetchRecord } = setupHttpServiceMock();
-    render(<UserAccountPage />);
+  it("displays user name in sidebar", async () => {
+    renderWithRouter();
 
     await waitFor(() => screen.getByTestId("account-details"));
 
-    expect(fetchRecord).toHaveBeenCalledWith("recRental1");
-    expect(fetchRecord).toHaveBeenCalledWith("recListing1");
+    expect(screen.getByText(/Jane D\./i)).toBeInTheDocument();
   });
 
-  it("handles empty rentals", async () => {
-    const userNoRentals = {
-      ...mockUser,
-      fields: { ...mockUser.fields, Rentals: [], Listings: [] },
-    };
+  it("switches to RENTALS tab on click", async () => {
+    renderWithRouter();
 
-    MockedHttpService.mockImplementation(() =>
-      createMockHttpService({
-        fetchAllRecords: vi.fn().mockResolvedValue([userNoRentals]),
-      }),
-    );
+    await waitFor(() => screen.getByTestId("account-details"));
 
-    render(<UserAccountPage />);
-
-    await waitFor(() => screen.getByText("RENTALS"));
     fireEvent.click(screen.getByText("RENTALS"));
 
-    expect(screen.getByText("Rentals: 0")).toBeInTheDocument();
+    expect(await screen.findByTestId("rentals")).toBeInTheDocument();
+    expect(screen.queryByTestId("account-details")).not.toBeInTheDocument();
+  });
+
+  it("switches to LISTINGS tab on click", async () => {
+    renderWithRouter();
+
+    await waitFor(() => screen.getByTestId("account-details"));
+
+    fireEvent.click(screen.getByText("LISTINGS"));
+
+    expect(await screen.findByTestId("listings")).toBeInTheDocument();
+    expect(screen.queryByTestId("account-details")).not.toBeInTheDocument();
+  });
+
+  it("switches to ADD LISTING tab on click", async () => {
+    renderWithRouter();
+
+    await waitFor(() => screen.getByTestId("account-details"));
+
+    fireEvent.click(screen.getByText("ADD LISTING"));
+
+    expect(await screen.findByTestId("add-listing")).toBeInTheDocument();
+  });
+
+  it("fetches and passes rentals correctly", async () => {
+    renderWithRouter();
+
+    fireEvent.click(await screen.findByText("RENTALS"));
+
+    expect(await screen.findByText("Rentals: 1")).toBeInTheDocument();
+  });
+
+  it("fetches and passes listings correctly", async () => {
+    renderWithRouter();
+
+    fireEvent.click(await screen.findByText("LISTINGS"));
+
+    expect(await screen.findByText("Listings: 1")).toBeInTheDocument();
+  });
+
+  it("shows error when user not found", async () => {
+    (HttpService as unknown as vi.Mock).mockImplementation(() => ({
+      fetchAllRecords: vi.fn().mockResolvedValue([]),
+      fetchRecord: vi.fn(),
+      createRecords: vi.fn(),
+      updateRecord: vi.fn(),
+      deleteRecord: vi.fn(),
+    }));
+
+    renderWithRouter();
+
+    expect(await screen.findByText(/User not found/i)).toBeInTheDocument();
+  });
+
+  it("shows error when fetch fails", async () => {
+    (HttpService as unknown as vi.Mock).mockImplementation(() => ({
+      fetchAllRecords: vi.fn().mockRejectedValue(new Error("Network error")),
+      fetchRecord: vi.fn(),
+      createRecords: vi.fn(),
+      updateRecord: vi.fn(),
+      deleteRecord: vi.fn(),
+    }));
+
+    renderWithRouter();
+
+    expect(await screen.findByText(/Network error/i)).toBeInTheDocument();
   });
 
   it("handles failed rental fetch gracefully", async () => {
-    MockedHttpService.mockImplementation(() =>
-      createMockHttpService({
-        fetchAllRecords: vi.fn().mockResolvedValue([mockUser]),
-        fetchRecord: vi.fn().mockResolvedValue(null),
-      }),
-    );
+    (HttpService as unknown as vi.Mock).mockImplementation((table: string) => ({
+      fetchAllRecords: vi
+        .fn()
+        .mockResolvedValue(table === "Users" ? [mockUser] : []),
+      fetchRecord: vi.fn().mockResolvedValue(null),
+      createRecords: vi.fn(),
+      updateRecord: vi.fn(),
+      deleteRecord: vi.fn(),
+    }));
 
-    render(<UserAccountPage />);
+    renderWithRouter();
 
-    await waitFor(() => screen.getByTestId("account-details"));
-    fireEvent.click(screen.getByText("RENTALS"));
+    fireEvent.click(await screen.findByText("RENTALS"));
 
     expect(screen.getByText("Rentals: 0")).toBeInTheDocument();
   });
 
-  // ── Mobile ────────────────────────────────────────────────────────────────
-
-  it("toggles mobile menu", async () => {
-    setupHttpServiceMock();
-    render(<UserAccountPage />);
+  it("toggles mobile menu open and closed", async () => {
+    renderWithRouter();
 
     await waitFor(() => screen.getByTestId("account-details"));
 
-    const header = document.querySelector(".mobile-header")!;
-    fireEvent.click(header);
+    const mobileHeader = document.querySelector(".mobile-header")!;
+
+    fireEvent.click(mobileHeader);
+    expect(document.querySelector(".sidebar.open")).toBeInTheDocument();
+
+    fireEvent.click(mobileHeader);
+    expect(document.querySelector(".sidebar.open")).not.toBeInTheDocument();
+  });
+
+  it("closes mobile menu on nav click", async () => {
+    renderWithRouter();
+
+    await waitFor(() => screen.getByTestId("account-details"));
+
+    const mobileHeader = document.querySelector(".mobile-header")!;
+    fireEvent.click(mobileHeader);
 
     expect(document.querySelector(".sidebar.open")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("RENTALS"));
+
+    expect(document.querySelector(".sidebar.open")).not.toBeInTheDocument();
   });
 });

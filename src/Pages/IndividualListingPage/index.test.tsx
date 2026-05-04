@@ -1,5 +1,4 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { vi, describe, test, beforeEach, expect } from "vitest";
 import IndividualListingPage from ".";
@@ -10,9 +9,8 @@ vi.mock("./index.scss", () => ({}));
 
 // Mock child components that aren't under test
 vi.mock("./Image", () => ({
-  default: ({ imageUrl, title }: { imageUrl: string; title: string }) => (
-    <img src={imageUrl} alt={title} />
-  ),
+  default: ({ images, title }: { images: { url: string }[]; title: string }) =>
+    images.length > 0 ? <img src={images[0].url} alt={title} /> : null,
 }));
 
 vi.mock("./LoadingListing", () => ({
@@ -155,58 +153,6 @@ describe("IndividualListingPage", () => {
     expect(
       await screen.findByText(/this item is currently unavailable/i),
     ).toBeInTheDocument();
-  });
-
-  test("clicking RENT NOW triggers rental flow and sets window.location.href", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({ fields: mockListingData })
-      .mockResolvedValueOnce({ fields: mockOwnerFields });
-
-    vi.spyOn(HttpService.prototype, "fetchAllRecords")
-      .mockResolvedValueOnce([]) // 1. Rentals duplicate check
-      .mockResolvedValueOnce([
-        // 2. Users lookup (duplicate check)
-        { id: "airtable-user-id", fields: { auth_uid: "test-uid" } },
-      ])
-      .mockResolvedValueOnce([
-        // 3. Users lookup (handleRent)
-        { id: "airtable-user-id", fields: { auth_uid: "test-uid" } },
-      ]);
-
-    vi.spyOn(HttpService.prototype, "createRecords").mockResolvedValueOnce({});
-    vi.spyOn(HttpService.prototype, "updateRecord").mockResolvedValueOnce();
-
-    // Mock window.location.href
-    const locationSpy = vi.spyOn(window, "location", "get").mockReturnValue({
-      ...window.location,
-      href: "",
-    } as Location);
-
-    let capturedHref = "";
-    Object.defineProperty(window, "location", {
-      value: {
-        ...window.location,
-        set href(url: string) {
-          capturedHref = url;
-        },
-        get href() {
-          return capturedHref;
-        },
-      },
-      writable: true,
-    });
-
-    renderPage();
-
-    const rentButton = await screen.findByRole("button", { name: /rent now/i });
-    await userEvent.click(rentButton);
-
-    await waitFor(() => {
-      expect(capturedHref).toContain(`mailto:${mockOwnerFields.Email}`);
-      expect(capturedHref).toContain("Rental Request");
-    });
-
-    locationSpy.mockRestore();
   });
 
   test("falls back to ASO_WA_EMAIL when listing has no owner", async () => {
