@@ -90,7 +90,12 @@ const UserListingsEditPage = () => {
                         ...record.fields,
                         Price: record.fields.Price ?? "",
                         Category: (record.fields.Category ?? []) as CategoryOption[],
-                        Images: record.fields.Images ?? [], // ✅ ensure images exist
+                        Images: record.fields.Images ?? [],
+                        Colour: record.fields.Colour
+                            ? Array.isArray(record.fields.Colour)
+                                ? record.fields.Colour
+                                : [record.fields.Colour]
+                            : [],
                     }));
                 }
             } catch (err) {
