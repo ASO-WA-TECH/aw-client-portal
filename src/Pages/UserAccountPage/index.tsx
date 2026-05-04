@@ -1,24 +1,25 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../Services/Auth/AuthContext";
-import "./index.scss";
-
 import HttpService from "../../Services/httpService";
-import { useAuth } from "../../Services/Auth/AuthContext";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
 import AddListing from "./components/AddListing";
 import LoadingAccount from "./LoadingAccount";
+import "./index.scss";
 
-interface Response<T> {
+//interface Response<T> {
+interface Response<T extends Record<string, unknown>> {
   id: string;
   createdTime: string;
   fields: T;
 }
 
 interface UserData {
+  [key: string]: unknown;
   id: string;
+  auth_uid: string;
   createdTime: string;
   Name: string;
   Lastname: string;
@@ -28,8 +29,11 @@ interface UserData {
 }
 
 interface RentalData {
+  [key: string]: unknown;
   id: string;
   createdTime: string;
+  Listing?: string[];
+  Rentee?: string[];
   Images?: { url: string }[];
   Title?: string;
   Price?: number;
@@ -37,6 +41,7 @@ interface RentalData {
 }
 
 interface ListingData {
+  [key: string]: unknown;
   id: string;
   createdTime: string;
   Images?: { url: string }[];
@@ -60,7 +65,6 @@ const UserAccountPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { currentUser } = useAuth();
 
   const menuItems = [
     { label: "MY ACCOUNT", key: "my-account" },
@@ -84,16 +88,14 @@ const UserAccountPage = () => {
 
         const userData = allUsers
           .filter(
-            (item: Response<{ auth_uid: string }>) =>
-              item.fields.auth_uid === currentUser.uid,
+            (item: Response<UserData>) =>
+              item.fields.auth_uid === currentUser?.uid,
           )
-          .map(
-            ({ id, createdTime, fields }: Response<{ auth_uid: string }>) => ({
-              ...fields,
-              id,
-              createdTime,
-            }),
-          )[0];
+          .map(({ id, createdTime, fields }: Response<UserData>) => ({
+            ...fields,
+            id,
+            createdTime,
+          }))[0];
 
         if (!userData) throw new Error("User not found");
 
@@ -107,13 +109,28 @@ const UserAccountPage = () => {
 
           const flatRentals = rentalResults
             .filter(Boolean)
-            .map((data: Response) => ({
+            .map((data: Response<RentalData>) => ({
               ...data.fields,
               id: data.id,
               createdTime: data.createdTime,
             }));
 
-          setRentals(flatRentals);
+          const rentalsWithListings = await Promise.all(
+            flatRentals.map(async (rental) => {
+              const listingId = rental.Listing?.[0];
+              if (!listingId) return { ...rental, listingDetails: null };
+
+              const listingData =
+                await listingsHttpService.fetchRecord(listingId);
+              const listingDetails = listingData
+                ? { ...listingData.fields, id: listingData.id }
+                : null;
+
+              return { ...rental, listingDetails };
+            }),
+          );
+          console.log("Rentals with Listings:", rentalsWithListings);
+          setRentals(rentalsWithListings);
         }
 
         const listingIds: string[] = userData.Listings || [];
@@ -124,7 +141,7 @@ const UserAccountPage = () => {
 
           const flatListings = listingResults
             .filter(Boolean)
-            .map((data: Response) => ({
+            .map((data: Response<ListingData>) => ({
               ...data.fields,
               id: data.id,
               createdTime: data.createdTime,

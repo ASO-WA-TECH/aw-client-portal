@@ -7,6 +7,15 @@ import Button from "../../stories/Button/";
 import { Routes } from "../../Routes";
 import HttpService from "../../Services/httpService";
 
+interface UserRecord {
+  fields: {
+    Name: string;
+    Email: string;
+    Password: string;
+  };
+  id: string;
+}
+
 function AuthenticationPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState<string>("");

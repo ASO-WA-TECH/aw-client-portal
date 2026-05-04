@@ -7,6 +7,8 @@ import HttpService from "../../Services/httpService";
 // Mock SCSS
 vi.mock("./index.scss", () => ({}));
 
+vi.mock("../../Services/httpService");
+
 // Mock child components that aren't under test
 vi.mock("./Image", () => ({
   default: ({ images, title }: { images: { url: string }[]; title: string }) =>
