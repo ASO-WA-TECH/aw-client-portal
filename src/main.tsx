@@ -23,7 +23,7 @@ import CareersPage from "./Pages/Careers";
 import FAQ from "./Pages/Policies/FAQPage";
 import CommunityGuidelinesPage from "./Pages/Policies/CommunityGuidelinesPage";
 import CookiePolicyPage from "./Pages/Policies/CookiePolicyPage";
-import TermsOfUsePage from "./Pages/Policies/TermsOfUsePage";
+import TermsAndConditionsPage from "./Pages/Policies/TermsAndConditionsPage";
 import MobileTermsOfUsePage from "./Pages/Policies/MobileTermsOfUsePage";
 import PrivacyPolicyPage from "./Pages/Policies/PrivacyPolicyPage";
 
@@ -49,7 +49,10 @@ const router = createBrowserRouter(
           path={Routes.MOBILE_TERMS_OF_USE}
           element={<MobileTermsOfUsePage />}
         />
-        <Route path={Routes.TERMS_OF_USE} element={<TermsOfUsePage />} />
+        <Route
+          path={Routes.TERMS_AND_CONDITIONS}
+          element={<TermsAndConditionsPage />}
+        />
         <Route path={Routes.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
         <Route path={Routes.ABOUT_US} element={<AboutUsPage />} />
         <Route path={Routes.CAREERS} element={<CareersPage />} />

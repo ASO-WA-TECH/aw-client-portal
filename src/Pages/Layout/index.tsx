@@ -48,11 +48,10 @@ export default function Layout() {
             <a href="/about-us">ABOUT US</a>
             <a href="/faq">FAQ</a>
             <a href="/privacy-policy">PRIVACY POLICY</a>
-            <a href="/">TERMS & CONDITIONS</a>
-            <a href="/terms-of-use">TERMS OF USE</a>
+            <a href="/terms-and-conditions">TERMS & CONDITIONS</a>
             <a href="/mobile-terms-of-use">MOBILE TERMS OF USE</a>
-            <a href="/careers">CAREERS</a>
             <a href="/cookie-policy">COOKIE POLICY</a>
+            <a href="/community-guidelines">COMMUNITY GUIDELINES</a>
           </div>
         </div>
 
