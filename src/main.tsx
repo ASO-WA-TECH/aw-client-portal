@@ -11,16 +11,22 @@ import { AuthProvider } from "./Services/Auth/AuthContext";
 import Layout from "./Pages/Layout";
 import ErrorPage from "./Pages/ErrorPage";
 import HomePage from "./Pages/Homepage";
-import FAQ from "./Pages/FAQPage";
-import ImageUploadPage from "./Pages/ImageUploadPage";
 import LandingPage from "./Pages/LandingPage";
 import ListingPage from "./Pages/ListingPage";
 import AuthenticationPage from "./Pages/AuthenticationPage";
 import UserAccountPage from "./Pages/UserAccountPage/index";
-import AllUserListingsPage from "./Pages/AllUserListingsPage";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
 import IndividualListingPage from "./Pages/IndividualListingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import AboutUsPage from "./Pages/AboutUsPage";
+import CareersPage from "./Pages/Careers";
+import FAQ from "./Pages/Policies/FAQPage";
+import CommunityGuidelinesPage from "./Pages/Policies/CommunityGuidelinesPage";
+import CookiePolicyPage from "./Pages/Policies/CookiePolicyPage";
+import TermsOfUsePage from "./Pages/Policies/TermsOfUsePage";
+import MobileTermsOfUsePage from "./Pages/Policies/MobileTermsOfUsePage";
+import PrivacyPolicyPage from "./Pages/Policies/PrivacyPolicyPage";
+
 import { Routes } from "./Routes";
 
 const router = createBrowserRouter(
@@ -35,18 +41,23 @@ const router = createBrowserRouter(
         <Route path={Routes.FAQ} element={<FAQ />} />
         <Route path={Routes.ANYTHING_ELSE} element={<ErrorPage />} />
         <Route
+          path={Routes.COMMUNITY_GUIDELINES}
+          element={<CommunityGuidelinesPage />}
+        />
+        <Route path={Routes.COOKIE_POLICY} element={<CookiePolicyPage />} />
+        <Route
+          path={Routes.MOBILE_TERMS_OF_USE}
+          element={<MobileTermsOfUsePage />}
+        />
+        <Route path={Routes.TERMS_OF_USE} element={<TermsOfUsePage />} />
+        <Route path={Routes.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
+        <Route path={Routes.ABOUT_US} element={<AboutUsPage />} />
+        <Route path={Routes.CAREERS} element={<CareersPage />} />
+        <Route
           path={Routes.ACCOUNT}
           element={
             <ProtectedRoute>
               <UserAccountPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={Routes.ALL_MY_LISTINGS}
-          element={
-            <ProtectedRoute>
-              <AllUserListingsPage />
             </ProtectedRoute>
           }
         />
@@ -63,14 +74,6 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoute>
               <UserListingsEditPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={Routes.EDIT_LISTINGS_IMAGE_UPLOAD}
-          element={
-            <ProtectedRoute>
-              <ImageUploadPage />
             </ProtectedRoute>
           }
         />
