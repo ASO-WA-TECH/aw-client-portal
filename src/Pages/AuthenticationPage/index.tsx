@@ -215,6 +215,7 @@ function AuthenticationPage() {
 
                   <InputField
                     value={password}
+                    type={showPassword ? "text" : "password"}
                     handleChange={(e) => setPassword(e.target.value)}
                     label="Password"
                     darkMode={false}
@@ -223,6 +224,13 @@ function AuthenticationPage() {
                     required
                   />
 
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="show-password-button"
+                  >
+                    {showPassword ? "Hide Password " : "Show Password"}
+                  </button>
                   <br />
                   <br />
 

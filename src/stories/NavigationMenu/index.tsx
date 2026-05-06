@@ -10,10 +10,7 @@ interface NavigationMenuProps {
   darkMode: boolean;
 }
 
-const NavigationMenu: React.FC<NavigationMenuProps> = ({
-  toggleDarkMode,
-  darkMode,
-}) => {
+const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -141,9 +138,6 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                     Login
                   </Link>
                 )}
-              </li>
-              <li className="navigation-menu__mobile__links__item">
-                <button onClick={toggleDarkMode}>Toggle Dark Mode</button>
               </li>
             </ul>
           </div>
