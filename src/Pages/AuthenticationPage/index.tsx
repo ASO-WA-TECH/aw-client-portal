@@ -199,7 +199,7 @@ function AuthenticationPage() {
               {/* LOGIN */}
               {!isSigningUp && (
                 <form onSubmit={handleSubmit}>
-                  {error && <div className="error">{error}</div>}
+                  {error && <div className="input-error-message">{error}</div>}
 
                   <InputField
                     value={email}
