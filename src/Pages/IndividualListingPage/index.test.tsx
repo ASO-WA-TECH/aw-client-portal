@@ -7,6 +7,8 @@ import HttpService from "../../Services/httpService";
 // Mock SCSS
 vi.mock("./index.scss", () => ({}));
 
+vi.mock("../../Services/httpService");
+
 // Mock child components that aren't under test
 vi.mock("./Image", () => ({
   default: ({ images, title }: { images: { url: string }[]; title: string }) =>
@@ -164,7 +166,6 @@ describe("IndividualListingPage", () => {
 
     renderPage();
 
-    // RENT NOW button should still render (no owner fetch, no error)
     expect(
       await screen.findByRole("button", { name: /rent now/i }),
     ).toBeInTheDocument();
@@ -179,7 +180,7 @@ describe("IndividualListingPage", () => {
 
     await waitFor(() => {
       const img = screen.getByRole("img");
-      expect(img).toHaveAttribute("src", mockListingData.Images[0].url);
+      expect(img).toHaveAttribute("src", "https://example.com/test.jpg");
     });
   });
 

@@ -8,6 +8,7 @@ import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
 import AddListing from "./components/AddListing";
 import LoadingAccount from "./LoadingAccount";
+import "./index.scss";
 
 interface Response<T> {
   id: string;
