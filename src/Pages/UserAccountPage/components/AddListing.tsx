@@ -240,7 +240,7 @@ const AddListing = () => {
               updateField("Category", values as CategoryOption[])
             }
             required
-            className="category-group"
+            customStyle="category-group"
           />
 
           <InputDropdown

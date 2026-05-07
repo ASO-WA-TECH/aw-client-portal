@@ -247,6 +247,15 @@ function AuthenticationPage() {
                   : "New Account? Sign up here"}
               </a>
             </p>
+
+            <p>
+              <a
+                className="toggleLink"
+                onClick={() => navigate(Routes.RESET_PASSWORD)}
+              >
+                Forgot Password?
+              </a>
+            </p>
           </div>
         </div>
       </div>

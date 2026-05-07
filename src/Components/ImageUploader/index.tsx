@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 
 import "./index.scss";
+import { Button } from "../../stories";
 
 const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL as string;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET as string;
@@ -87,27 +88,25 @@ const ImageUploader = ({ images, onChange, maxImages = 5 }: Props) => {
         style={{ display: "none" }}
       />
 
-      <button
+      <Button
         type="button"
-        onClick={triggerFileSelect}
-        className="button button--emeraldGreen--primary"
-        disabled={isUploading || safeImages.length >= maxImages}
-      >
-        {isUploading ? "Uploading..." : "Add Images"}
-      </button>
+        handleClick={triggerFileSelect}
+        customStyle="button button--emeraldGreen--primary"
+        isDisabled={isUploading || safeImages.length >= maxImages}
+        text={isUploading ? "Uploading..." : "Add Images"}
+      />
 
       <div className="image-grid">
         {safeImages.map((img, i) => (
           <div key={i} className="image-item">
             <img src={img.url} alt={`upload-${i}`} className="image-preview" />
 
-            <button
+            <Button
               type="button"
-              onClick={() => removeImage(i)}
-              className="button button--emeraldGreen--secondary image-uploader__remove-btn"
-            >
-              Remove
-            </button>
+              handleClick={() => removeImage(i)}
+              customStyle="button button--emeraldGreen--secondary image-uploader__remove-btn"
+              text="Remove"
+            />
           </div>
         ))}
       </div>
