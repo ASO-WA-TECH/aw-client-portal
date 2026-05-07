@@ -20,89 +20,86 @@ function AuthenticationPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [isApproved, setIsApproved] = useState<boolean>(false);
   const { signup, login } = useAuth();
+
   const navigate = useNavigate();
   const location = useLocation();
-  const [isAlreadyRegistered, setisAlreadyRegistered] =
-    useState<boolean>(false);
+
+  const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
 
   const httpService = useMemo(() => new HttpService("Users"), []);
   const fromPreviousPath = location.state?.from?.pathname || Routes.INITIAL;
 
-  async function createUsers(
-    email: string,
-    password: string,
-    username: string,
-    firebaseUid: string,
-  ) {
-    const userDetails = {
-      Name: username,
-      Email: email,
-      auth_uid: firebaseUid,
-    };
-    try {
-      await httpService.createRecord(userDetails);
-      console.log("POST successful");
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error("Unknown error", error);
-      }
-    }
-  }
-
-  async function checkIfUsernameAlreadyExists(
-    email: string,
-    password: string,
-    username: string,
-  ) {
+  async function checkIfUsernameAlreadyExists(username: string) {
     const data = await httpService.fetchAllRecords();
     const userFound = data.some(
       (user: UserRecord) => user.fields.Name === username,
     );
-
     if (userFound) {
-      setError("Username Already exists");
-      throw new Error("Username Already exists");
+      setError("Username already exists");
+      throw new Error("Username already exists");
     }
-    const cred = await signup(email, password);
-    await createUsers(email, password, username, cred.user.uid);
+  }
+
+  async function createUserWithGuards(
+    email: string,
+    password: string,
+    username: string,
+  ) {
+    setError("");
+    setLoading(true);
+
+    try {
+      await checkIfUsernameAlreadyExists(username);
+      const userCredential = await signup(email, password);
+
+      const uid = userCredential?.user?.uid;
+
+      if (!uid) {
+        throw new Error("Firebase signup failed - no UID returned");
+      }
+
+      try {
+        await httpService.createRecords({
+          Name: username,
+          Email: email,
+          auth_uid: uid,
+        });
+      } catch (err) {
+        await userCredential.user.delete();
+        console.error(err);
+        setError(
+          err instanceof Error ? err.message : "Failed to create account",
+        );
+      }
+
+      navigate(fromPreviousPath, { replace: true });
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : "Failed to create account");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    if (isAlreadyRegistered === true) {
-      try {
-        setError("");
-        setLoading(true);
-        await checkIfUsernameAlreadyExists(email, password, username);
-        navigate(fromPreviousPath, { replace: true });
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(`Failed to create account: ", ${err.message}`);
-        } else {
-          setError("Failed to create account");
-        }
-      } finally {
-        setLoading(false);
-      }
+    if (isSigningUp) {
+      await createUserWithGuards(email, password, username);
     } else {
       try {
         setError("");
         setLoading(true);
+
         await login(email, password);
+
         navigate(fromPreviousPath, { replace: true });
       } catch (err) {
-        if (err instanceof Error) {
-          setError(`Failed to create account: ${err.message}`);
-        } else {
-          setError("Failed to login");
-        }
+        setError(err instanceof Error ? err.message : "Failed to login");
       } finally {
         setLoading(false);
       }
@@ -113,17 +110,21 @@ function AuthenticationPage() {
     <>
       <div className="flex-container">
         <div className="background"></div>
+
         <div className="form">
           <div
             className={
-              isAlreadyRegistered ? "formSignUpContainer" : "formLoginContainer"
+              isSigningUp ? "formSignUpContainer" : "formLoginContainer"
             }
           >
             <h1>Hi Friend!</h1>
+
             <div className={"formContent"}>
-              {isAlreadyRegistered && (
+              {/* SIGN UP */}
+              {isSigningUp && (
                 <form onSubmit={handleSubmit}>
                   {error && <div className="input-error-message">{error}</div>}
+
                   <InputField
                     value={username}
                     handleChange={(e) => setUsername(e.target.value)}
@@ -131,8 +132,9 @@ function AuthenticationPage() {
                     darkMode={false}
                     isReadOnly={false}
                     placeholder="Username"
-                    required={true}
+                    required
                   />
+
                   <br />
                   <InputField
                     value={email}
@@ -141,37 +143,51 @@ function AuthenticationPage() {
                     darkMode={false}
                     isReadOnly={false}
                     placeholder="Email"
-                    required={true}
+                    required
                   />
+
                   <br />
+
                   <InputField
                     value={password}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     handleChange={(e) => setPassword(e.target.value)}
                     label="Password"
                     darkMode={false}
                     isReadOnly={false}
                     placeholder="Password..."
-                    required={true}
+                    required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="show-password-button"
+                  >
+                    {showPassword ? "Hide Password " : "Show Password"}
+                  </button>
                   <br />
+                  <br />
+
+                  {/* TERMS ONLY ON SIGNUP */}
                   <div className="isApprovedSection">
                     <input
                       type="checkbox"
                       id="isApproved"
-                      name="isApproved"
                       checked={isApproved}
                       onChange={(e) => setIsApproved(e.target.checked)}
                     />
+
                     <label htmlFor="isApproved" className="paragraph">
-                      By Joining I agree to our{" "}
-                      <a href="http://"> Terms and Conditions</a>
+                      By joining I agree to our{" "}
+                      <a href="#">Terms and Conditions</a>
                     </label>
+
                     <br />
                     <br />
+
                     <Button
                       type="submit"
-                      isDisabled={!isApproved}
+                      isDisabled={!isApproved || loading}
                       text={loading ? "Signing up..." : "Sign Up"}
                       variant="primary"
                       handleClick={() => {}}
@@ -179,9 +195,12 @@ function AuthenticationPage() {
                   </div>
                 </form>
               )}
-              {!isAlreadyRegistered && (
+
+              {/* LOGIN */}
+              {!isSigningUp && (
                 <form onSubmit={handleSubmit}>
                   {error && <div className="error">{error}</div>}
+
                   <InputField
                     value={email}
                     handleChange={(e) => setEmail(e.target.value)}
@@ -191,10 +210,11 @@ function AuthenticationPage() {
                     placeholder="Email"
                     required
                   />
+
                   <br />
+
                   <InputField
                     value={password}
-                    type="password"
                     handleChange={(e) => setPassword(e.target.value)}
                     label="Password"
                     darkMode={false}
@@ -202,40 +222,27 @@ function AuthenticationPage() {
                     placeholder="Password..."
                     required
                   />
+
                   <br />
                   <br />
 
-                  <div className="isApprovedSection">
-                    <input
-                      type="checkbox"
-                      id="isApproved"
-                      name="isApproved"
-                      checked={isApproved}
-                      onChange={(e) => setIsApproved(e.target.checked)}
-                    />
-                    <label htmlFor="isApproved" className="paragraph">
-                      By Joining I agree to our{" "}
-                      <a href="http://"> Terms and Conditions</a>
-                    </label>
-                    <br />
-                    <br />
-                    <Button
-                      type="submit"
-                      isDisabled={!isApproved}
-                      text={loading ? "Loggin in..." : "Login"}
-                      variant="primary"
-                      handleClick={() => {}}
-                    />
-                  </div>
+                  <Button
+                    type="submit"
+                    isDisabled={loading}
+                    text={loading ? "Logging in..." : "Login"}
+                    variant="primary"
+                    handleClick={() => {}}
+                  />
                 </form>
               )}
             </div>
+
             <p>
               <a
-                onClick={() => setisAlreadyRegistered((prev) => !prev)}
+                onClick={() => setIsSigningUp((prev) => !prev)}
                 className="toggleLink"
               >
-                {isAlreadyRegistered
+                {isSigningUp
                   ? "Already a user? Login here"
                   : "New Account? Sign up here"}
               </a>

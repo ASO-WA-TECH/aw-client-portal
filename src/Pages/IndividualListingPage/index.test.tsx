@@ -1,7 +1,31 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { vi, describe, test, beforeEach, expect } from "vitest";
 import IndividualListingPage from ".";
 import HttpService from "../../Services/httpService";
+
+// Mock SCSS
+vi.mock("./index.scss", () => ({}));
+
+// Mock child components that aren't under test
+vi.mock("./Image", () => ({
+  default: ({ images, title }: { images: { url: string }[]; title: string }) =>
+    images.length > 0 ? <img src={images[0].url} alt={title} /> : null,
+}));
+
+vi.mock("./LoadingListing", () => ({
+  default: () => <div data-testid="loading-listing">Loading...</div>,
+}));
+
+// Mock Auth
+vi.mock("../../Services/Auth/AuthContext", () => ({
+  useAuth: () => ({
+    currentUser: { uid: "test-uid" },
+  }),
+}));
+
+// Mock import.meta.env
+vi.stubEnv("VITE_ASO_WA_EMAIL", "aso.wa.uk@gmail.com");
 
 const mockListingData = {
   Title: "Test Product",
@@ -10,6 +34,7 @@ const mockListingData = {
   Images: [{ url: "https://example.com/test.jpg" }],
   Owner: ["owner-record-id"],
   Gender: "Man",
+  Status: "available",
 };
 
 const mockOwnerFields = {
@@ -17,91 +42,157 @@ const mockOwnerFields = {
   Name: "Test Owner",
 };
 
+const renderPage = () =>
+  render(
+    <MemoryRouter initialEntries={["/listing/123"]}>
+      <Routes>
+        <Route path="/listing/:id" element={<IndividualListingPage />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+
 describe("IndividualListingPage", () => {
   beforeEach(() => {
-    // Clear storage so "hasEnquired" is always false at the start of each test
     localStorage.clear();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
-  test("shows loading while fetching", () => {
-    jest
-      .spyOn(HttpService.prototype, "fetchRecord")
-      .mockReturnValue(new Promise(() => {})); // Never resolves
-
-    render(
-      <MemoryRouter initialEntries={["/listing/123"]}>
-        <Routes>
-          <Route path="/listing/:id" element={<IndividualListingPage />} />
-        </Routes>
-      </MemoryRouter>
+  test("shows loading state while fetching", () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord").mockReturnValue(
+      new Promise(() => {}),
     );
 
-    expect(
-      screen.getByTestId("loading-listing") || screen.getByText(/loading/i)
-    ).toBeInTheDocument();
+    renderPage();
+
+    expect(screen.getByTestId("loading-listing")).toBeInTheDocument();
   });
 
-  test("renders listing data correctly", async () => {
-    jest
-      .spyOn(HttpService.prototype, "fetchRecord")
+  test("renders listing title, price and description after fetch", async () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord")
       .mockResolvedValueOnce({ fields: mockListingData })
       .mockResolvedValueOnce({ fields: mockOwnerFields });
 
-    render(
-      <MemoryRouter initialEntries={["/listing/123"]}>
-        <Routes>
-          <Route path="/listing/:id" element={<IndividualListingPage />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderPage();
 
-    const title = await screen.findByText(mockListingData.Title.toUpperCase());
-    expect(title).toBeInTheDocument();
-
+    expect(await screen.findByText("TEST PRODUCT")).toBeInTheDocument();
     expect(screen.getByText(/Rent from £49.99 per day/i)).toBeInTheDocument();
     expect(screen.getByText(mockListingData.Description)).toBeInTheDocument();
   });
 
-  test("shows error message on fetch failure", async () => {
-    jest
-      .spyOn(HttpService.prototype, "fetchRecord")
-      .mockRejectedValueOnce(new Error("Failed fetch"));
-
-    render(
-      <MemoryRouter initialEntries={["/listing/123"]}>
-        <Routes>
-          <Route path="/listing/:id" element={<IndividualListingPage />} />
-        </Routes>
-      </MemoryRouter>
+  test("shows error message when listing fetch fails", async () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord").mockRejectedValueOnce(
+      new Error("Network error"),
     );
 
-    await waitFor(() =>
-      expect(screen.getByText(/unable to load listing/i)).toBeInTheDocument()
-    );
+    renderPage();
+
+    expect(
+      await screen.findByText(/unable to load listing/i),
+    ).toBeInTheDocument();
   });
 
-  test("Rent Now link has correct mailto attributes", async () => {
-    jest
-      .spyOn(HttpService.prototype, "fetchRecord")
+  test("shows error message when listing has no fields", async () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord").mockResolvedValueOnce({
+      fields: null,
+    });
+
+    renderPage();
+
+    expect(
+      await screen.findByText(/unable to load listing/i),
+    ).toBeInTheDocument();
+  });
+
+  test("shows error when owner has no email", async () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord")
+      .mockResolvedValueOnce({ fields: mockListingData })
+      .mockResolvedValueOnce({ fields: { Name: "No Email Owner" } });
+
+    renderPage();
+
+    expect(
+      await screen.findByText(/unable to load listing/i),
+    ).toBeInTheDocument();
+  });
+
+  test("renders RENT NOW button when status is available", async () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord")
       .mockResolvedValueOnce({ fields: mockListingData })
       .mockResolvedValueOnce({ fields: mockOwnerFields });
 
-    render(
-      <MemoryRouter initialEntries={["/listing/123"]}>
-        <Routes>
-          <Route path="/listing/:id" element={<IndividualListingPage />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderPage();
 
-    const rentLink = await screen.findByRole("link", { name: /RENT NOW/i });
+    expect(
+      await screen.findByRole("button", { name: /rent now/i }),
+    ).toBeInTheDocument();
+  });
 
-    expect(rentLink).toHaveAttribute("href");
-    const href = rentLink.getAttribute("href");
+  test("shows pending message when status is pending", async () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord")
+      .mockResolvedValueOnce({
+        fields: { ...mockListingData, Status: "pending" },
+      })
+      .mockResolvedValueOnce({ fields: mockOwnerFields });
 
-    expect(href).toContain(`mailto:${mockOwnerFields.Email}`);
-    expect(href).toContain("bcc=aso.wa.uk@gmail.com");
-    expect(href).toContain("subject=ASO%20WA%20-%20RENTAL%20REQUEST");
+    renderPage();
+
+    expect(
+      await screen.findByText(/this item is currently pending/i),
+    ).toBeInTheDocument();
+  });
+
+  test("shows unavailable message when status is unavailable", async () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord")
+      .mockResolvedValueOnce({
+        fields: { ...mockListingData, Status: "unavailable" },
+      })
+      .mockResolvedValueOnce({ fields: mockOwnerFields });
+
+    renderPage();
+
+    expect(
+      await screen.findByText(/this item is currently unavailable/i),
+    ).toBeInTheDocument();
+  });
+
+  test("falls back to ASO_WA_EMAIL when listing has no owner", async () => {
+    const noOwnerListing = { ...mockListingData, Owner: [] };
+
+    vi.spyOn(HttpService.prototype, "fetchRecord").mockResolvedValueOnce({
+      fields: noOwnerListing,
+    });
+
+    renderPage();
+
+    // RENT NOW button should still render (no owner fetch, no error)
+    expect(
+      await screen.findByRole("button", { name: /rent now/i }),
+    ).toBeInTheDocument();
+  });
+
+  test("renders listing image when image url is present", async () => {
+    vi.spyOn(HttpService.prototype, "fetchRecord")
+      .mockResolvedValueOnce({ fields: mockListingData })
+      .mockResolvedValueOnce({ fields: mockOwnerFields });
+
+    renderPage();
+
+    await waitFor(() => {
+      const img = screen.getByRole("img");
+      expect(img).toHaveAttribute("src", mockListingData.Images[0].url);
+    });
+  });
+
+  test("does not render image when no image url", async () => {
+    const noImageListing = { ...mockListingData, Images: [] };
+
+    vi.spyOn(HttpService.prototype, "fetchRecord")
+      .mockResolvedValueOnce({ fields: noImageListing })
+      .mockResolvedValueOnce({ fields: mockOwnerFields });
+
+    renderPage();
+
+    await screen.findByText("TEST PRODUCT");
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 });

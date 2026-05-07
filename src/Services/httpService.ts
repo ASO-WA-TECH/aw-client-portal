@@ -18,7 +18,7 @@ export default class HttpService<T extends object> {
 
   async fetchAllRecords(): Promise<AirtableRecord<T>[]> {
     const response = await apiClient.get<AirtableListResponse<T>>(
-      `/${this.tableName}`
+      `/${this.tableName}`,
     );
     return response.data.records;
   }
@@ -29,7 +29,7 @@ export default class HttpService<T extends object> {
     }
 
     const response = await apiClient.get<AirtableRecord<T>>(
-      `/${this.tableName}/${id}`
+      `/${this.tableName}/${id}`,
     );
     return response.data;
   }
@@ -39,7 +39,7 @@ export default class HttpService<T extends object> {
       `/${this.tableName}`,
       {
         fields: entity,
-      }
+      },
     );
 
     return response.data;
@@ -57,7 +57,7 @@ export default class HttpService<T extends object> {
       `/${this.tableName}/${entity.id}`,
       {
         fields: entity.fields,
-      }
+      },
     );
 
     return response.data;

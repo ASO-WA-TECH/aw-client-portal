@@ -25,7 +25,7 @@ export const LightListingDisplayImage: Story = {
     imageUrl: "https://placehold.co/600x600",
     title: "Sleeveless Dress",
     subtitle: "£ 40.00 GBP",
-    status: "Available",
+    status: "available",
     darkMode: false,
     buttonText: "Edit Listing",
     onButtonClick: () => {},

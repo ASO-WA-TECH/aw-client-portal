@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../Services/Auth/AuthContext";
 import "./index.scss";
-
 import HttpService from "../../Services/httpService";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
@@ -17,7 +16,9 @@ interface Response<T> {
 }
 
 interface UserData {
+  [key: string]: unknown;
   id: string;
+  auth_uid: string;
   createdTime: string;
   Name: string;
   Lastname: string;
@@ -27,8 +28,11 @@ interface UserData {
 }
 
 interface RentalData {
+  [key: string]: unknown;
   id: string;
   createdTime: string;
+  Listing?: string[];
+  Rentee?: string[];
   Images?: { url: string }[];
   Title?: string;
   Price?: number;
@@ -36,6 +40,7 @@ interface RentalData {
 }
 
 interface ListingData {
+  [key: string]: unknown;
   id: string;
   createdTime: string;
   Images?: { url: string }[];
@@ -83,28 +88,29 @@ const UserAccountPage = () => {
         const userData = allUsers
           .filter(
             (item: Response<{ auth_uid: string }>) =>
-              item.fields.auth_uid === currentUser.uid
+              item.fields.auth_uid === currentUser.uid,
           )
-          .map(({ id, createdTime, fields }: Response<{ auth_uid: string }>) => ({
-            ...fields,
-            id,
-            createdTime,
-          }))[0];
+          .map(
+            ({ id, createdTime, fields }: Response<{ auth_uid: string }>) => ({
+              ...fields,
+              id,
+              createdTime,
+            }),
+          )[0];
 
         if (!userData) throw new Error("User not found");
 
         setUser(userData);
 
-
         const rentalIds: string[] = userData.Rentals || [];
         if (rentalIds.length > 0) {
           const rentalResults = await Promise.all(
-            rentalIds.map((id) => rentalHttpService.fetchRecord(id))
+            rentalIds.map((id) => rentalHttpService.fetchRecord(id)),
           );
 
           const flatRentals = rentalResults
             .filter(Boolean)
-            .map((data: Response) => ({
+            .map((data: Response<RentalData>) => ({
               ...data.fields,
               id: data.id,
               createdTime: data.createdTime,
@@ -113,16 +119,15 @@ const UserAccountPage = () => {
           setRentals(flatRentals);
         }
 
-
         const listingIds: string[] = userData.Listings || [];
         if (listingIds.length > 0) {
           const listingResults = await Promise.all(
-            listingIds.map((id) => listingsHttpService.fetchRecord(id))
+            listingIds.map((id) => listingsHttpService.fetchRecord(id)),
           );
 
           const flatListings = listingResults
             .filter(Boolean)
-            .map((data: Response) => ({
+            .map((data: Response<ListingData>) => ({
               ...data.fields,
               id: data.id,
               createdTime: data.createdTime,
@@ -144,8 +149,7 @@ const UserAccountPage = () => {
   if (error) return <p>Error: {error}</p>;
 
   const activeLabel =
-    menuItems.find((item) => item.key === activeTab)?.label ||
-    "MY ACCOUNT";
+    menuItems.find((item) => item.key === activeTab)?.label || "MY ACCOUNT";
 
   return (
     <div className="account-container">
@@ -191,17 +195,11 @@ const UserAccountPage = () => {
             <AccountDetails userData={user} />
           )}
 
-          {activeTab === "rentals" && (
-            <Rentals rentals={rentals} />
-          )}
+          {activeTab === "rentals" && <Rentals rentals={rentals} />}
 
-          {activeTab === "listings" && (
-            <Listings listings={listings} />
-          )}
+          {activeTab === "listings" && <Listings listings={listings} />}
 
-          {activeTab === "add-listing" && (
-            <AddListing />
-          )}
+          {activeTab === "add-listing" && <AddListing />}
         </main>
       </div>
     </div>
