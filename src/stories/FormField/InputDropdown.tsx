@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import "./index.scss";
 
 export interface InputDropdownProps {
-    value: string;
+    value: string | number;
     handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
     label: string;
-    options: string[];
+    options: (string | number)[];
     placeholder?: string;
     isReadOnly?: boolean;
     darkMode?: boolean;
@@ -65,7 +65,7 @@ const InputDropdown = ({
                 </option>
 
                 {options.map(option => (
-                    <option key={option} value={option}>
+                    <option key={option} value={String(option)}>
                         {option}
                     </option>
                 ))}
