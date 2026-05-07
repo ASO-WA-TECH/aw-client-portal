@@ -45,10 +45,13 @@ export default function Layout() {
           </div>
 
           <div className="footerLinks">
-            <a href="/">ABOUT US</a>
-            <a href="/">FAQ</a>
-            <a href="/">PRIVACY POLICY</a>
-            <a href="/">TERMS & CONDITIONS</a>
+            <a href="/about-us">ABOUT US</a>
+            <a href="/faq">FAQ</a>
+            <a href="/privacy-policy">PRIVACY POLICY</a>
+            <a href="/terms-and-conditions">TERMS & CONDITIONS</a>
+            <a href="/mobile-terms-of-use">MOBILE TERMS OF USE</a>
+            <a href="/cookie-policy">COOKIE POLICY</a>
+            <a href="/community-guidelines">COMMUNITY GUIDELINES</a>
           </div>
         </div>
 

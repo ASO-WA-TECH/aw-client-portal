@@ -1,6 +1,6 @@
 import "./index.scss";
 
-const PrivacyPolicyPage = () => {
+const CommunityGuidelinesPage = () => {
   return (
     <div className="wrapper">
       <h2>ASO WA Community Guidelines</h2>
@@ -46,4 +46,5 @@ const PrivacyPolicyPage = () => {
     </div>
   );
 };
-export default PrivacyPolicyPage;
+
+export default CommunityGuidelinesPage;
