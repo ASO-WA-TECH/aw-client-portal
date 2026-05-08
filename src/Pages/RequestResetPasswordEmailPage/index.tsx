@@ -26,11 +26,9 @@ function ResetPasswordPage() {
       setLoading(true);
 
       await sendPasswordResetEmail(auth, email.trim(), {
-        url: "http://localhost:5173/reset-password-confirm",
-        handleCodeInApp: true,
+        url: `${window.location.origin}/reset-password`,
       });
 
-      // prevents account enumeration
       setSuccessMessage(
         "If an account exists for this email, a reset link has been sent.",
       );
