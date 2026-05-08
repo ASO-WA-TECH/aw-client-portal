@@ -26,7 +26,8 @@ function ResetPasswordPage() {
       setLoading(true);
 
       await sendPasswordResetEmail(auth, email.trim(), {
-        url: `${window.location.origin}/reset-password`,
+        url: `${window.location.origin}${Routes.AUTHENTICATE}`,
+        handleCodeInApp: true,
       });
 
       setSuccessMessage(

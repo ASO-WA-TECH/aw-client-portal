@@ -215,6 +215,7 @@ function AuthenticationPage() {
 
                   <InputField
                     value={password}
+                    type="password"
                     handleChange={(e) => setPassword(e.target.value)}
                     label="Password"
                     darkMode={false}
@@ -251,7 +252,7 @@ function AuthenticationPage() {
             <p>
               <a
                 className="toggleLink"
-                onClick={() => navigate(Routes.RESET_PASSWORD)}
+                onClick={() => navigate(Routes.RESET_PASSWORD_EMAIL)}
               >
                 Forgot Password?
               </a>

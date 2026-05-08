@@ -29,7 +29,6 @@ import PrivacyPolicyPage from "./Pages/Policies/PrivacyPolicyPage";
 
 import { Routes } from "./Routes";
 import RequestResetPasswordEmailPage from "./Pages/RequestResetPasswordEmailPage";
-import ResetPasswordPage from "./Pages/ResetPasswordPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,7 +38,6 @@ const router = createBrowserRouter(
         path={Routes.RESET_PASSWORD_EMAIL}
         element={<RequestResetPasswordEmailPage />}
       />
-      <Route path={Routes.RESET_PASSWORD} element={<ResetPasswordPage />} />
       <Route path={Routes.INITIAL} element={<Layout />}>
         <Route index element={<HomePage />} /> {/* default page at "/" */}
         <Route path={Routes.HOME} element={<HomePage />} />
