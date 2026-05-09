@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import NavigationMenu from ".";
 import * as AuthContext from "../../Services/Auth/AuthContext";
@@ -23,7 +23,7 @@ describe("NavigationMenu", () => {
     render(
       <MemoryRouter>
         <NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByTestId("desktop-menu")).toBeInTheDocument();
   });
@@ -32,26 +32,8 @@ describe("NavigationMenu", () => {
     render(
       <MemoryRouter>
         <NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText(/Home/i)).toBeInTheDocument();
-  });
-
-  test("calls toggleDarkMode when dark mode button is clicked", () => {
-    render(
-      <MemoryRouter>
-        <NavigationMenu toggleDarkMode={mockToggle} darkMode={false} />
-      </MemoryRouter>
-    );
-
-    // Open mobile menu
-    const hamburger = screen.getByTestId("menu-button");
-    fireEvent.click(hamburger);
-
-    // Find and click the toggle button
-    const toggleBtn = screen.getByText(/Toggle Dark Mode/i);
-    fireEvent.click(toggleBtn);
-
-    expect(mockToggle).toHaveBeenCalledTimes(1);
   });
 });

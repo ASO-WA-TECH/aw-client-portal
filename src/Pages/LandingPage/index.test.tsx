@@ -7,6 +7,7 @@ import HttpService from "../../Services/httpService";
 const mockListings = [
   {
     id: "1",
+    createdTime: "2024-01-01T00:00:00.000Z",
     fields: {
       Title: "Product 1",
       Price: 195.0,
@@ -17,6 +18,7 @@ const mockListings = [
   },
   {
     id: "2",
+    createdTime: "2024-01-01T00:00:00.000Z",
     fields: {
       Title: "Product 2",
       Price: 80.0,
@@ -37,7 +39,7 @@ describe("LandingPage", () => {
     render(
       <MemoryRouter>
         <LandingPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const heading = screen.getByText(/JUST LANDED/i);
     expect(heading).toBeInTheDocument();
@@ -52,7 +54,7 @@ describe("LandingPage", () => {
     render(
       <MemoryRouter>
         <LandingPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Because fetching is async, we must use waitFor or findBy

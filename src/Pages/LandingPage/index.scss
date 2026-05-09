@@ -15,33 +15,16 @@ h1 {
 }
 
 .heroSection {
-  height: 90vh;
-  background-color: #2b422a;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 80px;
-
-  .heroContent {
-    text-align: right;
-    color: #fff;
-    
-    .heroTitle {
-      font-size: 5rem;
-      letter-spacing: 0.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .heroBtn {
-      background: #fff;
-      color: #000;
-      border: none;
-      padding: 1rem 3rem;
-      font-weight: bold;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-  }
+  background-image: url("/src/assets/cover/cover-desktop.JPG");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 2 1 100px;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; 
+    width: 100%;
 }
 
 .carouselSection {
@@ -131,3 +114,12 @@ h1 {
     color: #000;
   }
 }
+
+  @media (max-width: 800px) {
+    .heroSection{
+        background-image: url("/src/assets/cover/cover-mobile.JPG");
+        background-size: cover;       /* scale with div */
+        background-repeat: no-repeat; /* prevent tiling */
+        min-height: 60vh; 
+    }
+  }
