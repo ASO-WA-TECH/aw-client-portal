@@ -26,7 +26,11 @@ const LandingPage = () => {
     const fetchListings = async () => {
       try {
         const data = await httpService.fetchAllRecords();
-        setListings(data as ListingRecord[]);
+        const records: ListingRecord[] = data.map((record) => ({
+          id: record.id,
+          fields: record.fields as ListingRecord["fields"],
+        }));
+        setListings(records);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -37,7 +41,6 @@ const LandingPage = () => {
     };
     fetchListings();
   }, [httpService]);
-
   return (
     <div className="landingWrapper">
       <section className="heroSection"></section>

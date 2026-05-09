@@ -21,7 +21,7 @@ const ListingPage = () => {
     const fetchListings = async () => {
       setIsLoadingData(true);
       try {
-        const data: ListingRecord[] = await httpService.fetchAllRecords();
+        const data = (await httpService.fetchAllRecords()) as ListingRecord[];
         const flattenedData = data.map(({ id, createdTime, fields }) => ({
           ...fields,
           id,

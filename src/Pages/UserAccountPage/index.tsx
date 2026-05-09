@@ -86,53 +86,50 @@ const UserAccountPage = () => {
 
         const allUsers = await usersHttpService.fetchAllRecords();
 
-        const userData = allUsers
-          .filter(
-            (item: Response<{ auth_uid: string }>) =>
-              item.fields.auth_uid === currentUser.uid,
-          )
-          .map(
-            ({ id, createdTime, fields }: Response<{ auth_uid: string }>) => ({
-              ...fields,
-              id,
-              createdTime,
-            }),
-          )[0];
+        const typedUsers = allUsers as unknown as Response<UserData>[];
+
+        const userData = typedUsers
+          .filter((item) => item.fields.auth_uid === currentUser.uid)
+          .map(({ id, createdTime, fields }) => ({
+            ...fields,
+            id,
+            createdTime,
+          }))[0];
 
         if (!userData) throw new Error("User not found");
 
-        setUser(userData);
+        setUser(userData as UserData);
 
-        const rentalIds: string[] = userData.Rentals || [];
+        const rentalIds: string[] = (userData as UserData).Rentals || [];
         if (rentalIds.length > 0) {
           const rentalResults = await Promise.all(
             rentalIds.map((id) => rentalHttpService.fetchRecord(id)),
           );
 
-          const flatRentals = rentalResults
-            .filter(Boolean)
-            .map((data: Response<RentalData>) => ({
-              ...data.fields,
-              id: data.id,
-              createdTime: data.createdTime,
-            }));
+          const flatRentals = (
+            rentalResults.filter(Boolean) as unknown as Response<RentalData>[]
+          ).map((data) => ({
+            ...data.fields,
+            id: data.id,
+            createdTime: data.createdTime,
+          }));
 
           setRentals(flatRentals);
         }
 
-        const listingIds: string[] = userData.Listings || [];
+        const listingIds: string[] = (userData as UserData).Listings || [];
         if (listingIds.length > 0) {
           const listingResults = await Promise.all(
             listingIds.map((id) => listingsHttpService.fetchRecord(id)),
           );
 
-          const flatListings = listingResults
-            .filter(Boolean)
-            .map((data: Response<ListingData>) => ({
-              ...data.fields,
-              id: data.id,
-              createdTime: data.createdTime,
-            }));
+          const flatListings = (
+            listingResults.filter(Boolean) as unknown as Response<ListingData>[]
+          ).map((data) => ({
+            ...data.fields,
+            id: data.id,
+            createdTime: data.createdTime,
+          }));
 
           setListings(flatListings);
         }

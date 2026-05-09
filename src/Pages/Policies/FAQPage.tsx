@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import {
   CreditCard,
@@ -12,7 +13,7 @@ import {
 } from "lucide-react";
 import "./index.scss";
 
-const sectionIcons: Record<string, JSX.Element> = {
+const sectionIcons: Record<string, React.JSX.Element> = {
   payments: <CreditCard size={16} />,
   rentals: <ClipboardCheck size={16} />,
   delivery: <Truck size={16} />,

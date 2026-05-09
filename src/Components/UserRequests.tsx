@@ -1,16 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import HttpService from "../Services/httpService";
 
-const UserRequests = () => {
-  interface User {
-    id: string;
-    fields: {
-      Name: string;
-      Emil: string;
-    };
-  }
+interface UserFields {
+  [key: string]: unknown;
+  Name: string;
+  Email: string;
+}
 
-  const httpService = useMemo(() => new HttpService("Users"), [])
+interface User {
+  id: string;
+  fields: UserFields;
+}
+
+const UserRequests = () => {
+  const httpService = useMemo(() => new HttpService<UserFields>("Users"), []);
 
   const [users, setUsers] = useState<User[]>([]);
   const [name, setName] = useState("");
@@ -24,7 +27,7 @@ const UserRequests = () => {
     const fetchUsers = async () => {
       try {
         const data = await httpService.fetchAllRecords();
-        setUsers(data);
+        setUsers(data as User[]);
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);

@@ -3,11 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import HttpService from "../../Services/httpService";
 
 import type {
-    ListingFormData,
-    SizeOption,
-    CategoryOption,
-    GenderOption,
-    StatusOption,
+  ListingFormData,
+  SizeOption,
+  CategoryOption,
+  GenderOption,
+  StatusOption,
 } from "../../listing.types";
 
 import "./index.scss";
@@ -19,282 +19,267 @@ import Button from "../../stories/Button";
 const SIZE_OPTIONS: SizeOption[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const CATEGORY_OPTIONS: CategoryOption[] = [
-    "Agbada",
-    "Gele",
-    "Iro and Buba",
-    "Dress",
-    "Top",
-    "Skirt",
-    "Corset",
-    "Fila",
+  "Agbada",
+  "Gele",
+  "Iro and Buba",
+  "Dress",
+  "Top",
+  "Skirt",
+  "Corset",
+  "Fila",
 ];
 
 const GENDER_OPTIONS: GenderOption[] = [
-    "Male",
-    "Female",
-    "Unisex",
-    "Boy",
-    "Girl",
+  "Male",
+  "Female",
+  "Unisex",
+  "Boy",
+  "Girl",
 ];
 
 const STATUS_OPTIONS: StatusOption[] = [
-    "Available for Rent",
-    "Unavailable for Rent",
+  "Available for Rent",
+  "Unavailable for Rent",
 ];
 
 const EMPTY_FORM: ListingFormData = {
-    Title: "",
-    Description: "",
-    Size: "",
-    Category: [],
-    Gender: "",
-    Status: "",
-    Location: "",
-    Price: "",
-    Images: [],
+  Title: "",
+  Description: "",
+  Size: "",
+  Category: [],
+  Gender: "",
+  Status: "",
+  Location: "",
+  Price: "",
+  Images: [],
 };
 
 const UserListingsEditPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const listingHttpService = useMemo(
-        () => new HttpService<ListingFormData>("Listings"),
-        []
-    );
+  const listingHttpService = useMemo(
+    () => new HttpService<ListingFormData>("Listings"),
+    [],
+  );
 
-    const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
 
-    const [formData, setFormData] =
-        useState<ListingFormData>(EMPTY_FORM);
+  const [formData, setFormData] = useState<ListingFormData>(EMPTY_FORM);
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-    const [toast, setToast] = useState<{
-        message: string;
-        type: "success" | "error";
-    } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
-    useEffect(() => {
-        if (!id) return;
+  useEffect(() => {
+    if (!id) return;
 
-        const fetchListing = async () => {
-            setIsLoading(true);
-            try {
-                const record = await listingHttpService.fetchRecord(id);
+    const fetchListing = async () => {
+      setIsLoading(true);
+      try {
+        const record = await listingHttpService.fetchRecord(id);
 
-                if (record?.fields) {
-                    setFormData((prev) => ({
-                        ...prev,
-                        ...record.fields,
-                        Price: record.fields.Price ?? "",
-                        Category: (record.fields.Category ?? []) as CategoryOption[],
-                        Images: record.fields.Images ?? [], // ✅ ensure images exist
-                    }));
-                }
-            } catch (err) {
-                console.error(err);
-                setIsError(true);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchListing();
-    }, [id, listingHttpService]);
-
-    useEffect(() => {
-        if (!toast) return;
-        const timer = setTimeout(() => setToast(null), 3000);
-        return () => clearTimeout(timer);
-    }, [toast]);
-
-    const updateField = <K extends keyof ListingFormData>(
-        field: K,
-        value: ListingFormData[K]
-    ) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const handleSave = async () => {
-        if (!id || isSaving) return;
-
-        setIsSaving(true);
-
-        try {
-            const {
-                Title,
-                Description,
-                Size,
-                Category,
-                Gender,
-                Status,
-                Location,
-                Price,
-            } = formData;
-
-            await listingHttpService.updateRecord({
-                id,
-                fields: {
-                    Title,
-                    Description,
-                    Size,
-                    Category,
-                    Gender,
-                    Status,
-                    Location,
-                    Price,
-                },
-            });
-
-            setToast({
-                message: "Listing updated successfully!",
-                type: "success",
-            });
-
-            setTimeout(() => navigate("/listings"), 1000);
-
-        } catch (err) {
-            console.error("Update failed:", err);
-
-            setToast({
-                message: "Failed to update listing.",
-                type: "error",
-            });
-        } finally {
-            setIsSaving(false);
+        if (record?.fields) {
+          setFormData((prev) => ({
+            ...prev,
+            ...record.fields,
+            Price: record.fields.Price ?? "",
+            Category: (record.fields.Category ?? []) as CategoryOption[],
+            Images: record.fields.Images ?? [], // ✅ ensure images exist
+          }));
         }
+      } catch (err) {
+        console.error(err);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    if (isLoading) return <p>Loading...</p>;
-    if (isError) return <p>Failed to load listing.</p>;
+    fetchListing();
+  }, [id, listingHttpService]);
 
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
-    const imageUrl = formData.Images?.[0]?.url;
+  const updateField = <K extends keyof ListingFormData>(
+    field: K,
+    value: ListingFormData[K],
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-    return (
-        <div className="edit-listing-page">
-            <div className="edit-listing-page__container">
+  const handleSave = async () => {
+    if (!id || isSaving) return;
 
-                {toast && (
-                    <div className={`toast toast--${toast.type}`}>
-                        {toast.message}
-                    </div>
-                )}
+    setIsSaving(true);
 
-                {/* LEFT COLUMN */}
-                <div className="edit-listing-page__container__left">
-                    <div className="edit-listing-page__container__header">
-                        <button onClick={() => navigate(-1)}>←</button>
+    try {
+      const {
+        Title,
+        Description,
+        Size,
+        Category,
+        Gender,
+        Status,
+        Location,
+        Price,
+      } = formData;
 
-                        <h2>
-                            Edit Listing <span>- {formData.Title}</span>
-                        </h2>
-                    </div>
+      await listingHttpService.updateRecord({
+        id,
+        fields: {
+          Title,
+          Description,
+          Size,
+          Category,
+          Gender,
+          Status,
+          Location,
+          Price,
+        },
+      });
 
+      setToast({
+        message: "Listing updated successfully!",
+        type: "success",
+      });
 
-                    {imageUrl && (
-                        <div
-                            className="edit-listing-page__container__cover"
-                            style={{
-                                backgroundImage: `url(${imageUrl})`,
-                            }}
-                        />
-                    )}
-                </div>
+      setTimeout(() => navigate("/listings"), 1000);
+    } catch (err) {
+      console.error("Update failed:", err);
 
-                {/* RIGHT COLUMN */}
-                <div className="edit-listing-page__container__form">
+      setToast({
+        message: "Failed to update listing.",
+        type: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-                    <InputField
-                        label="Title"
-                        value={formData.Title}
-                        handleChange={(e) =>
-                            updateField("Title", e.target.value)
-                        }
-                        required
-                    />
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Failed to load listing.</p>;
 
-                    <InputField
-                        label="Description"
-                        value={formData.Description}
-                        handleChange={(e) =>
-                            updateField("Description", e.target.value)
-                        }
-                    />
+  const imageUrl = formData.Images?.[0]?.url;
 
-                    <InputDropdown
-                        label="Size"
-                        value={formData.Size}
-                        options={SIZE_OPTIONS}
-                        handleChange={(e) =>
-                            updateField("Size", e.target.value as SizeOption)
-                        }
-                        required
-                    />
+  return (
+    <div className="edit-listing-page">
+      <div className="edit-listing-page__container">
+        {toast && (
+          <div className={`toast toast--${toast.type}`}>{toast.message}</div>
+        )}
 
-                    <CheckboxGroup
-                        label="Category"
-                        values={formData.Category}
-                        options={CATEGORY_OPTIONS}
-                        handleChange={(values) =>
-                            updateField("Category", values as CategoryOption[])
-                        }
-                        required
-                    />
+        {/* LEFT COLUMN */}
+        <div className="edit-listing-page__container__left">
+          <div className="edit-listing-page__container__header">
+            <button onClick={() => navigate(-1)}>←</button>
 
-                    <InputDropdown
-                        label="Gender"
-                        value={formData.Gender}
-                        options={GENDER_OPTIONS}
-                        handleChange={(e) =>
-                            updateField("Gender", e.target.value as GenderOption)
-                        }
-                        required
-                    />
+            <h2>
+              Edit Listing <span>- {formData.Title}</span>
+            </h2>
+          </div>
 
-                    <InputDropdown
-                        label="Status"
-                        value={formData.Status}
-                        options={STATUS_OPTIONS}
-                        handleChange={(e) =>
-                            updateField("Status", e.target.value as StatusOption)
-                        }
-                    />
-
-                    <InputField
-                        label="Location"
-                        value={formData.Location}
-                        handleChange={(e) =>
-                            updateField("Location", e.target.value)
-                        }
-                    />
-
-                    <InputField
-                        label="Price (£)"
-                        type="number"
-                        value={formData.Price.toString()}
-                        handleChange={(e) =>
-                            updateField(
-                                "Price",
-                                e.target.value === "" ? "" : Number(e.target.value)
-                            )
-                        }
-                    />
-
-                    <Button
-                        handleClick={handleSave}
-                        isDisabled={isSaving}
-                        variant="primary"
-                        text={isSaving ? "Saving..." : "Save Changes"}
-                        type="button"
-                    />
-
-                </div>
-            </div>
+          {imageUrl && (
+            <div
+              className="edit-listing-page__container__cover"
+              style={{
+                backgroundImage: `url(${imageUrl})`,
+              }}
+            />
+          )}
         </div>
-    );
+
+        {/* RIGHT COLUMN */}
+        <div className="edit-listing-page__container__form">
+          <InputField
+            label="Title"
+            value={formData.Title}
+            handleChange={(e) => updateField("Title", e.target.value)}
+            required
+          />
+
+          <InputField
+            label="Description"
+            value={formData.Description}
+            handleChange={(e) => updateField("Description", e.target.value)}
+          />
+
+          <InputDropdown
+            label="Size"
+            value={formData.Size}
+            options={SIZE_OPTIONS}
+            handleChange={(e) =>
+              updateField("Size", e.target.value as SizeOption)
+            }
+            required
+          />
+
+          <CheckboxGroup
+            label="Category"
+            values={formData.Category}
+            options={CATEGORY_OPTIONS}
+            handleChange={(values) =>
+              updateField("Category", values as CategoryOption[])
+            }
+            required
+          />
+
+          <InputDropdown
+            label="Gender"
+            value={formData.Gender}
+            options={GENDER_OPTIONS}
+            handleChange={(e) =>
+              updateField("Gender", e.target.value as GenderOption)
+            }
+            required
+          />
+
+          <InputDropdown
+            label="Status"
+            value={formData.Status}
+            options={STATUS_OPTIONS}
+            handleChange={(e) =>
+              updateField("Status", e.target.value as StatusOption)
+            }
+          />
+
+          <InputField
+            label="Location"
+            value={formData.Location}
+            handleChange={(e) => updateField("Location", e.target.value)}
+          />
+
+          <InputField
+            label="Price (£)"
+            type="number"
+            value={formData.Price.toString()}
+            handleChange={(e) =>
+              updateField(
+                "Price",
+                e.target.value === "" ? "" : Number(e.target.value),
+              )
+            }
+          />
+
+          <Button
+            handleClick={handleSave}
+            isDisabled={isSaving}
+            variant="primary"
+            text={isSaving ? "Saving..." : "Save Changes"}
+            type="button"
+          />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default UserListingsEditPage;

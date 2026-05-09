@@ -7,12 +7,16 @@ import Button from "../../stories/Button/";
 import { Routes } from "../../Routes";
 import HttpService from "../../Services/httpService";
 
+interface UserFields {
+  [key: string]: unknown;
+  Name: string;
+  Email: string;
+  Password?: string;
+  auth_uid?: string;
+}
+
 interface UserRecord {
-  fields: {
-    Name: string;
-    Email: string;
-    Password: string;
-  };
+  fields: UserFields;
   id: string;
 }
 
@@ -30,15 +34,12 @@ function AuthenticationPage() {
   const location = useLocation();
 
   const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
-
-  const httpService = useMemo(() => new HttpService("Users"), []);
+  const httpService = useMemo(() => new HttpService<UserFields>("Users"), []);
   const fromPreviousPath = location.state?.from?.pathname || Routes.INITIAL;
 
   async function checkIfUsernameAlreadyExists(username: string) {
-    const data = await httpService.fetchAllRecords();
-    const userFound = data.some(
-      (user: UserRecord) => user.fields.Name === username,
-    );
+    const data = (await httpService.fetchAllRecords()) as UserRecord[];
+    const userFound = data.some((user) => user.fields.Name === username);
     if (userFound) {
       setError("Username already exists");
       throw new Error("Username already exists");
