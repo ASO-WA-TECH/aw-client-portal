@@ -1,4 +1,18 @@
-export type SizeOption = "XS" | "S" | "M" | "L" | "XL" | "XXL";
+export type SizeOption =
+  | "XS"
+  | "S"
+  | "M"
+  | "L"
+  | "XL"
+  | "XXL"
+  | 6
+  | 8
+  | 10
+  | 12
+  | 14
+  | 16
+  | 18
+  | 20;
 
 export type CategoryOption =
   | "Agbada"
@@ -29,6 +43,6 @@ export interface ListingFormData {
   Status: StatusOption | "";
   Location: string;
   Price: number | "";
-  Images?: { url: string }[];
-  [key: string]: unknown;
+  Images: Image[];
+  Colour: string[];
 }

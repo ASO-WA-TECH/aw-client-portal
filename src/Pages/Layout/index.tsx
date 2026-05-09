@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 import { NavigationMenu } from "../../stories";
 import "./index.scss";
+import { ToastContainer } from "react-toastify";
 
 export default function Layout() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -24,6 +25,7 @@ export default function Layout() {
 
   return (
     <div className="layout-container">
+      <ToastContainer position="top-right" autoClose={3000} />
       <header>
         <NavigationMenu toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
       </header>

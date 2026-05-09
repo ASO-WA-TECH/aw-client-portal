@@ -25,9 +25,11 @@ const CheckboxGroup = ({
   const [error, setError] = useState<string | null>(null);
 
   const toggleValue = (option: string) => {
-    const updatedValues = values.includes(option)
-      ? values.filter((v) => v !== option)
-      : [...values, option];
+    const safeValues = Array.isArray(values) ? values : [];
+
+    const updatedValues = safeValues.includes(option)
+      ? safeValues.filter((v) => v !== option)
+      : [...safeValues, option];
 
     handleChange(updatedValues);
 

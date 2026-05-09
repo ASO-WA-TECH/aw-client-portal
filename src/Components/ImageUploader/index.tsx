@@ -1,113 +1,118 @@
 import { useRef, useState } from "react";
 
+import "./index.scss";
+
 const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL as string;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET as string;
 
 interface Image {
-    url: string;
+  url: string;
+  public_id?: string;
 }
 
 interface Props {
-    images: Image[];
-    onChange: (images: Image[]) => void;
-    maxImages?: number;
+  images?: Image[];
+  onChange: (images: Image[]) => void;
+  maxImages?: number;
 }
 
 const ImageUploader = ({ images, onChange, maxImages = 5 }: Props) => {
-    const [isUploading, setIsUploading] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    const triggerFileSelect = () => {
-        fileInputRef.current?.click();
-    };
+  const safeImages = images ?? [];
 
-    const removeImage = (index: number) => {
-        const updatedImages = images.filter((_, i) => i !== index);
-        onChange(updatedImages);
-    };
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click();
+  };
 
-    const handleUpload = async (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const files = e.target.files;
-        if (!files) return;
+  const removeImage = (index: number) => {
+    const updated = safeImages.filter((_, i) => i !== index);
+    onChange(updated);
+  };
 
-        if (images.length + files.length > maxImages) {
-            alert(`Max ${maxImages} images allowed`);
-            return;
-        }
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
 
-        setIsUploading(true);
+    if (safeImages.length + files.length > maxImages) {
+      alert(`Max ${maxImages} images allowed`);
+      return;
+    }
 
-        try {
-            const uploads = Array.from(files).map((file: File) => {
-                const formData = new FormData();
-                formData.append("file", file);
-                formData.append("upload_preset", UPLOAD_PRESET);
+    setIsUploading(true);
 
-                return fetch(CLOUDINARY_URL, {
-                    method: "POST",
-                    body: formData,
-                }).then((res) => res.json() as Promise<{ secure_url: string }>);
-            });
+    try {
+      const uploads = Array.from(files).map((file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
 
-            const results = await Promise.all(uploads);
+        return fetch(CLOUDINARY_URL, {
+          method: "POST",
+          body: formData,
+        }).then(
+          (res) =>
+            res.json() as Promise<{
+              secure_url: string;
+              public_id: string;
+            }>,
+        );
+      });
 
-            const newImages: Image[] = results.map((r) => ({
-                url: r.secure_url,
-            }));
+      const results = await Promise.all(uploads);
 
-            onChange([...images, ...newImages]);
-        } catch (err) {
-            console.error(err);
-            alert("Upload failed");
-        } finally {
-            setIsUploading(false);
-        }
-    };
+      const newImages: Image[] = results.map((r) => ({
+        url: r.secure_url,
+        public_id: r.public_id,
+      }));
 
-    return (
-        <div className="image-uploader">
-            {/* Hidden input */}
-            <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleUpload}
-                style={{ display: "none" }}
-            />
+      onChange([...safeImages, ...newImages]);
+    } catch (err) {
+      console.error(err);
+      alert("Upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
-            {/* Styled button */}
+  return (
+    <div className="image-uploader">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleUpload}
+        style={{ display: "none" }}
+      />
+
+      <button
+        type="button"
+        onClick={triggerFileSelect}
+        className="button button--emeraldGreen--primary"
+        disabled={isUploading || safeImages.length >= maxImages}
+      >
+        {isUploading ? "Uploading..." : "Add Images"}
+      </button>
+
+      <div className="image-grid">
+        {safeImages.map((img, i) => (
+          <div key={i} className="image-item">
+            <img src={img.url} alt={`upload-${i}`} className="image-preview" />
+
             <button
-                type="button"
-                onClick={triggerFileSelect}
-                className="button button--emeraldGreen--primary"
-                disabled={isUploading}
+              type="button"
+              onClick={() => removeImage(i)}
+              className="button button--emeraldGreen--secondary image-uploader__remove-btn"
             >
-                {isUploading ? "Uploading..." : "Add Images"}
+              Remove
             </button>
-
-            <div className="image-grid">
-                {images.map((img, i) => (
-                    <div key={i} className="image-item">
-                        <div
-                            className="image-preview"
-                            style={{ backgroundImage: `url(${img.url})` }}
-                        />
-
-                        <button
-                            type="button"
-                            onClick={() => removeImage(i)}
-                            className="button button--emeraldGreen--secondary image-uploader__remove-btn"
-                        >
-                            Remove
-                        </button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default ImageUploader;

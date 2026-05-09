@@ -52,42 +52,120 @@ const EMPTY_FORM: ListingFormData = {
 };
 
 const UserListingsEditPage = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const listingHttpService = useMemo(
-    () => new HttpService<ListingFormData>("Listings"),
-    [],
-  );
+    const listingHttpService = useMemo(
+        () => new HttpService<ListingFormData>("Listings"),
+        []
+    );
 
-  const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>();
 
-  const [formData, setFormData] = useState<ListingFormData>(EMPTY_FORM);
+    const [formData, setFormData] =
+        useState<ListingFormData>(EMPTY_FORM);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
+    const [toast, setToast] = useState<{
+        message: string;
+        type: "success" | "error";
+    } | null>(null);
 
-  useEffect(() => {
-    if (!id) return;
+    useEffect(() => {
+        if (!id) return;
 
-    const fetchListing = async () => {
-      setIsLoading(true);
-      try {
-        const record = await listingHttpService.fetchRecord(id);
+        const fetchListing = async () => {
+            setIsLoading(true);
+            try {
+                const record = await listingHttpService.fetchRecord(id);
 
-        if (record?.fields) {
-          setFormData((prev) => ({
-            ...prev,
-            ...record.fields,
-            Price: record.fields.Price ?? "",
-            Category: (record.fields.Category ?? []) as CategoryOption[],
-            Images: record.fields.Images ?? [], // ✅ ensure images exist
-          }));
+                if (record?.fields) {
+                    setFormData((prev) => ({
+                        ...prev,
+                        ...record.fields,
+                        Price: record.fields.Price ?? "",
+                        Category: (record.fields.Category ?? []) as CategoryOption[],
+                        Images: record.fields.Images ?? [],
+                        Colour: record.fields.Colour
+                            ? Array.isArray(record.fields.Colour)
+                                ? record.fields.Colour
+                                : [record.fields.Colour]
+                            : [],
+                    }));
+                }
+            } catch (err) {
+                console.error(err);
+                setIsError(true);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchListing();
+    }, [id, listingHttpService]);
+
+    useEffect(() => {
+        if (!toast) return;
+        const timer = setTimeout(() => setToast(null), 3000);
+        return () => clearTimeout(timer);
+    }, [toast]);
+
+    const updateField = <K extends keyof ListingFormData>(
+        field: K,
+        value: ListingFormData[K]
+    ) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleSave = async () => {
+        if (!id || isSaving) return;
+
+        setIsSaving(true);
+
+        try {
+            const {
+                Title,
+                Description,
+                Size,
+                Category,
+                Gender,
+                Status,
+                Location,
+                Price,
+            } = formData;
+
+            await listingHttpService.updateRecord({
+                id,
+                fields: {
+                    Title,
+                    Description,
+                    Size,
+                    Category,
+                    Gender,
+                    Status,
+                    Location,
+                    Price,
+                },
+            });
+
+            setToast({
+                message: "Listing updated successfully!",
+                type: "success",
+            });
+
+            setTimeout(() => navigate("/listings"), 1000);
+
+        } catch (err) {
+            console.error("Update failed:", err);
+
+            setToast({
+                message: "Failed to update listing.",
+                type: "error",
+            });
+        } finally {
+            setIsSaving(false);
         }
       } catch (err) {
         console.error(err);
