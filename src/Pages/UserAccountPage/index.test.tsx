@@ -87,6 +87,7 @@ const setupDefaultMocks = () => {
     fetchRecord: vi.fn().mockImplementation((id: string) => {
       if (id === "rental1") return Promise.resolve(mockRental);
       if (id === "listing1") return Promise.resolve(mockListing);
+      if (id === "recListing1") return Promise.resolve(mockListing);
       return Promise.resolve(null);
     }),
     createRecords: vi.fn(),
