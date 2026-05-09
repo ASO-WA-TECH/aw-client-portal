@@ -103,9 +103,9 @@ const ListingPage = () => {
               style={{ cursor: "pointer" }}
             >
               <ListingDisplayImage
-                imageUrl={data.Images[0].url}
+                imageUrl={data.Images?.[0]?.url}
                 title={data.Title}
-                subtitle={`£${data.Price.toFixed(2)}`}
+                subtitle={`£${data.Price?.toFixed(2) ?? "0.00"}`}
                 listingId={data.id}
               />
             </div>

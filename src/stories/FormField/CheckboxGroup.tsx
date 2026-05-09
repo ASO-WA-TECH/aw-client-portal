@@ -56,12 +56,8 @@ const CheckboxGroup = ({
 
       <div className="checkbox-group">
         {options.map((option) => (
-          <>
-            <label
-              key={option}
-              htmlFor={`checkbox-${option}`}
-              className="checkbox-item"
-            >
+          <React.Fragment key={option}>
+            <label htmlFor={`checkbox-${option}`} className="checkbox-item">
               <span>{option}</span>
             </label>
             <input
@@ -70,7 +66,7 @@ const CheckboxGroup = ({
               checked={values.includes(option)}
               onChange={() => toggleValue(option)}
             />
-          </>
+          </React.Fragment>
         ))}
       </div>
 
