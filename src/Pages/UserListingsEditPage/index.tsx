@@ -30,17 +30,14 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
 ];
 
 const GENDER_OPTIONS: GenderOption[] = [
-  "Male",
-  "Female",
+  "Man",
+  "Woman",
   "Unisex",
   "Boy",
   "Girl",
 ];
 
-const STATUS_OPTIONS: StatusOption[] = [
-  "Available for Rent",
-  "Unavailable for Rent",
-];
+const STATUS_OPTIONS: StatusOption[] = ["available", "unavailable"];
 
 const EMPTY_FORM: ListingFormData = {
   Title: "",
