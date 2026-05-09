@@ -35,6 +35,7 @@ export interface Image {
 }
 
 export interface ListingFormData {
+  [key: string]: unknown;
   Title: string;
   Description: string;
   Size: SizeOption | "";

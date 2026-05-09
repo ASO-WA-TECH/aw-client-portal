@@ -8,7 +8,6 @@ import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
 import AddListing from "./components/AddListing";
 import LoadingAccount from "./LoadingAccount";
-import "./index.scss";
 
 interface Response<T> {
   id: string;
@@ -85,7 +84,6 @@ const UserAccountPage = () => {
         setLoading(true);
 
         const allUsers = await usersHttpService.fetchAllRecords();
-
         const typedUsers = allUsers as unknown as Response<UserData>[];
 
         const userData = typedUsers
@@ -100,23 +98,46 @@ const UserAccountPage = () => {
 
         setUser(userData as UserData);
 
+        // Fetch rentals and their linked listing details
         const rentalIds: string[] = (userData as UserData).Rentals || [];
         if (rentalIds.length > 0) {
           const rentalResults = await Promise.all(
             rentalIds.map((id) => rentalHttpService.fetchRecord(id)),
           );
 
-          const flatRentals = (
-            rentalResults.filter(Boolean) as unknown as Response<RentalData>[]
-          ).map((data) => ({
-            ...data.fields,
-            id: data.id,
-            createdTime: data.createdTime,
-          }));
+          const flatRentals = await Promise.all(
+            (
+              rentalResults.filter(Boolean) as unknown as Response<RentalData>[]
+            ).map(async (data) => {
+              const listingId = data.fields.Listing?.[0];
+              let listingDetails = null;
+
+              if (listingId) {
+                const listing = (await listingsHttpService.fetchRecord(
+                  listingId,
+                )) as unknown as Response<ListingData>;
+                listingDetails = {
+                  id: listing.id,
+                  Images: listing.fields.Images,
+                  Title: listing.fields.Title,
+                  Price: listing.fields.Price,
+                  Status: listing.fields.Status,
+                };
+              }
+
+              return {
+                ...data.fields,
+                id: data.id,
+                createdTime: data.createdTime,
+                listingDetails,
+              };
+            }),
+          );
 
           setRentals(flatRentals);
         }
 
+        // Fetch listings
         const listingIds: string[] = (userData as UserData).Listings || [];
         if (listingIds.length > 0) {
           const listingResults = await Promise.all(
