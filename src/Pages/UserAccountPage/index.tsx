@@ -8,7 +8,6 @@ import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
 import AddListing from "./components/AddListing";
 import LoadingAccount from "./LoadingAccount";
-import "./index.scss";
 
 interface Response<T> {
   id: string;
@@ -85,54 +84,73 @@ const UserAccountPage = () => {
         setLoading(true);
 
         const allUsers = await usersHttpService.fetchAllRecords();
+        const typedUsers = allUsers as unknown as Response<UserData>[];
 
-        const userData = allUsers
-          .filter(
-            (item: Response<{ auth_uid: string }>) =>
-              item.fields.auth_uid === currentUser.uid,
-          )
-          .map(
-            ({ id, createdTime, fields }: Response<{ auth_uid: string }>) => ({
-              ...fields,
-              id,
-              createdTime,
-            }),
-          )[0];
+        const userData = typedUsers
+          .filter((item) => item.fields.auth_uid === currentUser.uid)
+          .map(({ id, createdTime, fields }) => ({
+            ...fields,
+            id,
+            createdTime,
+          }))[0];
 
         if (!userData) throw new Error("User not found");
 
-        setUser(userData);
+        setUser(userData as UserData);
 
-        const rentalIds: string[] = userData.Rentals || [];
+        // Fetch rentals and their linked listing details
+        const rentalIds: string[] = (userData as UserData).Rentals || [];
         if (rentalIds.length > 0) {
           const rentalResults = await Promise.all(
             rentalIds.map((id) => rentalHttpService.fetchRecord(id)),
           );
 
-          const flatRentals = rentalResults
-            .filter(Boolean)
-            .map((data: Response<RentalData>) => ({
-              ...data.fields,
-              id: data.id,
-              createdTime: data.createdTime,
-            }));
+          const flatRentals = await Promise.all(
+            (
+              rentalResults.filter(Boolean) as unknown as Response<RentalData>[]
+            ).map(async (data) => {
+              const listingId = data.fields.Listing?.[0];
+              let listingDetails = null;
+
+              if (listingId) {
+                const listing = (await listingsHttpService.fetchRecord(
+                  listingId,
+                )) as unknown as Response<ListingData>;
+                listingDetails = {
+                  id: listing.id,
+                  Images: listing.fields.Images,
+                  Title: listing.fields.Title,
+                  Price: listing.fields.Price,
+                  Status: listing.fields.Status,
+                };
+              }
+
+              return {
+                ...data.fields,
+                id: data.id,
+                createdTime: data.createdTime,
+                listingDetails,
+              };
+            }),
+          );
 
           setRentals(flatRentals);
         }
 
-        const listingIds: string[] = userData.Listings || [];
+        // Fetch listings
+        const listingIds: string[] = (userData as UserData).Listings || [];
         if (listingIds.length > 0) {
           const listingResults = await Promise.all(
             listingIds.map((id) => listingsHttpService.fetchRecord(id)),
           );
 
-          const flatListings = listingResults
-            .filter(Boolean)
-            .map((data: Response<ListingData>) => ({
-              ...data.fields,
-              id: data.id,
-              createdTime: data.createdTime,
-            }));
+          const flatListings = (
+            listingResults.filter(Boolean) as unknown as Response<ListingData>[]
+          ).map((data) => ({
+            ...data.fields,
+            id: data.id,
+            createdTime: data.createdTime,
+          }));
 
           setListings(flatListings);
         }

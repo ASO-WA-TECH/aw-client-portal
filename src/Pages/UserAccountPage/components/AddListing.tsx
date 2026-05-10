@@ -15,6 +15,7 @@ import type {
 } from "../../../listing.types";
 
 interface UserFields {
+  [key: string]: unknown;
   auth_uid: string;
 }
 
@@ -176,7 +177,7 @@ const AddListing = () => {
           ? formData.Colour
           : [formData.Colour].filter(Boolean),
       };
-      await listingHttpService.createRecord(payload);
+      await listingHttpService.createRecords(payload);
 
       toast.success("Listing created successfully!");
 

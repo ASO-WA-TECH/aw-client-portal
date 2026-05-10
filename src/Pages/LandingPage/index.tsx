@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./index.scss";
 import HttpService from "../../Services/httpService";
 import ListingDisplayImage from "../../stories/ListingDisplayImage/ListingDisplayImage";
-import { Routes } from "../../Routes";
 
 interface ListingRecord {
   id: string;
@@ -27,7 +26,11 @@ const LandingPage = () => {
     const fetchListings = async () => {
       try {
         const data = await httpService.fetchAllRecords();
-        setListings(data as ListingRecord[]);
+        const records: ListingRecord[] = data.map((record) => ({
+          id: record.id,
+          fields: record.fields as ListingRecord["fields"],
+        }));
+        setListings(records);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -38,18 +41,9 @@ const LandingPage = () => {
     };
     fetchListings();
   }, [httpService]);
-
   return (
     <div className="landingWrapper">
-      <section className="heroSection">
-        <div className="heroContent">
-          <h1 className="heroTitle">OWN THE MOMENT</h1>
-          <Link to={Routes.LISTING} className="heroBtn">
-            RENT NOW
-          </Link>
-        </div>
-      </section>
-
+      <section className="heroSection"></section>
       <section className="carouselSection">
         <h2 className="sectionHeading">JUST LANDED</h2>
         <div className="carouselContainer">

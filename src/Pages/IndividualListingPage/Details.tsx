@@ -1,13 +1,23 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import type { ListingFields } from "../ListingPage/types";
-import HttpService from "../../Services/httpService";
+import HttpService, { type AirtableRecord } from "../../Services/httpService";
 import { useAuth } from "../../Services/Auth/AuthContext";
 
 type DetailsProps = {
   listing: ListingFields;
   ownerEmail: string;
 };
+
+interface UserFields {
+  [key: string]: unknown;
+  auth_uid: string;
+}
+
+interface RentalFields {
+  Rentee?: string[];
+  Listing?: string[];
+}
 
 const listingHttpService = new HttpService("Listings");
 const rentalHttpService = new HttpService("Rentals");
@@ -27,15 +37,16 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       userHttpService.fetchAllRecords(),
     ]);
 
-    const airtableUser = allUsers.find(
-      (user: { id: string; fields: { auth_uid: string } }) =>
-        user.fields.auth_uid === currentUser.uid,
-    );
+    const airtableUser = (
+      allUsers as unknown as AirtableRecord<UserFields>[]
+    ).find((user) => user.fields.auth_uid === currentUser.uid);
 
     if (!airtableUser) return;
 
-    const alreadyInterested = existingRentals.some(
-      (r: { fields: { Rentee?: string[]; Listing?: string[] } }) =>
+    const alreadyInterested = (
+      existingRentals as unknown as AirtableRecord<RentalFields>[]
+    ).some(
+      (r) =>
         r.fields.Rentee?.[0] === airtableUser.id &&
         r.fields.Listing?.[0] === listingId,
     );
@@ -46,14 +57,12 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
   };
 
   const handleRent = async () => {
-    if (!id || !currentUser?.uid) return; // we need to create a toast modal to show this error to the user instead of just silently failing
+    if (!id || !currentUser?.uid) return;
     try {
-      // 1. Find the Airtable User record matching the Firebase UID
       const allUsers = await userHttpService.fetchAllRecords();
-      const airtableUser = allUsers.find(
-        (user: { id: string; fields: { auth_uid: string } }) =>
-          user.fields.auth_uid === currentUser.uid,
-      );
+      const airtableUser = (
+        allUsers as unknown as AirtableRecord<UserFields>[]
+      ).find((user) => user.fields.auth_uid === currentUser.uid);
 
       if (!airtableUser) {
         console.error(
@@ -63,26 +72,26 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
         return;
       }
 
-      // 2. Create Rental record
       const rentalPayload = {
         Listing: [id],
         Rentee: [airtableUser.id],
         Status: "pending",
       };
+
       try {
         await rentalHttpService.createRecords(rentalPayload);
-      } catch (error) {
-        console.error("Full error object:", error);
-        console.error("Error response data:", error?.response?.data);
+      } catch (err) {
+        console.error("Full error object:", err);
+        const axiosError = err as { response?: { data?: unknown } };
+        console.error("Error response data:", axiosError?.response?.data);
         setError(
-          error instanceof Error
-            ? error.message
+          err instanceof Error
+            ? err.message
             : "Failed to process rental request",
         );
         return;
       }
 
-      // 3. Update Listing status — only reached if rental succeeded
       await listingHttpService.updateRecord({
         id,
         fields: {
@@ -91,13 +100,10 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       });
       setStatus("pending");
 
-      // 4. Open mailto — only reached if everything succeeded
       window.location.href = `mailto:${ownerEmail}?subject=Rental Request: ${listing.Title}&body=Hello,%0D%0A%0D%0AI would like to rent: ${listing.Title}%0D%0APrice: £${listing.Price?.toFixed(2)}%0D%0A%0D%0AThank you.`;
-    } catch (error) {
+    } catch (err) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to process rental request",
+        err instanceof Error ? err.message : "Failed to process rental request",
       );
     }
   };

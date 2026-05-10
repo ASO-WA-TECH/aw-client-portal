@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "./Services/Auth/AuthContext";
 import Layout from "./Pages/Layout";
-import ErrorPage from "./Pages/ErrorPage";
+import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import HomePage from "./Pages/Homepage";
 import LandingPage from "./Pages/LandingPage";
 import ListingPage from "./Pages/ListingPage";

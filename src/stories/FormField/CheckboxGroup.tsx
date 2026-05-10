@@ -10,6 +10,7 @@ export interface CheckboxGroupProps {
   required?: boolean;
   validate?: (values: string[]) => string | null;
   customStyle?: string;
+  className?: string;
 }
 
 const CheckboxGroup = ({
@@ -21,6 +22,7 @@ const CheckboxGroup = ({
   required = false,
   validate,
   customStyle = "",
+  className = "",
 }: CheckboxGroupProps) => {
   const [error, setError] = useState<string | null>(null);
 
@@ -47,19 +49,15 @@ const CheckboxGroup = ({
   }`;
 
   return (
-    <div className={`${containerClassName} ${customStyle}`}>
+    <div className={`${containerClassName} ${customStyle} ${className}`}>
       <label className="input-field-label">
         {label} {required && <span className="required">*</span>}
       </label>
 
       <div className="checkbox-group">
         {options.map((option) => (
-          <>
-            <label
-              key={option}
-              htmlFor={`checkbox-${option}`}
-              className="checkbox-item"
-            >
+          <React.Fragment key={option}>
+            <label htmlFor={`checkbox-${option}`} className="checkbox-item">
               <span>{option}</span>
             </label>
             <input
@@ -68,7 +66,7 @@ const CheckboxGroup = ({
               checked={values.includes(option)}
               onChange={() => toggleValue(option)}
             />
-          </>
+          </React.Fragment>
         ))}
       </div>
 

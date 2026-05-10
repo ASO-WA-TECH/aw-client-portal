@@ -1,0 +1,21 @@
+.header {
+  background-image: url("/src/assets/error/404-desktop.png");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 2 1 100px;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; 
+    width: 100%; /* instead of 100vw */
+}
+
+@media (max-width: 800px) {
+    .header{
+        background-image: url("/src/assets/error/404-mobile.png");
+        background-size: cover;       /* scale with div */
+        background-repeat: no-repeat; /* prevent tiling */
+        min-height: 79vh; 
+    }
+  }

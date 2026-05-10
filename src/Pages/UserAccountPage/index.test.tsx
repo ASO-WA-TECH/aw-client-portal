@@ -1,6 +1,6 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { vi, describe, it, expect, beforeEach, type Mock } from "vitest";
 import UserAccountPage from "./index";
 import HttpService from "../../Services/httpService";
 
@@ -80,13 +80,14 @@ const renderWithRouter = (initialUrl = "/account") =>
   );
 
 const setupDefaultMocks = () => {
-  (HttpService as unknown as vi.Mock).mockImplementation((table: string) => ({
+  (HttpService as unknown as Mock).mockImplementation((table: string) => ({
     fetchAllRecords: vi
       .fn()
       .mockResolvedValue(table === "Users" ? [mockUser] : []),
     fetchRecord: vi.fn().mockImplementation((id: string) => {
       if (id === "rental1") return Promise.resolve(mockRental);
       if (id === "listing1") return Promise.resolve(mockListing);
+      if (id === "recListing1") return Promise.resolve(mockListing);
       return Promise.resolve(null);
     }),
     createRecords: vi.fn(),
@@ -182,7 +183,7 @@ describe("UserAccountPage", () => {
   });
 
   it("shows error when user not found", async () => {
-    (HttpService as unknown as vi.Mock).mockImplementation(() => ({
+    (HttpService as unknown as Mock).mockImplementation(() => ({
       fetchAllRecords: vi.fn().mockResolvedValue([]),
       fetchRecord: vi.fn(),
       createRecords: vi.fn(),
@@ -196,7 +197,7 @@ describe("UserAccountPage", () => {
   });
 
   it("shows error when fetch fails", async () => {
-    (HttpService as unknown as vi.Mock).mockImplementation(() => ({
+    (HttpService as unknown as Mock).mockImplementation(() => ({
       fetchAllRecords: vi.fn().mockRejectedValue(new Error("Network error")),
       fetchRecord: vi.fn(),
       createRecords: vi.fn(),
@@ -210,7 +211,7 @@ describe("UserAccountPage", () => {
   });
 
   it("handles failed rental fetch gracefully", async () => {
-    (HttpService as unknown as vi.Mock).mockImplementation((table: string) => ({
+    (HttpService as unknown as Mock).mockImplementation((table: string) => ({
       fetchAllRecords: vi
         .fn()
         .mockResolvedValue(table === "Users" ? [mockUser] : []),

@@ -1,7 +1,8 @@
 import apiClient from "./apiClient";
 
-export interface AirtableRecord<T> {
+export interface AirtableRecord<T = Record<string, unknown>> {
   id: string;
+  createdTime: string;
   fields: T;
 }
 
@@ -9,7 +10,9 @@ export interface AirtableListResponse<T> {
   records: AirtableRecord<T>[];
 }
 
-export default class HttpService<T extends object> {
+export default class HttpService<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> {
   private tableName: string;
 
   constructor(tableName: string) {
@@ -34,7 +37,7 @@ export default class HttpService<T extends object> {
     return response.data;
   }
 
-  async createRecord(entity: T): Promise<AirtableRecord<T>> {
+  async createRecords(entity: T): Promise<AirtableRecord<T>> {
     const response = await apiClient.post<AirtableRecord<T>>(
       `/${this.tableName}`,
       {

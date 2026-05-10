@@ -44,6 +44,12 @@ const mockOwnerFields = {
   Name: "Test Owner",
 };
 
+const airtableRecord = <T,>(fields: T, id = "rec123") => ({
+  id,
+  createdTime: "2026-01-01T00:00:00.000Z",
+  fields,
+});
+
 const renderPage = () =>
   render(
     <MemoryRouter initialEntries={["/listing/123"]}>
@@ -71,8 +77,8 @@ describe("IndividualListingPage", () => {
 
   test("renders listing title, price and description after fetch", async () => {
     vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({ fields: mockListingData })
-      .mockResolvedValueOnce({ fields: mockOwnerFields });
+      .mockResolvedValueOnce(airtableRecord(mockListingData))
+      .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
     renderPage();
 
@@ -94,9 +100,9 @@ describe("IndividualListingPage", () => {
   });
 
   test("shows error message when listing has no fields", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord").mockResolvedValueOnce({
-      fields: null,
-    });
+    vi.spyOn(HttpService.prototype, "fetchRecord").mockResolvedValueOnce(
+      airtableRecord(null),
+    );
 
     renderPage();
 
@@ -107,8 +113,8 @@ describe("IndividualListingPage", () => {
 
   test("shows error when owner has no email", async () => {
     vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({ fields: mockListingData })
-      .mockResolvedValueOnce({ fields: { Name: "No Email Owner" } });
+      .mockResolvedValueOnce(airtableRecord(mockListingData))
+      .mockResolvedValueOnce(airtableRecord({ Name: "No Email Owner" }));
 
     renderPage();
 
@@ -119,8 +125,8 @@ describe("IndividualListingPage", () => {
 
   test("renders RENT NOW button when status is available", async () => {
     vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({ fields: mockListingData })
-      .mockResolvedValueOnce({ fields: mockOwnerFields });
+      .mockResolvedValueOnce(airtableRecord(mockListingData))
+      .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
     renderPage();
 
@@ -131,10 +137,10 @@ describe("IndividualListingPage", () => {
 
   test("shows pending message when status is pending", async () => {
     vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({
-        fields: { ...mockListingData, Status: "pending" },
-      })
-      .mockResolvedValueOnce({ fields: mockOwnerFields });
+      .mockResolvedValueOnce(
+        airtableRecord({ ...mockListingData, Status: "pending" }),
+      )
+      .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
     renderPage();
 
@@ -145,10 +151,10 @@ describe("IndividualListingPage", () => {
 
   test("shows unavailable message when status is unavailable", async () => {
     vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({
-        fields: { ...mockListingData, Status: "unavailable" },
-      })
-      .mockResolvedValueOnce({ fields: mockOwnerFields });
+      .mockResolvedValueOnce(
+        airtableRecord({ ...mockListingData, Status: "unavailable" }),
+      )
+      .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
     renderPage();
 
@@ -160,9 +166,9 @@ describe("IndividualListingPage", () => {
   test("falls back to ASO_WA_EMAIL when listing has no owner", async () => {
     const noOwnerListing = { ...mockListingData, Owner: [] };
 
-    vi.spyOn(HttpService.prototype, "fetchRecord").mockResolvedValueOnce({
-      fields: noOwnerListing,
-    });
+    vi.spyOn(HttpService.prototype, "fetchRecord").mockResolvedValueOnce(
+      airtableRecord(noOwnerListing),
+    );
 
     renderPage();
 
@@ -173,8 +179,8 @@ describe("IndividualListingPage", () => {
 
   test("renders listing image when image url is present", async () => {
     vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({ fields: mockListingData })
-      .mockResolvedValueOnce({ fields: mockOwnerFields });
+      .mockResolvedValueOnce(airtableRecord(mockListingData))
+      .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
     renderPage();
 
@@ -188,8 +194,8 @@ describe("IndividualListingPage", () => {
     const noImageListing = { ...mockListingData, Images: [] };
 
     vi.spyOn(HttpService.prototype, "fetchRecord")
-      .mockResolvedValueOnce({ fields: noImageListing })
-      .mockResolvedValueOnce({ fields: mockOwnerFields });
+      .mockResolvedValueOnce(airtableRecord(noImageListing))
+      .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
     renderPage();
 
