@@ -98,6 +98,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
                 <Link
                   to="/account"
                   className="navigation-menu__mobile__links__item__link"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   My Account
                 </Link>
@@ -106,6 +107,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
                 <Link
                   to="/listings"
                   className="navigation-menu__mobile__links__item__link"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Listings
                 </Link>
@@ -114,16 +116,9 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
                 <Link
                   to="/faq"
                   className="navigation-menu__mobile__links__item__link"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   FAQ
-                </Link>
-              </li>
-              <li className="navigation-menu__mobile__links__item">
-                <Link
-                  to="/"
-                  className="navigation-menu__mobile__links__item__link"
-                >
-                  How it works
                 </Link>
               </li>
               <br />
@@ -135,7 +130,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
                     to="authenticate"
                     className="link navigation-menu__mobile__links__item"
                   >
-                    Login
+                    <b>Login</b>
                   </Link>
                 )}
               </li>

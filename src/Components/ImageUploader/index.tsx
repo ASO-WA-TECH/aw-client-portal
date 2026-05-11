@@ -17,7 +17,7 @@ interface Props {
   maxImages?: number;
 }
 
-const ImageUploader = ({ images, onChange, maxImages = 5 }: Props) => {
+const ImageUploader = ({ images, onChange, maxImages = 3 }: Props) => {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 

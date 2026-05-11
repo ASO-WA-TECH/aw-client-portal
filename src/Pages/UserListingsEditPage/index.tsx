@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import HttpService from "../../Services/httpService";
+import { BackButton } from "../../stories/BackButton/BackButton";
 
 import type {
   ListingFormData,
@@ -168,6 +169,30 @@ const UserListingsEditPage = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!id || isSaving) return;
+    setIsSaving(true);
+
+    try {
+      await listingHttpService.deleteRecord(id);
+      setToast({
+        message: "Listing has been deleted successfully!",
+        type: "success",
+      });
+
+      setTimeout(() => navigate("/account"), 1000);
+    } catch (err) {
+      console.error("Delete failed:", err);
+
+      setToast({
+        message: "Failed to delete listing.",
+        type: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Failed to load listing.</p>;
 
@@ -183,8 +208,12 @@ const UserListingsEditPage = () => {
         {/* LEFT COLUMN */}
         <div className="edit-listing-page__container__left">
           <div className="edit-listing-page__container__header">
-            <button onClick={() => navigate(-1)}>←</button>
-
+            <BackButton
+              onClick={() => navigate(-1)}
+              className={`back-button`}
+              role="button"
+              aria-label="Back"
+            />
             <h2>
               Edit Listing <span>- {formData.Title}</span>
             </h2>
@@ -277,6 +306,14 @@ const UserListingsEditPage = () => {
             isDisabled={isSaving}
             variant="primary"
             text={isSaving ? "Saving..." : "Save Changes"}
+            type="button"
+          />
+
+          <Button
+            handleClick={handleDelete}
+            isDisabled={isSaving}
+            variant="secondary"
+            text={isSaving ? "Deleting..." : "Delete Listing"}
             type="button"
           />
         </div>

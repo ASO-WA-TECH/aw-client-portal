@@ -6,7 +6,7 @@ export interface BackButtonProps {
   className?: string;
 }
 
-export const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
+const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
   return (
     <div
       onClick={onClick}
@@ -16,3 +16,5 @@ export const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
     />
   );
 };
+
+export default BackButton;

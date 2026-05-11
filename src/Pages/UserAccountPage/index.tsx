@@ -66,7 +66,7 @@ const UserAccountPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   const menuItems = [
-    { label: "MY ACCOUNT", key: "my-account" },
+    { label: "MY ACCOUNT  ↓", key: "my-account" },
     { label: "RENTALS", key: "rentals" },
     { label: "LISTINGS", key: "listings" },
     { label: "ADD LISTING", key: "add-listing" },
