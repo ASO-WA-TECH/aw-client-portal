@@ -17,7 +17,7 @@ const MobileNavigationMenu = ({ setIsOpen }: MobileNavigationMenuProps) => {
         variant="tertiary"
         text="X"
       />
-      <ul className="navigation-menu__mobile__links">
+      <ul className="navigaftion-menu__mobile__links">
         {routes.map((route) => {
           const { Icon, href, title } = route;
           return (
@@ -25,6 +25,7 @@ const MobileNavigationMenu = ({ setIsOpen }: MobileNavigationMenuProps) => {
               <a
                 href={href}
                 className="navigation-menu__mobile__links__item__link"
+                onClick={() => setIsOpen(false)}
               >
                 <Icon />
                 <span className="navigation-menu__mobile__links__item__link__text">

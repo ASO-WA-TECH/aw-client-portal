@@ -4,10 +4,13 @@
     display: flex;
     justify-content: center;
 }
+.back-button {
+    margin-top: 14px;
+}
 
 
 .edit-listing-page__container {
-    width: 100%;
+    width: 70%;
     max-width: 1200px;
     padding: 32px 20px 80px;
 
@@ -16,6 +19,10 @@
         grid-template-columns: 420px 1fr;
         gap: 64px;
         align-items: start;
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
     }
 }
 
