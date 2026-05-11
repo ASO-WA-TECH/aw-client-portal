@@ -5,6 +5,8 @@ export enum Routes {
   INDIVIDUAL_LISTING = "/listing/:id",
   ACCOUNT = "/account",
   AUTHENTICATE = "/authenticate",
+  RESET_PASSWORD_EMAIL = "/reset-password-email",
+  RESET_PASSWORD = "/reset-password",
   CREATE_ACCOUNT = "/account/create",
   EDIT_ACCOUNT = "/account/edit",
   ALL_MY_LISTINGS = "/my-listings",

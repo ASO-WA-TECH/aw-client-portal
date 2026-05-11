@@ -28,11 +28,16 @@ import MobileTermsOfUsePage from "./Pages/Policies/MobileTermsOfUsePage";
 import PrivacyPolicyPage from "./Pages/Policies/PrivacyPolicyPage";
 
 import { Routes } from "./Routes";
+import RequestResetPasswordEmailPage from "./Pages/RequestResetPasswordEmailPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path={Routes.AUTHENTICATE} element={<AuthenticationPage />} />
+      <Route
+        path={Routes.RESET_PASSWORD_EMAIL}
+        element={<RequestResetPasswordEmailPage />}
+      />
       <Route path={Routes.INITIAL} element={<Layout />}>
         <Route index element={<HomePage />} /> {/* default page at "/" */}
         <Route path={Routes.HOME} element={<HomePage />} />

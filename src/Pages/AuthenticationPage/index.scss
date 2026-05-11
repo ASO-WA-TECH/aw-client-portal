@@ -1,121 +1,114 @@
-@use '../../variables' as v;
+@use "../../variables" as v;
 
-
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
     overflow-x: hidden; // only hide horizontal scroll, keep vertical if content grows
-  }
-  
-  .flex-container {
+}
+
+.flex-container {
     background-image: url("/src/assets/misc/background.png");
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; 
+    min-height: 100vh;
     width: 100%; /* instead of 100vw */
-    padding-bottom: 14%;
-  }  
+}
 
-  .button {
+.button {
     width: 100%;
-  }
-  
-  .background {
+}
+
+.background {
     flex: 2 1 400px; /* grow=2, shrink=1, basis=400px */
     background-image: url("/src/assets/storybookImages/hero-bg-register-desktop.png");
     background-size: cover;
     background-position: center;
     height: 600px;
     margin-left: 80px; /* balanced margin */
-  }
-  
-  .form {
+}
+
+.form {
     flex: 1 1 300px; /* grow=1, shrink=1, basis=300px */
     background-color: white;
     margin-right: 100px;
     border-radius: 7px;
-    height: 90vh;
-  }
+}
 
-  .formContainer {
+.formContainer {
     padding: 10px 36px;
-  }
+}
 
-  .formSignUpContainer {
+.formSignUpContainer {
     padding: 10px 36px;
-  }
+}
 
-  .formLoginContainer {
-    padding: 56px 0px;
-  }
+.formLoginContainer {
+    padding: 0px 36px;
+}
 
-  .formContent {
+.formContent {
     padding: 0px 74px 0px 50px;
-  }
-  
-  .emailApprovalSection {
+}
+
+.emailApprovalSection {
     text-align: center;
-  }
-  
-    h1 {
+}
+
+h1 {
     font-family: v.$h1-font-family;
     font-optical-sizing: v.$h1-font-optical-sizing;
     font-weight: v.$h1-font-weight;
     font-style: v.$h1-font-style;
     padding-left: 47px;
-    margin-left: 15%;
-  }
-  
-  .paragraph,
-  p,
-  .input-error-message {
+}
+
+.paragraph,
+p,
+.input-error-message {
     font-family: v.$p-font-family;
     font-optical-sizing: v.$p-font-optical-sizing;
     font-weight: v.$p-font-weight;
     font-style: v.$p-font-style;
-  }
+}
 
-  .input-error-message {
+.input-error-message {
     color: #c90b0b;
-  }
+}
 
-  .toggleLink {
-    text-decoration: "underline";
+.toggleLink {
+    text-decoration: underline;
     cursor: pointer;
     padding-left: 47px;
-    margin-left: 14%;
-  }
+}
 
-  .show-password-button {
+.show-password-button {
     background: none;
     border: none;
     cursor: pointer;
     font-family: v.$p-font-family;
     font-optical-sizing: v.$p-font-optical-sizing;
     font-weight: v.$p-font-weight;
-    font-style: v.$p-font-style;                    
-  }
+    font-style: v.$p-font-style;
+}
 
-  @media (max-width: 800px) {
+@media (max-width: 800px) {
     .flex-container {
-      flex-direction: column;
+        flex-direction: column;
     }
 
     .background {
         background-image: url("/src/assets/storybookImages/hero-bg-register-small.png");
-        background-size: cover;       /* scale with div */
+        background-size: cover; /* scale with div */
         background-repeat: no-repeat; /* prevent tiling */
     }
-    .background, .form {
-      width: 90%; /* prevent them from squishing */
-      margin: -4px auto; /* center on small screens */
+    .background,
+    .form {
+        width: 90%; /* prevent them from squishing */
+        margin: -4px auto; /* center on small screens */
     }
-    .toggleLink {
-    margin-left: 5%;
-  }
-  }
-  
+}
