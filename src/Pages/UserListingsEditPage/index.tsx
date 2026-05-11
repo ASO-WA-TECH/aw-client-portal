@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import HttpService from "../../Services/httpService";
-import { BackButton } from "../../stories/BackButton/BackButton";
+import BackButton from "../../stories/BackButton/BackButton";
 
 import type {
   ListingFormData,
@@ -211,7 +211,6 @@ const UserListingsEditPage = () => {
             <BackButton
               onClick={() => navigate(-1)}
               className={`back-button`}
-              role="button"
               aria-label="Back"
             />
             <h2>
