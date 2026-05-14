@@ -30,13 +30,13 @@ span {
     &__image-wrapper {
         position: relative;
         width: 100%;
-        height: auto;        
+        height: auto;
         overflow: hidden;
         background: #f0f0f0;
 
         &__image {
             width: 100%;
-            height: auto; 
+            height: auto;
             display: block;
             object-fit: contain;
         }
@@ -80,10 +80,14 @@ span {
             z-index: 5;
             font-size: 18px;
             border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
-            &--left  { left: 12px; }
-            &--right { right: 12px; }
+            &--left {
+                left: 12px;
+            }
+            &--right {
+                right: 12px;
+            }
         }
 
         &__dots {
@@ -98,10 +102,12 @@ span {
         &__dot {
             width: 8px;
             height: 8px;
-            background: rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
 
-            &--active { background: #fff; }
+            &--active {
+                background: #fff;
+            }
         }
 
         &__placeholder {
@@ -120,7 +126,7 @@ span {
         color: #000;
         padding: 20px 16px 80px;
         text-align: center;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
         border-radius: 12px;
         margin-top: 25px;
         .category-label {
@@ -159,12 +165,24 @@ span {
         .rental-card {
             padding: 50px;
             margin-bottom: 16px;
+            position: relative;
 
             .price {
                 font-size: 1.1rem;
                 font-weight: 600;
                 margin: 4px 0;
             }
+        }
+
+        &__owner-banner {
+            background: grey;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin: -50px -50px 24px;
         }
 
         .description-section {
@@ -207,7 +225,9 @@ span {
             letter-spacing: 0.06em;
             text-transform: uppercase;
 
-            &:hover { background: #2f6f57; }
+            &:hover {
+                background: #2f6f57;
+            }
 
             &.is-disabled {
                 background: #555;
@@ -222,7 +242,7 @@ span {
     @media (min-width: 1024px) {
         display: grid;
         grid-template-columns: 80px 1fr 420px;
-        align-items: start; 
+        align-items: start;
         gap: 0 24px;
         padding: 32px 48px;
         max-width: 1280px;
@@ -250,7 +270,8 @@ span {
             gap: 10px;
             align-items: center;
 
-            img, button {
+            img,
+            button {
                 width: 72px;
                 height: 90px;
                 object-fit: cover;
@@ -258,7 +279,8 @@ span {
                 border: 2px solid transparent;
                 cursor: pointer;
 
-                &.active, &:hover {
+                &.active,
+                &:hover {
                     border-color: #000;
                 }
             }

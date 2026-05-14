@@ -5,6 +5,10 @@ import type { ListingFields } from "../ListingPage/types";
 
 // --- Mocks — declared with vi.hoisted so they're available when vi.mock runs ---
 
+const { mockOpen } = vi.hoisted(() => ({
+  mockOpen: vi.fn(),
+}));
+
 const {
   mockFetchAllUsers,
   mockFetchAllRentals,
@@ -58,13 +62,26 @@ const ownerEmail = "owner@test.com";
 
 // --- Helpers ---
 
-const renderDetails = (overrides: Partial<ListingFields> = {}) =>
-  render(
+const renderDetails = (overrides: Partial<ListingFields> = {}) => {
+  const utils = render(
     <Details
       listing={{ ...mockListing, ...overrides }}
       ownerEmail={ownerEmail}
     />,
   );
+  return utils;
+};
+
+const fillInRentalForm = (
+  container: HTMLElement,
+  date = "2026-06-15",
+  days = "3",
+) => {
+  const dateInput = container.querySelector('input[type="date"]')!;
+  const daysInput = container.querySelector('input[type="number"]')!;
+  fireEvent.change(dateInput, { target: { value: date } });
+  fireEvent.change(daysInput, { target: { value: days } });
+};
 
 // --- Tests ---
 
@@ -81,10 +98,7 @@ describe("Details", () => {
     mockCreateRecords.mockResolvedValue({ id: "rental-1" });
     mockUpdateRecord.mockResolvedValue({});
 
-    delete (window as unknown as { location: unknown }).location;
-    (window as unknown as { location: { href: string } }).location = {
-      href: "",
-    };
+    window.open = mockOpen;
   });
 
   // unchanged ─────────────────────────────────────────────────────────────────
@@ -121,7 +135,7 @@ describe("Details", () => {
   describe("status rendering", () => {
     test("shows Rent Now button when status is Available", () => {
       renderDetails({ Status: "available" });
-      expect(screen.getByText(/rent now/i)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /rent now/i })).toBeInTheDocument();
     });
 
     test("shows pending message when status is pending", () => {
@@ -143,15 +157,36 @@ describe("Details", () => {
 
   // updated ────────────────────────────────────────────────────────────────────
 
+  describe("rental form inputs", () => {
+    test("renders date needed and number of days inputs", () => {
+      const { container } = renderDetails();
+      expect(container.querySelector('input[type="date"]')).toBeInTheDocument();
+      expect(
+        container.querySelector('input[type="number"]'),
+      ).toBeInTheDocument();
+    });
+
+    test("button is disabled when fields are empty", () => {
+      renderDetails();
+      expect(screen.getByRole("button", { name: /rent now/i })).toBeDisabled();
+    });
+
+    test("button is enabled when both fields are filled", () => {
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      expect(screen.getByRole("button", { name: /rent now/i })).toBeEnabled();
+    });
+  });
+
   describe("handleInterestClick — duplicate check", () => {
     test("checks for existing rentals before proceeding", async () => {
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
       await waitFor(() => expect(mockFetchAllRentals).toHaveBeenCalledTimes(1));
     });
 
     test("does not create a rental if user already expressed interest", async () => {
-      // Simulate an existing rental for this user + listing
       mockFetchAllRentals.mockResolvedValue([
         {
           id: "existing-rental",
@@ -161,13 +196,13 @@ describe("Details", () => {
           },
         },
       ]);
-      // Match the airtable user id to the firebase uid
       mockFetchAllUsers.mockResolvedValue([
         { id: "airtable-user-1", fields: { auth_uid: "firebase-uid-123" } },
       ]);
 
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
 
       await waitFor(() => expect(mockFetchAllRentals).toHaveBeenCalledTimes(1));
 
@@ -178,8 +213,9 @@ describe("Details", () => {
     test("proceeds to create rental if no duplicate exists", async () => {
       mockFetchAllRentals.mockResolvedValue([]); // no existing rentals
 
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
 
       await waitFor(() => expect(mockCreateRecords).toHaveBeenCalledTimes(1));
     });
@@ -187,14 +223,16 @@ describe("Details", () => {
 
   describe("handleRent — happy path", () => {
     test("calls fetchAllRecords to look up the airtable user", async () => {
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
       await waitFor(() => expect(mockFetchAllUsers).toHaveBeenCalledTimes(1));
     });
 
     test("updates listing status to pending after rental created", async () => {
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
       await waitFor(() =>
         expect(mockUpdateRecord).toHaveBeenCalledWith({
           id: "rec123",
@@ -204,13 +242,27 @@ describe("Details", () => {
     });
 
     test("shows pending message after successful rental", async () => {
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
       await waitFor(() =>
         expect(
           screen.getByText(/this item is currently pending/i),
         ).toBeInTheDocument(),
       );
+    });
+
+    test("opens mailto with formatted date dd-mm-yyyy", async () => {
+      const { container } = renderDetails();
+      fillInRentalForm(container, "2026-06-15", "3");
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      await waitFor(() => {
+        expect(mockOpen).toHaveBeenCalled();
+        const url = mockOpen.mock.calls[0][0] as string;
+        expect(url).toContain("15-06-2026");
+        expect(url).toContain("3 days");
+        expect(url).toContain("owner@test.com");
+      });
     });
   });
 
@@ -218,14 +270,15 @@ describe("Details", () => {
     test("does not proceed if no airtable user matches the firebase uid", async () => {
       mockFetchAllUsers.mockResolvedValue([]);
 
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
 
       await waitFor(() => expect(mockFetchAllUsers).toHaveBeenCalled());
 
       expect(mockCreateRecords).not.toHaveBeenCalled();
       expect(mockUpdateRecord).not.toHaveBeenCalled();
-      expect(screen.getByText(/rent now/i)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /rent now/i })).toBeInTheDocument();
     });
 
     test("does not update listing if rental creation fails", async () => {
@@ -233,8 +286,9 @@ describe("Details", () => {
         response: { status: 422, data: {} },
       });
 
-      renderDetails();
-      fireEvent.click(screen.getByText(/rent now/i));
+      const { container } = renderDetails();
+      fillInRentalForm(container);
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
 
       await waitFor(() => expect(mockCreateRecords).toHaveBeenCalled());
 
