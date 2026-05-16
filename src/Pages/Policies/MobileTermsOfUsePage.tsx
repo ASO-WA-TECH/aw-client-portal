@@ -1,4 +1,4 @@
-import "./index.scss";
+import "../genericPageStyles.scss";
 
 const MobileTermsAndConditionsPage = () => {
   return (

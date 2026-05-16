@@ -40,6 +40,10 @@ const Rentals: React.FC<RentalsProps> = ({ rentals }) => {
   return (
     <section className="renting-lending">
       <h2>RENTALS</h2>
+      <p>
+        View all the items you’re currently renting, have rented in the past, or
+        have shown interest in.{" "}
+      </p>
       <div className="listings-grid">
         {rentals.map((rental) => (
           <ListingDisplayImage

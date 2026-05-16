@@ -1,4 +1,4 @@
-import "./index.scss";
+import "../genericPageStyles.scss";
 
 const PrivacyPolicyPage = () => {
   return (
@@ -10,7 +10,7 @@ const PrivacyPolicyPage = () => {
       </p>
 
       <p>
-        <u>1. Who We Are</u>
+        <h2> Who We Are</h2>
       </p>
       <p>ASO WA is a UK-based digital platform.</p>
 
@@ -21,7 +21,7 @@ const PrivacyPolicyPage = () => {
       </p>
 
       <p>
-        <u>2. Information We Collect</u>
+        <h2>Information We Collect</h2>
       </p>
       <p>Information you provide:</p>
 
@@ -45,7 +45,7 @@ const PrivacyPolicyPage = () => {
 
       <p>We do not collect or store payment card details.</p>
       <p>
-        <u>3. How We Use Data</u>
+        <h2>How We Use Data</h2>
       </p>
       <p>We use data to:</p>
       <ul>
@@ -58,7 +58,7 @@ const PrivacyPolicyPage = () => {
       <p>Comply with legal obligations</p>
       <p>Lawful bases include contract performance and legitimate interests.</p>
       <p>
-        <u>4. Sharing of Data</u>
+        <h2>Sharing of Data</h2>
       </p>
       <p>We may share data with:</p>
       <ul>
@@ -69,7 +69,7 @@ const PrivacyPolicyPage = () => {
       <p>Legal authorities where required</p>
       <p>We do not sell personal data.</p>
       <p>
-        <u>5. Data Retention</u>
+        <h2>Data Retention</h2>
       </p>
       <p>
         We retain data only as long as necessary for operational or legal
@@ -78,7 +78,7 @@ const PrivacyPolicyPage = () => {
       <p>Users may request account deletion.</p>
 
       <p>
-        <u>6. Your Rights</u>
+        <h2>Your Rights</h2>
       </p>
       <p>Under UK GDPR you have the right to:</p>
       <ul>
@@ -93,14 +93,14 @@ const PrivacyPolicyPage = () => {
       <p>hello@aso-wa.com</p>
 
       <p>
-        <u>7. Security</u>
+        <h2>Security</h2>
       </p>
       <p>
         We implement reasonable security measures but cannot guarantee absolute
         security.
       </p>
       <p>
-        <u>8. Changes</u>
+        <h2>Changes</h2>
       </p>
       <p>We may update this policy periodically.</p>
     </div>

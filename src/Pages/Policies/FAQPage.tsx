@@ -11,7 +11,7 @@ import {
   HelpCircle,
   ChevronDown,
 } from "lucide-react";
-import "./index.scss";
+import "../genericPageStyles.scss";
 
 const sectionIcons: Record<string, React.JSX.Element> = {
   payments: <CreditCard size={16} />,

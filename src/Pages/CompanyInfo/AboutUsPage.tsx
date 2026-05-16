@@ -1,4 +1,4 @@
-import "./Policies/index.scss";
+import "../genericPageStyles.scss";
 
 const AboutUsPage = () => {
   return (

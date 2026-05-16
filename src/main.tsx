@@ -18,8 +18,9 @@ import UserAccountPage from "./Pages/UserAccountPage/index";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
 import IndividualListingPage from "./Pages/IndividualListingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import AboutUsPage from "./Pages/AboutUsPage";
-import CareersPage from "./Pages/Careers";
+import AboutUsPage from "./Pages/CompanyInfo/AboutUsPage";
+import CareersPage from "./Pages/CompanyInfo/Careers";
+import HowItWorksPage from "./Pages/CompanyInfo/HowItWorksPage";
 import FAQ from "./Pages/Policies/FAQPage";
 import CommunityGuidelinesPage from "./Pages/Policies/CommunityGuidelinesPage";
 import CookiePolicyPage from "./Pages/Policies/CookiePolicyPage";
@@ -61,6 +62,7 @@ const router = createBrowserRouter(
         <Route path={Routes.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
         <Route path={Routes.ABOUT_US} element={<AboutUsPage />} />
         <Route path={Routes.CAREERS} element={<CareersPage />} />
+        <Route path={Routes.HOW_IT_WORKS} element={<HowItWorksPage />} />
         <Route
           path={Routes.ACCOUNT}
           element={
