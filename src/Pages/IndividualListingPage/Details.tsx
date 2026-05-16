@@ -4,6 +4,9 @@ import type { ListingFields } from "../ListingPage/types";
 import HttpService, { type AirtableRecord } from "../../Services/httpService";
 import { useAuth } from "../../Services/Auth/AuthContext";
 import { InputField } from "../../stories/InputField";
+import { Button } from "../../stories";
+import { useNavigate } from "react-router-dom";
+import { Routes } from "../../Routes";
 
 type DetailsProps = {
   listing: ListingFields;
@@ -25,6 +28,7 @@ const rentalHttpService = new HttpService("Rentals");
 const userHttpService = new HttpService("Users");
 
 const Details = ({ listing, ownerEmail }: DetailsProps) => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { currentUser } = useAuth();
   const [status, setStatus] = useState(listing.Status);
@@ -174,25 +178,36 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
 
   return (
     <div className="individual-listing-page__details">
-      <div className="rental-card">
-        {isOwner && (
-          <div className="individual-listing-page__details__owner-banner">
-            <p>This is your listing</p>
+      {currentUser ? (
+        <div className="rental-card">
+          {isOwner && (
+            <div className="individual-listing-page__details__owner-banner">
+              <p>This is your listing</p>
+            </div>
+          )}
+          <span className="individual-listing-page__details__brand">
+            ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
+          </span>
+          <h1>{listing.Title?.toUpperCase()}</h1>
+          <div className="rental-price">
+            <span>Rent from £{listing.Price?.toFixed(2)} per day</span>
           </div>
-        )}
-        <span className="individual-listing-page__details__brand">
-          ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
-        </span>
-        <h1>{listing.Title?.toUpperCase()}</h1>
-        <div className="rental-price">
-          <span>Rent from £{listing.Price?.toFixed(2)} per day</span>
+          <h2>Description</h2>
+          <p>{listing.Description}</p>
+          <h2>Size & Fit</h2>
+          <p>{listing.Size}</p>
+          {!isOwner && renderStatus()}
         </div>
-        <h2>Description</h2>
-        <p>{listing.Description}</p>
-        <h2>Size & Fit</h2>
-        <p>{listing.Size}</p>
-        {!isOwner && renderStatus()}
-      </div>
+      ) : (
+        <div className="rental-card">
+          <p>Please log in or sign up to express interest in this listing.</p>
+          <Button
+            type="button"
+            text="Login/ Sign up"
+            handleClick={() => navigate(Routes.AUTHENTICATE)}
+          />
+        </div>
+      )}
     </div>
   );
 };

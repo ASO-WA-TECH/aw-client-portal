@@ -23,6 +23,7 @@ const {
 
 vi.mock("react-router-dom", () => ({
   useParams: () => ({ id: "rec123" }),
+  useNavigate: () => vi.fn(),
 }));
 
 vi.mock("../../Services/Auth/AuthContext", () => ({
@@ -135,7 +136,9 @@ describe("Details", () => {
   describe("status rendering", () => {
     test("shows Rent Now button when status is Available", () => {
       renderDetails({ Status: "available" });
-      expect(screen.getByRole("button", { name: /rent now/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /rent now/i }),
+      ).toBeInTheDocument();
     });
 
     test("shows pending message when status is pending", () => {
@@ -278,7 +281,9 @@ describe("Details", () => {
 
       expect(mockCreateRecords).not.toHaveBeenCalled();
       expect(mockUpdateRecord).not.toHaveBeenCalled();
-      expect(screen.getByRole("button", { name: /rent now/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /rent now/i }),
+      ).toBeInTheDocument();
     });
 
     test("does not update listing if rental creation fails", async () => {

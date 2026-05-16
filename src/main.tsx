@@ -45,6 +45,10 @@ const router = createBrowserRouter(
         <Route path={Routes.LISTING} element={<ListingPage />} />
         <Route path={Routes.LANDING} element={<LandingPage />} />
         <Route path={Routes.FAQ} element={<FAQ />} />
+        <Route
+          path={Routes.INDIVIDUAL_LISTING}
+          element={<IndividualListingPage />}
+        />
         <Route path={Routes.ANYTHING_ELSE} element={<ErrorPage />} />
         <Route
           path={Routes.COMMUNITY_GUIDELINES}
@@ -68,14 +72,6 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoute>
               <UserAccountPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={Routes.INDIVIDUAL_LISTING}
-          element={
-            <ProtectedRoute>
-              <IndividualListingPage />
             </ProtectedRoute>
           }
         />
