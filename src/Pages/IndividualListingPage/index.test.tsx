@@ -2,14 +2,23 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { vi, describe, test, beforeEach, expect } from "vitest";
 import IndividualListingPage from ".";
-import HttpService from "../../Services/httpService";
 
-// Mock SCSS
+// --- Mocks ---
+
+const { mockFetchRecord, mockFetchAllRecords } = vi.hoisted(() => ({
+  mockFetchRecord: vi.fn(),
+  mockFetchAllRecords: vi.fn(),
+}));
+
 vi.mock("./index.scss", () => ({}));
 
-vi.mock("../../Services/httpService");
+vi.mock("../../Services/httpService", () => ({
+  default: vi.fn().mockImplementation(() => ({
+    fetchRecord: mockFetchRecord,
+    fetchAllRecords: mockFetchAllRecords,
+  })),
+}));
 
-// Mock child components that aren't under test
 vi.mock("./Image", () => ({
   default: ({ images, title }: { images: { url: string }[]; title: string }) =>
     images.length > 0 ? <img src={images[0].url} alt={title} /> : null,
@@ -19,15 +28,15 @@ vi.mock("./LoadingListing", () => ({
   default: () => <div data-testid="loading-listing">Loading...</div>,
 }));
 
-// Mock Auth
 vi.mock("../../Services/Auth/AuthContext", () => ({
   useAuth: () => ({
     currentUser: { uid: "test-uid" },
   }),
 }));
 
-// Mock import.meta.env
 vi.stubEnv("VITE_ASO_WA_EMAIL", "aso.wa.uk@gmail.com");
+
+// --- Test data ---
 
 const mockListingData = {
   Title: "Test Product",
@@ -59,16 +68,16 @@ const renderPage = () =>
     </MemoryRouter>,
   );
 
+// --- Tests ---
+
 describe("IndividualListingPage", () => {
   beforeEach(() => {
-    localStorage.clear();
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
+    mockFetchAllRecords.mockResolvedValue([]);
   });
 
   test("shows loading state while fetching", () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord").mockReturnValue(
-      new Promise(() => {}),
-    );
+    mockFetchRecord.mockReturnValue(new Promise(() => {}));
 
     renderPage();
 
@@ -76,7 +85,7 @@ describe("IndividualListingPage", () => {
   });
 
   test("renders listing title, price and description after fetch", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord")
+    mockFetchRecord
       .mockResolvedValueOnce(airtableRecord(mockListingData))
       .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
@@ -88,9 +97,7 @@ describe("IndividualListingPage", () => {
   });
 
   test("shows error message when listing fetch fails", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord").mockRejectedValueOnce(
-      new Error("Network error"),
-    );
+    mockFetchRecord.mockRejectedValueOnce(new Error("Network error"));
 
     renderPage();
 
@@ -100,9 +107,7 @@ describe("IndividualListingPage", () => {
   });
 
   test("shows error message when listing has no fields", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord").mockResolvedValueOnce(
-      airtableRecord(null),
-    );
+    mockFetchRecord.mockResolvedValueOnce(airtableRecord(null));
 
     renderPage();
 
@@ -112,7 +117,7 @@ describe("IndividualListingPage", () => {
   });
 
   test("shows error when owner has no email", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord")
+    mockFetchRecord
       .mockResolvedValueOnce(airtableRecord(mockListingData))
       .mockResolvedValueOnce(airtableRecord({ Name: "No Email Owner" }));
 
@@ -124,7 +129,7 @@ describe("IndividualListingPage", () => {
   });
 
   test("renders RENT NOW button when status is available", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord")
+    mockFetchRecord
       .mockResolvedValueOnce(airtableRecord(mockListingData))
       .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
@@ -136,7 +141,7 @@ describe("IndividualListingPage", () => {
   });
 
   test("shows pending message when status is pending", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord")
+    mockFetchRecord
       .mockResolvedValueOnce(
         airtableRecord({ ...mockListingData, Status: "pending" }),
       )
@@ -150,7 +155,7 @@ describe("IndividualListingPage", () => {
   });
 
   test("shows unavailable message when status is unavailable", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord")
+    mockFetchRecord
       .mockResolvedValueOnce(
         airtableRecord({ ...mockListingData, Status: "unavailable" }),
       )
@@ -166,9 +171,7 @@ describe("IndividualListingPage", () => {
   test("falls back to ASO_WA_EMAIL when listing has no owner", async () => {
     const noOwnerListing = { ...mockListingData, Owner: [] };
 
-    vi.spyOn(HttpService.prototype, "fetchRecord").mockResolvedValueOnce(
-      airtableRecord(noOwnerListing),
-    );
+    mockFetchRecord.mockResolvedValueOnce(airtableRecord(noOwnerListing));
 
     renderPage();
 
@@ -178,7 +181,7 @@ describe("IndividualListingPage", () => {
   });
 
   test("renders listing image when image url is present", async () => {
-    vi.spyOn(HttpService.prototype, "fetchRecord")
+    mockFetchRecord
       .mockResolvedValueOnce(airtableRecord(mockListingData))
       .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 
@@ -193,7 +196,7 @@ describe("IndividualListingPage", () => {
   test("does not render image when no image url", async () => {
     const noImageListing = { ...mockListingData, Images: [] };
 
-    vi.spyOn(HttpService.prototype, "fetchRecord")
+    mockFetchRecord
       .mockResolvedValueOnce(airtableRecord(noImageListing))
       .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
 

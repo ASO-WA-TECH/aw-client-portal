@@ -11,11 +11,13 @@ import type {
   StatusOption,
 } from "../../listing.types";
 
+import { toast } from "react-toastify";
 import "./index.scss";
 import InputField from "../../stories/InputField";
 import CheckboxGroup from "../../stories/FormField/CheckboxGroup";
 import InputDropdown from "../../stories/FormField/InputDropdown";
 import Button from "../../stories/Button";
+import ImageUploader from "../../Components/ImageUploader";
 
 const SIZE_OPTIONS: SizeOption[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
@@ -64,15 +66,12 @@ const UserListingsEditPage = () => {
   const { id } = useParams<{ id: string }>();
 
   const [formData, setFormData] = useState<ListingFormData>(EMPTY_FORM);
+  const [initialData, setInitialData] = useState<ListingFormData | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -83,8 +82,8 @@ const UserListingsEditPage = () => {
         const record = await listingHttpService.fetchRecord(id);
 
         if (record?.fields) {
-          setFormData((prev) => ({
-            ...prev,
+          const loaded: ListingFormData = {
+            ...EMPTY_FORM,
             ...record.fields,
             Price: record.fields.Price ?? "",
             Category: (record.fields.Category ?? []) as CategoryOption[],
@@ -94,7 +93,9 @@ const UserListingsEditPage = () => {
                 ? record.fields.Colour
                 : [record.fields.Colour]
               : [],
-          }));
+          };
+          setFormData(loaded);
+          setInitialData(loaded);
         }
       } catch (err) {
         console.error(err);
@@ -106,12 +107,6 @@ const UserListingsEditPage = () => {
 
     fetchListing();
   }, [id, listingHttpService]);
-
-  useEffect(() => {
-    if (!toast) return;
-    const timer = setTimeout(() => setToast(null), 3000);
-    return () => clearTimeout(timer);
-  }, [toast]);
 
   const updateField = <K extends keyof ListingFormData>(
     field: K,
@@ -135,6 +130,7 @@ const UserListingsEditPage = () => {
         Status,
         Location,
         Price,
+        Images,
       } = formData;
 
       await listingHttpService.updateRecord({
@@ -148,63 +144,50 @@ const UserListingsEditPage = () => {
           Status,
           Location,
           Price,
+          Images: Images?.map((img) => ({ url: img.url })),
         },
       });
 
-      setToast({
-        message: "Listing updated successfully!",
-        type: "success",
-      });
+      setInitialData(JSON.parse(JSON.stringify(formData)));
 
-      setTimeout(() => navigate("/listings"), 1000);
+      toast.success("Listing updated successfully!");
     } catch (err) {
       console.error("Update failed:", err);
 
-      setToast({
-        message: "Failed to update listing.",
-        type: "error",
-      });
+      toast.error("Failed to update listing.");
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!id || isSaving) return;
-    setIsSaving(true);
+    if (!id || isDeleting) return;
+    setIsDeleting(true);
 
     try {
       await listingHttpService.deleteRecord(id);
-      setToast({
-        message: "Listing has been deleted successfully!",
-        type: "success",
-      });
+      toast.success("Listing has been deleted successfully!");
 
       setTimeout(() => navigate("/account"), 1000);
     } catch (err) {
       console.error("Delete failed:", err);
 
-      setToast({
-        message: "Failed to delete listing.",
-        type: "error",
-      });
+      toast.error("Failed to delete listing.");
     } finally {
-      setIsSaving(false);
+      setIsDeleting(false);
     }
   };
+
+  const hasChanged =
+    initialData !== null &&
+    JSON.stringify(formData) !== JSON.stringify(initialData);
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Failed to load listing.</p>;
 
-  const imageUrl = formData.Images?.[0]?.url;
-
   return (
     <div className="edit-listing-page">
       <div className="edit-listing-page__container">
-        {toast && (
-          <div className={`toast toast--${toast.type}`}>{toast.message}</div>
-        )}
-
         {/* LEFT COLUMN */}
         <div className="edit-listing-page__container__left">
           <div className="edit-listing-page__container__header">
@@ -217,15 +200,14 @@ const UserListingsEditPage = () => {
               Edit Listing <span>- {formData.Title}</span>
             </h2>
           </div>
-
-          {imageUrl && (
-            <div
-              className="edit-listing-page__container__cover"
-              style={{
-                backgroundImage: `url(${imageUrl})`,
-              }}
-            />
-          )}
+          <p className="edit-listing-page__container__left__hint">
+            Changes to images require clicking <strong>Save Changes</strong> to
+            finalise.
+          </p>
+          <ImageUploader
+            images={formData.Images}
+            onChange={(imgs) => updateField("Images", imgs)}
+          />
         </div>
 
         {/* RIGHT COLUMN */}
@@ -302,7 +284,7 @@ const UserListingsEditPage = () => {
 
           <Button
             handleClick={handleSave}
-            isDisabled={isSaving}
+            isDisabled={isSaving || !hasChanged}
             variant="primary"
             text={isSaving ? "Saving..." : "Save Changes"}
             type="button"
@@ -310,9 +292,9 @@ const UserListingsEditPage = () => {
 
           <Button
             handleClick={handleDelete}
-            isDisabled={isSaving}
+            isDisabled={isDeleting}
             variant="secondary"
-            text={isSaving ? "Deleting..." : "Delete Listing"}
+            text={isDeleting ? "Deleting..." : "Delete Listing"}
             type="button"
           />
         </div>

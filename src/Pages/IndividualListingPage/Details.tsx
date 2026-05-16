@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { ListingFields } from "../ListingPage/types";
 import HttpService, { type AirtableRecord } from "../../Services/httpService";
 import { useAuth } from "../../Services/Auth/AuthContext";
+import { InputField } from "../../stories/InputField";
 
 type DetailsProps = {
   listing: ListingFields;
@@ -28,6 +29,25 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
   const { currentUser } = useAuth();
   const [status, setStatus] = useState(listing.Status);
   const [error, setError] = useState<string | null>(null);
+  const [dateNeeded, setDateNeeded] = useState("");
+  const [numDays, setNumDays] = useState("");
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    if (!currentUser?.uid || !listing.Owner?.length) return;
+
+    const checkOwner = async () => {
+      const allUsers = await userHttpService.fetchAllRecords();
+      const airtableUser = (
+        allUsers as unknown as AirtableRecord<UserFields>[]
+      ).find((user) => user.fields.auth_uid === currentUser.uid);
+      if (airtableUser && listing.Owner.includes(airtableUser.id)) {
+        setIsOwner(true);
+      }
+    };
+
+    checkOwner();
+  }, [currentUser, listing.Owner]);
 
   const handleInterestClick = async (listingId: string) => {
     if (!currentUser?.uid) return;
@@ -100,7 +120,12 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       });
       setStatus("pending");
 
-      window.location.href = `mailto:${ownerEmail}?subject=Rental Request: ${listing.Title}&body=Hello,%0D%0A%0D%0AI would like to rent: ${listing.Title}%0D%0APrice: £${listing.Price?.toFixed(2)}%0D%0A%0D%0AThank you.`;
+      const formattedDate = dateNeeded
+        ? dateNeeded.split("-").reverse().join("-")
+        : "";
+      window.open(
+        `mailto:${ownerEmail}?subject=Rental Request: ${listing.Title}&body=Hello,%0D%0A%0D%0AI would like to rent: ${listing.Title}%0D%0APrice: £${listing.Price?.toFixed(2)}%0D%0A%0D%0AI'd need it for ${formattedDate} and would like to rent it for ${numDays} days%0D%0A%0D%0APlease let me know how you'd like to proceed in terms of payment and delivery.%0D%0A%0D%0AThanks`,
+      );
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to process rental request",
@@ -119,18 +144,42 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       return <p>Error: {error}</p>;
     }
     return (
-      <button
-        className="individual-listing-page__details__enquiry-button"
-        onClick={() => handleInterestClick(id!)}
-      >
-        <h2>RENT NOW</h2>
-      </button>
+      <div className="individual-listing-page__details__rental-form">
+        <InputField
+          label="Date needed"
+          type="date"
+          value={dateNeeded}
+          handleChange={(e) => setDateNeeded(e.target.value)}
+          customStyle={{ marginBottom: 16 }}
+          required
+        />
+        <InputField
+          label="Number of days"
+          type="number"
+          value={numDays}
+          handleChange={(e) => setNumDays(e.target.value)}
+          customStyle={{ marginBottom: 16 }}
+          required
+        />
+        <button
+          className="individual-listing-page__details__enquiry-button"
+          onClick={() => handleInterestClick(id!)}
+          disabled={!dateNeeded || !numDays}
+        >
+          <h2>RENT NOW</h2>
+        </button>
+      </div>
     );
   };
 
   return (
     <div className="individual-listing-page__details">
       <div className="rental-card">
+        {isOwner && (
+          <div className="individual-listing-page__details__owner-banner">
+            This is your listing
+          </div>
+        )}
         <span className="individual-listing-page__details__brand">
           ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
         </span>

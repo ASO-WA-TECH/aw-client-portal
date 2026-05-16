@@ -11,7 +11,7 @@ export interface InputFieldProps {
   darkMode?: boolean;
   required?: boolean;
   validate?: (value: string) => string | null;
-  type?: "text" | "password" | "email" | "number";
+  type?: "text" | "password" | "email" | "number" | "date";
 }
 
 export const InputField = ({
