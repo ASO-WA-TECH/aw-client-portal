@@ -147,8 +147,8 @@ const AddListing = () => {
   const handleSubmit = async () => {
     if (isSaving) return;
 
-    if (formData.Title.length > 28) {
-      toast.error("Title must be 28 characters or less");
+    if (formData.Title.length > 21) {
+      toast.error("Title must be 21 characters or less");
       return;
     }
 
