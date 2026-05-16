@@ -42,7 +42,7 @@ const LandingPage = () => {
     fetchListings();
   }, [httpService]);
   return (
-    <div className="landingWrapper">
+    <div>
       <section className="heroSection"></section>
       <section className="carouselSection">
         <h2 className="sectionHeading">JUST LANDED</h2>
