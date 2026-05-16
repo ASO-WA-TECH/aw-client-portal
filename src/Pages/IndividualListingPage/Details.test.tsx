@@ -5,10 +5,6 @@ import type { ListingFields } from "../ListingPage/types";
 
 // --- Mocks — declared with vi.hoisted so they're available when vi.mock runs ---
 
-const { mockOpen } = vi.hoisted(() => ({
-  mockOpen: vi.fn(),
-}));
-
 const {
   mockFetchAllUsers,
   mockFetchAllRentals,
@@ -98,8 +94,6 @@ describe("Details", () => {
     ]);
     mockCreateRecords.mockResolvedValue({ id: "rental-1" });
     mockUpdateRecord.mockResolvedValue({});
-
-    window.open = mockOpen;
   });
 
   // unchanged ─────────────────────────────────────────────────────────────────
@@ -258,14 +252,32 @@ describe("Details", () => {
     test("opens mailto with formatted date dd-mm-yyyy", async () => {
       const { container } = renderDetails();
       fillInRentalForm(container, "2026-06-15", "3");
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
-      await waitFor(() => {
-        expect(mockOpen).toHaveBeenCalled();
-        const url = mockOpen.mock.calls[0][0] as string;
-        expect(url).toContain("15-06-2026");
-        expect(url).toContain("3 days");
-        expect(url).toContain("owner@test.com");
+
+      // spy on window.location.href
+      const locationSpy = vi.spyOn(window, "location", "get").mockReturnValue({
+        ...window.location,
+        href: "",
       });
+      let capturedHref = "";
+      Object.defineProperty(window, "location", {
+        value: {
+          ...window.location,
+          set href(url: string) {
+            capturedHref = url;
+          },
+        },
+        writable: true,
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+
+      await waitFor(() => {
+        expect(capturedHref).toContain("15-06-2026");
+        expect(capturedHref).toContain("3 days");
+        expect(capturedHref).toContain("owner@test.com");
+      });
+
+      locationSpy.mockRestore();
     });
   });
 

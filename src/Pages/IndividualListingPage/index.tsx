@@ -23,7 +23,7 @@ const IndividualListingPage = () => {
   const [isDataError, setIsDataError] = useState(false);
   const [ownerEmail, setOwnerEmail] = useState<string>();
   const urlParams = useParams();
-  console.log("here");
+
   useEffect(() => {
     if (!urlParams.id) return;
 
