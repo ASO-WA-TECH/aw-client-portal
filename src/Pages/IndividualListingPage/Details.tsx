@@ -177,7 +177,7 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       <div className="rental-card">
         {isOwner && (
           <div className="individual-listing-page__details__owner-banner">
-            This is your listing
+            <p>This is your listing</p>
           </div>
         )}
         <span className="individual-listing-page__details__brand">
@@ -189,7 +189,9 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
         </div>
         <h2>Description</h2>
         <p>{listing.Description}</p>
-        {renderStatus()}
+        <h2>Size & Fit</h2>
+        <p>{listing.Size}</p>
+        {!isOwner && renderStatus()}
       </div>
     </div>
   );

@@ -117,7 +117,10 @@ const UserListingsEditPage = () => {
 
   const handleSave = async () => {
     if (!id || isSaving) return;
-
+    if (formData.Title.length > 28) {
+      toast.error("Title must be 28 characters or less");
+      return;
+    }
     setIsSaving(true);
 
     try {

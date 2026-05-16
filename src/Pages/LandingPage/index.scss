@@ -95,6 +95,8 @@ h1 {
 
   .imagePlaceholder {
     aspect-ratio: 2 / 3;
+    height: 340px;
+    aspect-ratio: unset;
     margin-bottom: 1.5rem;
     overflow: hidden;
     display: flex;
@@ -124,6 +126,7 @@ h1 {
     text-transform: none;
     color: #333;
     min-height: 2.4em;
+    height: 2.4em;
   }
 
   .productPrice {

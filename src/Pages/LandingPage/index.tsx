@@ -49,7 +49,7 @@ const LandingPage = () => {
         <div className="carouselContainer">
           <div className="productGrid">
             {listings.length > 0
-              ? listings.slice(-3).map((listing, index) => (
+              ? listings.slice(0, 4).map((listing, index) => (
                   <div
                     key={listing.id || index}
                     onClick={() => navigate(`/listing/${listing.id}`)}

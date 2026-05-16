@@ -147,6 +147,11 @@ const AddListing = () => {
   const handleSubmit = async () => {
     if (isSaving) return;
 
+    if (formData.Title.length > 28) {
+      toast.error("Title must be 28 characters or less");
+      return;
+    }
+
     if (!validateForm()) {
       toast.error("Please fill all required fields.");
       return;
@@ -193,7 +198,7 @@ const AddListing = () => {
   return (
     <div className="create-listing-page">
       <div className="create-listing-page__container">
-        <h2>Create Listing</h2>
+        <h2>Create a Listing</h2>
 
         <ImageUploader
           images={formData.Images}
