@@ -1,36 +1,34 @@
-import "./index.scss";
+import "../genericPageStyles.scss";
 
 const TermsAndConditionsPage = () => {
   return (
     <div className="wrapper">
       <h2>ASO WA Terms and Conditions</h2>
       <p>
-        <b>Last updated: 12 February 2026</b>
-      </p>
-      <p>
-        <u>1. Introduction</u>
+        <h2>Introduction</h2>
       </p>
       <p>
         ASO WA is an online marketplace platform that enables users to list,
-        rent and sell traditional African clothing. We act solely as a platform
-        that connects users. We are not a party to any transaction between
-        users. By using ASO WA, you agree to these Terms & Conditions.
+        rent and sell traditional African clothing.{" "}
       </p>
+
       <p>
-        <u>2. Our Role</u>
+        We act solely as a platform that connects users. We are not a party to
+        any transaction between users.{" "}
       </p>
+
+      <p>By using ASO WA, you agree to these Terms & Conditions.</p>
+      <p>
+        <h2>Our Role</h2>
+      </p>
+      <p> ASO WA:</p>
       <ul>
-        <li>
-          ASO WA:
-          <ul>
-            <li>Provides a digital listing platform</li>
-            <li>Enables users to connect</li>
-            <li>Does not process payments</li>
-            <li>Does not handle delivery</li>
-            <li>Does not store or inspect items</li>
-            <li>Does not guarantee item quality or authenticity</li>
-          </ul>
-        </li>
+        <li>Provides a digital listing platform</li>
+        <li>Enables users to connect</li>
+        <li>Does not process payments</li>
+        <li>Does not handle delivery</li>
+        <li>Does not store or inspect items</li>
+        <li>Does not guarantee item quality or authenticity</li>
       </ul>
 
       <p>
@@ -38,7 +36,7 @@ const TermsAndConditionsPage = () => {
         platform.
       </p>
       <p>
-        <u>3. User Responsibilities</u>
+        <h2>User Responsibilities</h2>
       </p>
       <p>Users are solely responsible for:</p>
       <ul>
@@ -52,7 +50,7 @@ const TermsAndConditionsPage = () => {
       <p>You use the platform at your own risk.</p>
 
       <p>
-        <u>4. Payments</u>
+        <h2>Payments</h2>
       </p>
       <p>ASO WA does not currently process or facilitate payments.</p>
 
@@ -61,9 +59,7 @@ const TermsAndConditionsPage = () => {
         WA.
       </p>
 
-      <ul>
-        <li>We are not responsible for:</li>
-      </ul>
+      <p>We are not responsible for:</p>
       <ul>
         <li>Fraud</li>
         <li>Non-payment</li>
@@ -121,7 +117,7 @@ const TermsAndConditionsPage = () => {
       </p>
 
       <p>
-        <u>5. Delivery & Collection</u>
+        <h2>Delivery & Collection</h2>
       </p>
       <p>ASO WA does not handle logistics, storage or transportation.</p>
 
@@ -135,7 +131,7 @@ const TermsAndConditionsPage = () => {
 
       <p>We are not liable for lost, damaged or stolen items.</p>
       <p>
-        <u>6. Prohibited Use</u>
+        <h2>Prohibited Use</h2>
       </p>
       <p>You agree not to:</p>
       <ul>
@@ -149,7 +145,7 @@ const TermsAndConditionsPage = () => {
       <p>We reserve the right to remove listings or suspend accounts.</p>
 
       <p>
-        <u>7. Limitation of Liability</u>
+        <h2>Limitation of Liability</h2>
       </p>
       <p>To the fullest extent permitted by law:</p>
 
@@ -168,7 +164,7 @@ const TermsAndConditionsPage = () => {
         platform.
       </p>
       <p>
-        <u>8. Intellectual Property</u>
+        <h2>Intellectual Property</h2>
       </p>
       <p>
         All website content, branding, design and materials are the property of
@@ -180,14 +176,14 @@ const TermsAndConditionsPage = () => {
         descriptions on the platform.
       </p>
       <p>
-        <u>9. Termination</u>
+        <h2>Termination</h2>
       </p>
       <p>
         We may suspend or terminate accounts at our discretion where there is
         misuse or breach of these terms.
       </p>
       <p>
-        <u>10. Governing Law</u>
+        <h2>Governing Law</h2>
       </p>
       <p>These Terms are governed by the laws of England and Wales.</p>
     </div>

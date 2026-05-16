@@ -1,18 +1,15 @@
-import "./index.scss";
+import "../genericPageStyles.scss";
 
 const MobileTermsAndConditionsPage = () => {
   return (
     <div className="wrapper">
       <h2>ASO WA Mobile Terms of Service</h2>
-      <p>
-        <b>Last updated: 12 February 2026</b>
-      </p>
 
       <p>
         These Mobile Terms apply when accessing ASO WA via mobile device or app.
       </p>
       <p>
-        <u>1. Mobile Access</u>
+        <h2> Mobile Access</h2>
       </p>
       <p>You are responsible for:</p>
       <ul>
@@ -22,7 +19,7 @@ const MobileTermsAndConditionsPage = () => {
       </ul>
 
       <p>
-        <u>2. Messaging</u>
+        <h2> Messaging</h2>
       </p>
       <p>
         If mobile messaging features are introduced: Standard carrier rates may
@@ -30,7 +27,7 @@ const MobileTermsAndConditionsPage = () => {
       </p>
 
       <p>
-        <u>3. No Transaction Handling</u>
+        <h2> No Transaction Handling</h2>
       </p>
       <p>Mobile access does not change ASO WA’s role.</p>
       <p>We currently do not:</p>
@@ -41,7 +38,7 @@ const MobileTermsAndConditionsPage = () => {
       </ul>
 
       <p>
-        <u>4. App Updates</u>
+        <h2>App Updates</h2>
       </p>
       <p>
         We may update mobile functionality without notice. Continued use

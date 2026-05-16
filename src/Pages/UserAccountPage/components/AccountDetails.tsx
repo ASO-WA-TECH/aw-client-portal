@@ -5,7 +5,7 @@ import HttpService from "../../../Services/httpService";
 interface UserData {
   id: string;
   Name: string;
-  Lastname: string;
+  FullName: string;
   Email: string;
 }
 interface AccountDetailsProps {
@@ -16,7 +16,7 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
   const usersHttpService = useMemo(() => new HttpService("Users"), []);
 
   const [firstName, setFirstName] = useState(userData?.Name ?? "");
-  const [lastName, setLastName] = useState(userData?.Lastname ?? "");
+  const [fullName, setFullName] = useState(userData?.FullName ?? "");
   const [email, setEmail] = useState(userData?.Email ?? "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -51,7 +51,7 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
 
       const updatedFields: Record<string, string> = {
         Name: firstName,
-        Lastname: lastName,
+        FullName: fullName,
         Email: email,
       };
 
@@ -83,7 +83,7 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
       <hr />
       <div className="form-grid">
         <div className="input-field">
-          <label>FIRST NAME*</label>
+          <label>USER NAME*</label>
           <input
             type="text"
             value={firstName}
@@ -91,11 +91,11 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
           />
         </div>
         <div className="input-field">
-          <label>LAST NAME*</label>
+          <label>FULL NAME*</label>
           <input
             type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
           />
         </div>
         <div className="input-field full-width">

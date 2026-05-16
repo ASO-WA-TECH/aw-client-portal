@@ -216,7 +216,7 @@ function AuthenticationPage() {
 
                   <InputField
                     value={password}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     handleChange={(e) => setPassword(e.target.value)}
                     label="Password"
                     darkMode={false}

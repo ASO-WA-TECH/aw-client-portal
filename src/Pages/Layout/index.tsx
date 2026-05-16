@@ -36,13 +36,21 @@ export default function Layout() {
 
       <footer className={"footerSection"}>
         <p className={"invitationText"}>
-          Get to know <span className={"handle"}>@ASO.WA</span>
+          Follow us on{" "}
+          <a href="https://www.instagram.com/asowa.uk/" className={"handle"}>
+            Instagram
+          </a>{" "}
+          and{" "}
+          <a href="https://www.tiktok.com/@asowa.uk" className={"handle"}>
+            TikTok
+          </a>{" "}
+          for the latest updates and news.
         </p>
 
         <div className="footerGrid">
           <div className="contactItem">
             <p>
-              Contact us: <a href="mailto:aso.wa@gmail.com">aso.wa@gmail.com</a>
+              Contact us: <a href="mailto:hello@aso-wa.com">hello@aso-wa.com</a>
             </p>
           </div>
 

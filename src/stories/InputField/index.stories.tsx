@@ -23,7 +23,9 @@ type Story = StoryObj<typeof InputField>;
 const Template = (args: InputFieldProps) => {
   const [value, setValue] = useState(args.value || "");
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setValue(event.target.value);
     args.handleChange?.(event);
   };

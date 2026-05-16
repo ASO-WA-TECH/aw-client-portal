@@ -21,7 +21,7 @@ interface UserData {
   auth_uid: string;
   createdTime: string;
   Name: string;
-  Lastname: string;
+  FullName: string;
   Email: string;
   Rentals?: string[];
   Listings?: string[];
@@ -187,7 +187,7 @@ const UserAccountPage = () => {
               <div className="avatar-circle"></div>
               <div className="user-info">
                 <h3>
-                  {user?.Name} {user?.Lastname?.[0]}.
+                  {user?.Name} {user?.FullName?.[0]}.
                 </h3>
               </div>
             </div>

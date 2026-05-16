@@ -11,7 +11,7 @@ import {
   HelpCircle,
   ChevronDown,
 } from "lucide-react";
-import "./index.scss";
+import "../genericPageStyles.scss";
 
 const sectionIcons: Record<string, React.JSX.Element> = {
   payments: <CreditCard size={16} />,
@@ -383,7 +383,7 @@ const FAQPage = () => {
   return (
     <div className="wrapper">
       <div className="faq-header">
-        <h1>Frequently asked questions</h1>
+        <h1>Frequently Asked Questions</h1>
         <p>
           These are the most commonly asked questions about ASO WA. Can't find
           what you're looking for?{" "}

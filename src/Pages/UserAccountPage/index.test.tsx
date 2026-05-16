@@ -42,7 +42,7 @@ const mockUser = {
   fields: {
     auth_uid: "firebase-uid-123",
     Name: "Jane",
-    Lastname: "Doe",
+    FullName: "Jane Doe",
     Email: "jane@example.com",
     Rentals: ["rental1"],
     Listings: ["listing1"],
@@ -131,7 +131,7 @@ describe("UserAccountPage", () => {
 
     await waitFor(() => screen.getByTestId("account-details"));
 
-    expect(screen.getByText(/Jane D\./i)).toBeInTheDocument();
+    expect(screen.getByText("Jane")).toBeInTheDocument();
   });
 
   it("switches to RENTALS tab on click", async () => {

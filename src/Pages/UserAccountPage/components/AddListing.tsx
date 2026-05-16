@@ -210,6 +210,7 @@ const AddListing = () => {
 
           <InputField
             label="Description"
+            type="textarea"
             value={formData.Description}
             handleChange={(e) => updateField("Description", e.target.value)}
             required
@@ -272,7 +273,7 @@ const AddListing = () => {
           />
 
           <InputField
-            label="Price (£)"
+            label="Price (£) per day"
             type="number"
             value={formData.Price.toString()}
             handleChange={(e) =>

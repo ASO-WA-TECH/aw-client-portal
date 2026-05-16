@@ -41,6 +41,34 @@ const Listings: React.FC<ListingsProps> = ({ listings }) => {
     <>
       <section className="renting-lending">
         <h2>LISTINGS</h2>
+        <p>
+          This tab shows all of your active listings that are visible to other
+          users.{" "}
+        </p>
+
+        <p>
+          To update a listing, select Edit on the item you’d like to manage.
+        </p>
+
+        <p>
+          {" "}
+          <u>Listing Statuses</u>
+        </p>
+        <ul>
+          <li>Available — The item is available for rent.</li>
+          <li>
+            Pending — A renter has expressed interest and the item is
+            temporarily unavailable to others.
+          </li>
+          <li>
+            Unavailable — You’ve chosen to pause the listing while the item is
+            rented out or otherwise unavailable.
+          </li>
+        </ul>
+        <p>
+          Once the item is ready to rent again, simply change the status back to
+          Available.
+        </p>
         <div className="listings-grid">
           {listings.map((listing) => (
             <ListingDisplayImage

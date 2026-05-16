@@ -1,4 +1,4 @@
-import "./Policies/index.scss";
+import "../genericPageStyles.scss";
 
 const AboutUsPage = () => {
   return (
@@ -41,10 +41,14 @@ const AboutUsPage = () => {
         This first phase allows us to learn properly. We are gathering insight,
         understanding how our community rents and resells traditional fashion
         and identifying where trust, protection and infrastructure are most
-        needed. Our long-term vision is to evolve ASO WA into a fully integrated
-        app experience. Future versions may include in-platform payments,
-        enhanced user protections and more seamless logistics. Any new features
-        will be introduced carefully, transparently and in line with regulatory
+        needed.{" "}
+      </p>
+
+      <p>
+        Our long-term vision is to evolve ASO WA into a fully integrated app
+        experience. Future versions may include in-platform payments, enhanced
+        user protections and more seamless logistics. Any new features will be
+        introduced carefully, transparently and in line with regulatory
         requirements.
       </p>
       <p>
