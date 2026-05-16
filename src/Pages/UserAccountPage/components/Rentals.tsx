@@ -1,5 +1,6 @@
 import React from "react";
 import ListingDisplayImage from "../../../stories/ListingDisplayImage/ListingDisplayImage";
+import { useNavigate } from "react-router-dom";
 
 interface RentalItem {
   id: string;
@@ -22,6 +23,7 @@ interface RentalsProps {
 }
 
 const Rentals: React.FC<RentalsProps> = ({ rentals }) => {
+  const navigate = useNavigate();
   if (!rentals || rentals.length === 0) {
     return (
       <section className="renting-lending">
@@ -46,13 +48,19 @@ const Rentals: React.FC<RentalsProps> = ({ rentals }) => {
       </p>
       <div className="listings-grid">
         {rentals.map((rental) => (
-          <ListingDisplayImage
-            key={rental.id}
-            imageUrl={rental.listingDetails?.Images?.[0]?.url ?? ""}
-            title={rental.listingDetails?.Title ?? "Untitled"}
-            subtitle={`£${rental.listingDetails?.Price?.toFixed(2) ?? "0.00"}`}
-            status={rental.listingDetails?.Status ?? "Unknown"}
-          />
+          <div
+            key={rental.listingDetails?.id ?? rental.id}
+            onClick={() => navigate(`/listing/${rental.listingDetails?.id}`)}
+            style={{ cursor: "pointer" }}
+          >
+            <ListingDisplayImage
+              key={rental.id}
+              imageUrl={rental.listingDetails?.Images?.[0]?.url ?? ""}
+              title={rental.listingDetails?.Title ?? "Untitled"}
+              subtitle={`£${rental.listingDetails?.Price?.toFixed(2) ?? "0.00"}`}
+              status={rental.listingDetails?.Status ?? "Unknown"}
+            />
+          </div>
         ))}
       </div>
     </section>

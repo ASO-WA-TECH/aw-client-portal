@@ -136,12 +136,9 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
                 {currentUser ? (
                   <LogoutLink className="navigation-menu__mobile__links__item" />
                 ) : (
-                  <Link
-                    to="authenticate"
-                    className="link navigation-menu__mobile__links__item"
-                  >
+                  <a href="/authenticate" className="link">
                     <b>Login/ Sign up</b>
-                  </Link>
+                  </a>
                 )}
               </li>
             </ul>

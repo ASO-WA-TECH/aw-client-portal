@@ -127,8 +127,10 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       const formattedDate = dateNeeded
         ? dateNeeded.split("-").reverse().join("-")
         : "";
-      const mailtoUrl = `mailto:${ownerEmail}?subject=Rental Request: ${listing.Title}&body=Hello,%0D%0A%0D%0AI would like to rent: ${listing.Title}%0D%0APrice: £${listing.Price?.toFixed(2)}%0D%0A%0D%0AI'd need it for ${formattedDate} and would like to rent it for ${numDays} days%0D%0A%0D%0APlease let me know how you'd like to proceed in terms of payment and delivery.%0D%0A%0D%0AThanks`;
-      window.location.href = mailtoUrl;
+      const mailtoUrl = `mailto:${ownerEmail}?bcc=hello@aso-wa.com&subject=Rental Request: ${listing.Title}&body=Hello,%0D%0A%0D%0AI would like to rent: ${listing.Title}%0D%0APrice: £${listing.Price?.toFixed(2)}%0D%0A%0D%0AI'd need it for ${formattedDate} and would like to rent it for ${numDays} days%0D%0A%0D%0APlease let me know how you'd like to proceed in terms of payment and delivery.%0D%0A%0D%0AThanks`;
+      const a = document.createElement("a");
+      a.href = mailtoUrl;
+      a.click();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to process rental request",

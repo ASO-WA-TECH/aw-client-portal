@@ -250,34 +250,38 @@ describe("Details", () => {
     });
 
     test("opens mailto with formatted date dd-mm-yyyy", async () => {
+      const mockClick = vi.fn();
+      let capturedHref = "";
+      const originalCreateElement = document.createElement.bind(document);
+
+      vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
+        if (tag === "a") {
+          const el = {
+            set href(url: string) {
+              capturedHref = url;
+            },
+            get href() {
+              return capturedHref;
+            },
+            click: mockClick,
+          };
+          return el as unknown as HTMLElement;
+        }
+        return originalCreateElement(tag);
+      });
+
       const { container } = renderDetails();
       fillInRentalForm(container, "2026-06-15", "3");
-
-      // spy on window.location.href
-      const locationSpy = vi.spyOn(window, "location", "get").mockReturnValue({
-        ...window.location,
-        href: "",
-      });
-      let capturedHref = "";
-      Object.defineProperty(window, "location", {
-        value: {
-          ...window.location,
-          set href(url: string) {
-            capturedHref = url;
-          },
-        },
-        writable: true,
-      });
-
       fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
 
       await waitFor(() => {
+        expect(mockClick).toHaveBeenCalled();
         expect(capturedHref).toContain("15-06-2026");
         expect(capturedHref).toContain("3 days");
         expect(capturedHref).toContain("owner@test.com");
       });
 
-      locationSpy.mockRestore();
+      vi.restoreAllMocks();
     });
   });
 
