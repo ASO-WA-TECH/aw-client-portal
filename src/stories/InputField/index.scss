@@ -53,8 +53,15 @@
       background-color: #f5f5f5;
       cursor: not-allowed;
     }
-  }
 
+    &.description-field {
+      min-height: 120px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: inherit;
+    }
+  }
+  
   .input-error-message {
     color: var(--error-message);
   }
