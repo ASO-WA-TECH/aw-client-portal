@@ -61,7 +61,7 @@ const HowItWorks = () => {
         <div className="how-it-works__cta">
           <p>
             Start{" "}
-            <a href="/my-account" target="_blank" rel="noreferrer">
+            <a href="/account" target="_blank" rel="noreferrer">
               listing
             </a>{" "}
             and{" "}
