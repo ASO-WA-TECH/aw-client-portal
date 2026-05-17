@@ -384,11 +384,7 @@ const FAQPage = () => {
     <div className="wrapper">
       <div className="faq-header">
         <h1>Frequently Asked Questions</h1>
-        <p>
-          These are the most commonly asked questions about ASO WA. Can't find
-          what you're looking for?{" "}
-          <a href="mailto:hello@aso-wa.com">Chat to our friendly team</a>.
-        </p>
+        <p>These are the most commonly asked questions about ASO WA.</p>
       </div>
 
       <div className="faq-tabs" role="tablist">

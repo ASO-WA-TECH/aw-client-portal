@@ -204,7 +204,7 @@ const AddListing = () => {
           images={formData.Images}
           onChange={(imgs: Image[]) => updateField("Images", imgs)}
         />
-
+        <p>You can upload up to 2 images. Supported formats: JPG, PNG.</p>
         <div className="create-listing-page__form">
           <InputField
             label="Title"
