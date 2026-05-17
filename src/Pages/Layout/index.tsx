@@ -66,7 +66,7 @@ export default function Layout() {
         </div>
 
         <div className={"brandFooter"}>
-          <h2 className={"footerLogo"}>ASO WA</h2>
+          <h2 className={"footerLogo"}>OWN THE MOMENT</h2>
           <p className={"copyright"}>© 2026 ASO WA.</p>
         </div>
       </footer>

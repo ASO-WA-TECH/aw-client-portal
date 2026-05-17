@@ -19,7 +19,9 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
   return (
     <>
       <div className="header-logo">
-        <Logo width={80} height={80} />
+        <a href="/">
+          <Logo width={80} height={80} />
+        </a>
       </div>
       <nav className={`navigation-menu ${darkMode ? "dark" : ""}`}>
         {/* Desktop Menu */}
@@ -62,7 +64,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
                 <LogoutLink />
               ) : (
                 <Link to="authenticate" className="link">
-                  Login
+                  Login/ Sign up
                 </Link>
               )}
             </li>
@@ -134,12 +136,9 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
                 {currentUser ? (
                   <LogoutLink className="navigation-menu__mobile__links__item" />
                 ) : (
-                  <Link
-                    to="authenticate"
-                    className="link navigation-menu__mobile__links__item"
-                  >
-                    <b>Login</b>
-                  </Link>
+                  <a href="/authenticate" className="link">
+                    <b>Login/ Sign up</b>
+                  </a>
                 )}
               </li>
             </ul>

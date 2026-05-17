@@ -2,7 +2,6 @@ import axios from "axios";
 
 const BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_URL;
 const TOKEN = import.meta.env.VITE_AIRTABLE_TOKEN;
-console.log(BASE_ID, TOKEN);
 const apiClient = axios.create({
   baseURL: `https://api.airtable.com/v0/${BASE_ID}`,
   headers: {

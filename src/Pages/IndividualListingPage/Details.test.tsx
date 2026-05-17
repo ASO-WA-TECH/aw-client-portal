@@ -5,10 +5,6 @@ import type { ListingFields } from "../ListingPage/types";
 
 // --- Mocks — declared with vi.hoisted so they're available when vi.mock runs ---
 
-const { mockOpen } = vi.hoisted(() => ({
-  mockOpen: vi.fn(),
-}));
-
 const {
   mockFetchAllUsers,
   mockFetchAllRentals,
@@ -23,6 +19,7 @@ const {
 
 vi.mock("react-router-dom", () => ({
   useParams: () => ({ id: "rec123" }),
+  useNavigate: () => vi.fn(),
 }));
 
 vi.mock("../../Services/Auth/AuthContext", () => ({
@@ -97,8 +94,6 @@ describe("Details", () => {
     ]);
     mockCreateRecords.mockResolvedValue({ id: "rental-1" });
     mockUpdateRecord.mockResolvedValue({});
-
-    window.open = mockOpen;
   });
 
   // unchanged ─────────────────────────────────────────────────────────────────
@@ -135,7 +130,9 @@ describe("Details", () => {
   describe("status rendering", () => {
     test("shows Rent Now button when status is Available", () => {
       renderDetails({ Status: "available" });
-      expect(screen.getByRole("button", { name: /rent now/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /rent now/i }),
+      ).toBeInTheDocument();
     });
 
     test("shows pending message when status is pending", () => {
@@ -253,16 +250,38 @@ describe("Details", () => {
     });
 
     test("opens mailto with formatted date dd-mm-yyyy", async () => {
+      const mockClick = vi.fn();
+      let capturedHref = "";
+      const originalCreateElement = document.createElement.bind(document);
+
+      vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
+        if (tag === "a") {
+          const el = {
+            set href(url: string) {
+              capturedHref = url;
+            },
+            get href() {
+              return capturedHref;
+            },
+            click: mockClick,
+          };
+          return el as unknown as HTMLElement;
+        }
+        return originalCreateElement(tag);
+      });
+
       const { container } = renderDetails();
       fillInRentalForm(container, "2026-06-15", "3");
       fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+
       await waitFor(() => {
-        expect(mockOpen).toHaveBeenCalled();
-        const url = mockOpen.mock.calls[0][0] as string;
-        expect(url).toContain("15-06-2026");
-        expect(url).toContain("3 days");
-        expect(url).toContain("owner@test.com");
+        expect(mockClick).toHaveBeenCalled();
+        expect(capturedHref).toContain("15-06-2026");
+        expect(capturedHref).toContain("3 days");
+        expect(capturedHref).toContain("owner@test.com");
       });
+
+      vi.restoreAllMocks();
     });
   });
 
@@ -278,7 +297,9 @@ describe("Details", () => {
 
       expect(mockCreateRecords).not.toHaveBeenCalled();
       expect(mockUpdateRecord).not.toHaveBeenCalled();
-      expect(screen.getByRole("button", { name: /rent now/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /rent now/i }),
+      ).toBeInTheDocument();
     });
 
     test("does not update listing if rental creation fails", async () => {

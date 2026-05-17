@@ -4,6 +4,9 @@ import type { ListingFields } from "../ListingPage/types";
 import HttpService, { type AirtableRecord } from "../../Services/httpService";
 import { useAuth } from "../../Services/Auth/AuthContext";
 import { InputField } from "../../stories/InputField";
+import { Button } from "../../stories";
+import { useNavigate } from "react-router-dom";
+import { Routes } from "../../Routes";
 
 type DetailsProps = {
   listing: ListingFields;
@@ -25,6 +28,7 @@ const rentalHttpService = new HttpService("Rentals");
 const userHttpService = new HttpService("Users");
 
 const Details = ({ listing, ownerEmail }: DetailsProps) => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { currentUser } = useAuth();
   const [status, setStatus] = useState(listing.Status);
@@ -123,9 +127,10 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       const formattedDate = dateNeeded
         ? dateNeeded.split("-").reverse().join("-")
         : "";
-      window.open(
-        `mailto:${ownerEmail}?subject=Rental Request: ${listing.Title}&body=Hello,%0D%0A%0D%0AI would like to rent: ${listing.Title}%0D%0APrice: £${listing.Price?.toFixed(2)}%0D%0A%0D%0AI'd need it for ${formattedDate} and would like to rent it for ${numDays} days%0D%0A%0D%0APlease let me know how you'd like to proceed in terms of payment and delivery.%0D%0A%0D%0AThanks`,
-      );
+      const mailtoUrl = `mailto:${ownerEmail}?bcc=hello@aso-wa.com&subject=Rental Request: ${listing.Title}&body=Hello,%0D%0A%0D%0AI would like to rent: ${listing.Title}%0D%0APrice: £${listing.Price?.toFixed(2)}%0D%0A%0D%0AI'd need it for ${formattedDate} and would like to rent it for ${numDays} days%0D%0A%0D%0APlease let me know how you'd like to proceed in terms of payment and delivery.%0D%0A%0D%0AThanks`;
+      const a = document.createElement("a");
+      a.href = mailtoUrl;
+      a.click();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to process rental request",
@@ -174,23 +179,36 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
 
   return (
     <div className="individual-listing-page__details">
-      <div className="rental-card">
-        {isOwner && (
-          <div className="individual-listing-page__details__owner-banner">
-            This is your listing
+      {currentUser ? (
+        <div className="rental-card">
+          {isOwner && (
+            <div className="individual-listing-page__details__owner-banner">
+              <p>This is your listing</p>
+            </div>
+          )}
+          <span className="individual-listing-page__details__brand">
+            ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
+          </span>
+          <h1>{listing.Title?.toUpperCase()}</h1>
+          <div className="rental-price">
+            <span>Rent from £{listing.Price?.toFixed(2)} per day</span>
           </div>
-        )}
-        <span className="individual-listing-page__details__brand">
-          ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
-        </span>
-        <h1>{listing.Title?.toUpperCase()}</h1>
-        <div className="rental-price">
-          <span>Rent from £{listing.Price?.toFixed(2)} per day</span>
+          <h2>Description</h2>
+          <p>{listing.Description}</p>
+          <h2>Size & Fit</h2>
+          <p>{listing.Size}</p>
+          {!isOwner && renderStatus()}
         </div>
-        <h2>Description</h2>
-        <p>{listing.Description}</p>
-        {renderStatus()}
-      </div>
+      ) : (
+        <div className="rental-card">
+          <p>Please log in or sign up to express interest in this listing.</p>
+          <Button
+            type="button"
+            text="Login/ Sign up"
+            handleClick={() => navigate(Routes.AUTHENTICATE)}
+          />
+        </div>
+      )}
     </div>
   );
 };
