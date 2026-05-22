@@ -35,8 +35,8 @@ describe("LogoutLink", () => {
     (useNavigate as ReturnType<typeof vi.fn>).mockReturnValue(mockNavigate);
 
     // Mock console methods
-    vi.spyOn(toast, "success").mockImplementation(() => {});
-    vi.spyOn(toast, "error").mockImplementation(() => {});
+    vi.spyOn(toast, "success").mockImplementation(() => "toast-id");
+    vi.spyOn(toast, "error").mockImplementation(() => "toast-id");
   });
 
   it("renders the logout link", () => {
