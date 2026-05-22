@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import {
   createContext,
   useContext,
@@ -41,22 +42,67 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  function signup(email: string, password: string) {
-    return createUserWithEmailAndPassword(auth, email, password);
+  async function signup(email: string, password: string) {
+    try {
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      return result;
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { flow: "signup" },
+        extra: { email },
+        level: "error",
+      });
+      throw error;
+    }
   }
 
-  function login(email: string, password: string) {
-    return signInWithEmailAndPassword(auth, email, password);
+  async function login(email: string, password: string) {
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      // identify the user in Sentry once logged in
+      Sentry.setUser({
+        email: result.user.email ?? undefined,
+        id: result.user.uid,
+      });
+      return result;
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { flow: "login" },
+        extra: { email },
+        level: "warning",
+      });
+      throw error;
+    }
   }
 
-  function logout() {
-    return signOut(auth);
+  async function logout() {
+    try {
+      await signOut(auth);
+      Sentry.setUser(null); // clear user context on logout
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { flow: "logout" },
+        level: "error",
+      });
+      throw error;
+    }
   }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
+
+      //  restores user context if they're already logged in (page refresh etc.)
+      if (user) {
+        Sentry.setUser({ email: user.email ?? undefined, id: user.uid });
+      } else {
+        Sentry.setUser(null);
+      }
     });
 
     return unsubscribe;

@@ -72,7 +72,6 @@ function AuthenticationPage() {
         });
       } catch (err) {
         await userCredential.user.delete();
-        console.error(err);
         setError(
           err instanceof Error ? err.message : "Failed to create account",
         );
@@ -80,7 +79,6 @@ function AuthenticationPage() {
 
       navigate(fromPreviousPath, { replace: true });
     } catch (err) {
-      console.error(err);
       setError(err instanceof Error ? err.message : "Failed to create account");
     } finally {
       setLoading(false);

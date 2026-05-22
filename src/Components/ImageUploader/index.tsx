@@ -69,8 +69,7 @@ const ImageUploader = ({ images, onChange, maxImages = 3 }: Props) => {
       }));
 
       onChange([...safeImages, ...newImages]);
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert("Upload failed");
     } finally {
       setIsUploading(false);

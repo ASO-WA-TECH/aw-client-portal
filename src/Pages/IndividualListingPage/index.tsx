@@ -6,6 +6,7 @@ import Image from "./Image";
 import Details from "./Details";
 import "./index.scss";
 import LoadingListing from "./LoadingListing";
+import { toast } from "react-toastify";
 
 const ASO_WA_EMAIL = import.meta.env.VITE_ASO_WA_EMAIL;
 
@@ -43,15 +44,15 @@ const IndividualListingPage = () => {
           const ownerRecord = await ownerHttpService.fetchRecord(ownerIds[0]);
 
           if (!ownerRecord.fields.Email) {
-            console.error("Owner email not found");
+            toast.error("Owner email not found");
             setIsDataError(true);
             return;
           }
 
           setOwnerEmail(ownerRecord.fields.Email);
         }
-      } catch (error) {
-        console.error(error);
+      } catch {
+        toast.error("Failed to fetch listing or owner data");
         setIsDataError(true);
       } finally {
         setIsLoadingData(false);

@@ -1,5 +1,7 @@
+import "./instrument";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import * as Sentry from "@sentry/react";
 
 import {
   createBrowserRouter,
@@ -90,8 +92,10 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <Sentry.ErrorBoundary fallback={<p>An error has occurred</p>} showDialog>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </Sentry.ErrorBoundary>
   </StrictMode>,
 );

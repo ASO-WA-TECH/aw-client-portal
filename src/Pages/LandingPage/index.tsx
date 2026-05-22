@@ -41,11 +41,26 @@ const LandingPage = () => {
     };
     fetchListings();
   }, [httpService]);
+
+  const errorbutton = () => {
+    return (
+      <button
+        onClick={() => {
+          throw new Error("This is your first error!");
+        }}
+      >
+        Break the world
+      </button>
+    );
+  };
+
   return (
     <div>
       <section className="heroSection"></section>
       <section className="carouselSection">
         <h2 className="sectionHeading">JUST LANDED</h2>
+        {errorbutton()}
+
         <div className="carouselContainer">
           <div className="productGrid">
             {listings.length > 0

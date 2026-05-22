@@ -187,8 +187,7 @@ const AddListing = () => {
       toast.success("Listing created successfully!");
 
       setTimeout(() => navigate("/listings"), 1000);
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Failed to create listing.");
     } finally {
       setIsSaving(false);
