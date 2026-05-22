@@ -37,8 +37,7 @@ const ListingPage = () => {
 
         setFilteredData(defaultFilter);
         setIsLoadingData(false);
-      } catch (error) {
-        console.error(error);
+      } catch {
         setIsDataError(true);
       } finally {
         setIsLoadingData(false);

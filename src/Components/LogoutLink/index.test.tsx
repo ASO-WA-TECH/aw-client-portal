@@ -5,6 +5,7 @@ import LogoutLink from "./index";
 import { useAuth } from "../../Services/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "../../Routes";
+import { toast } from "react-toastify";
 
 // Mock the dependencies
 vi.mock("../../Services/Auth/AuthContext");
@@ -34,8 +35,8 @@ describe("LogoutLink", () => {
     (useNavigate as ReturnType<typeof vi.fn>).mockReturnValue(mockNavigate);
 
     // Mock console methods
-    vi.spyOn(console, "log").mockImplementation(() => {});
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(toast, "success").mockImplementation(() => {});
+    vi.spyOn(toast, "error").mockImplementation(() => {});
   });
 
   it("renders the logout link", () => {
@@ -56,7 +57,7 @@ describe("LogoutLink", () => {
     await user.click(link);
 
     await waitFor(() => {
-      expect(console.log).toHaveBeenCalledWith("logged out");
+      expect(toast.success).toHaveBeenCalledWith("Logged out");
       expect(mockLogout).toHaveBeenCalledTimes(1);
       expect(mockNavigate).toHaveBeenCalledWith(Routes.INITIAL);
     });
@@ -74,7 +75,7 @@ describe("LogoutLink", () => {
 
     await waitFor(() => {
       expect(mockLogout).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith("Failed to log out:", error);
+      expect(toast.error).toHaveBeenCalledWith("Failed to log out");
       expect(mockNavigate).not.toHaveBeenCalled();
     });
   });

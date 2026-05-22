@@ -97,8 +97,7 @@ const UserListingsEditPage = () => {
           setFormData(loaded);
           setInitialData(loaded);
         }
-      } catch (err) {
-        console.error(err);
+      } catch {
         setIsError(true);
       } finally {
         setIsLoading(false);
@@ -154,9 +153,7 @@ const UserListingsEditPage = () => {
       setInitialData(JSON.parse(JSON.stringify(formData)));
 
       toast.success("Listing updated successfully!");
-    } catch (err) {
-      console.error("Update failed:", err);
-
+    } catch {
       toast.error("Failed to update listing.");
     } finally {
       setIsSaving(false);
@@ -172,9 +169,7 @@ const UserListingsEditPage = () => {
       toast.success("Listing has been deleted successfully!");
 
       setTimeout(() => navigate("/account"), 1000);
-    } catch (err) {
-      console.error("Delete failed:", err);
-
+    } catch {
       toast.error("Failed to delete listing.");
     } finally {
       setIsDeleting(false);

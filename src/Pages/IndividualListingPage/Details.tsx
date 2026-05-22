@@ -105,9 +105,6 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
       try {
         await rentalHttpService.createRecords(rentalPayload);
       } catch (err) {
-        console.error("Full error object:", err);
-        const axiosError = err as { response?: { data?: unknown } };
-        console.error("Error response data:", axiosError?.response?.data);
         setError(
           err instanceof Error
             ? err.message

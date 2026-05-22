@@ -34,8 +34,6 @@ function ResetPasswordPage() {
         "If an account exists for this email, a reset link has been sent. Please also check your spam folder.",
       );
     } catch (err) {
-      console.error(err);
-
       setError(
         err instanceof Error
           ? err.message
