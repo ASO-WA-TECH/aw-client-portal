@@ -12,8 +12,23 @@ import {
   ChevronDown,
 } from "lucide-react";
 import "../genericPageStyles.scss";
-import faqContent from "../../Content/faq.json";
+import faqContentJson from "../../Content/faq.json";
 import { parseContent } from "../../utils/parseContent";
+
+interface FaqItem {
+  q: string;
+  a: string[];
+  bullets?: string[];
+  footer?: string[];
+}
+
+interface FaqSection {
+  id: string;
+  label: string;
+  items: FaqItem[];
+}
+
+const faqContent = faqContentJson as FaqSection[];
 
 const sectionIcons: Record<string, React.JSX.Element> = {
   payments: <CreditCard size={16} />,
