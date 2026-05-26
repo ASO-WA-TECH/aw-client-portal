@@ -128,10 +128,10 @@ describe("Details", () => {
   });
 
   describe("status rendering", () => {
-    test("shows Rent Now button when status is Available", () => {
+    test("shows Enquire Now button when status is Available", () => {
       renderDetails({ Status: "available" });
       expect(
-        screen.getByRole("button", { name: /rent now/i }),
+        screen.getByRole("button", { name: /enquire now/i }),
       ).toBeInTheDocument();
     });
 
@@ -140,7 +140,7 @@ describe("Details", () => {
       expect(
         screen.getByText(/this item is currently pending/i),
       ).toBeInTheDocument();
-      expect(screen.queryByText(/rent now/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /enquire now/i })).not.toBeInTheDocument();
     });
 
     test("shows unavailable message when status is unavailable", () => {
@@ -148,7 +148,7 @@ describe("Details", () => {
       expect(
         screen.getByText(/this item is currently unavailable/i),
       ).toBeInTheDocument();
-      expect(screen.queryByText(/rent now/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /enquire now/i })).not.toBeInTheDocument();
     });
   });
 
@@ -165,13 +165,13 @@ describe("Details", () => {
 
     test("button is disabled when fields are empty", () => {
       renderDetails();
-      expect(screen.getByRole("button", { name: /rent now/i })).toBeDisabled();
+      expect(screen.getByRole("button", { name: /enquire now/i })).toBeDisabled();
     });
 
     test("button is enabled when both fields are filled", () => {
       const { container } = renderDetails();
       fillInRentalForm(container);
-      expect(screen.getByRole("button", { name: /rent now/i })).toBeEnabled();
+      expect(screen.getByRole("button", { name: /enquire now/i })).toBeEnabled();
     });
   });
 
@@ -179,7 +179,7 @@ describe("Details", () => {
     test("checks for existing rentals before proceeding", async () => {
       const { container } = renderDetails();
       fillInRentalForm(container);
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
       await waitFor(() => expect(mockFetchAllRentals).toHaveBeenCalledTimes(1));
     });
 
@@ -199,7 +199,7 @@ describe("Details", () => {
 
       const { container } = renderDetails();
       fillInRentalForm(container);
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
 
       await waitFor(() => expect(mockFetchAllRentals).toHaveBeenCalledTimes(1));
 
@@ -212,7 +212,7 @@ describe("Details", () => {
 
       const { container } = renderDetails();
       fillInRentalForm(container);
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
 
       await waitFor(() => expect(mockCreateRecords).toHaveBeenCalledTimes(1));
     });
@@ -222,14 +222,14 @@ describe("Details", () => {
     test("calls fetchAllRecords to look up the airtable user", async () => {
       const { container } = renderDetails();
       fillInRentalForm(container);
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
       await waitFor(() => expect(mockFetchAllUsers).toHaveBeenCalledTimes(1));
     });
 
     test("updates listing status to pending after rental created", async () => {
       const { container } = renderDetails();
       fillInRentalForm(container);
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
       await waitFor(() =>
         expect(mockUpdateRecord).toHaveBeenCalledWith({
           id: "rec123",
@@ -241,7 +241,7 @@ describe("Details", () => {
     test("shows pending message after successful rental", async () => {
       const { container } = renderDetails();
       fillInRentalForm(container);
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
       await waitFor(() =>
         expect(
           screen.getByText(/this item is currently pending/i),
@@ -272,7 +272,7 @@ describe("Details", () => {
 
       const { container } = renderDetails();
       fillInRentalForm(container, "2026-06-15", "3");
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
 
       await waitFor(() => {
         expect(mockClick).toHaveBeenCalled();
@@ -291,14 +291,14 @@ describe("Details", () => {
 
       const { container } = renderDetails();
       fillInRentalForm(container);
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
 
       await waitFor(() => expect(mockFetchAllUsers).toHaveBeenCalled());
 
       expect(mockCreateRecords).not.toHaveBeenCalled();
       expect(mockUpdateRecord).not.toHaveBeenCalled();
       expect(
-        screen.getByRole("button", { name: /rent now/i }),
+        screen.getByRole("button", { name: /enquire now/i }),
       ).toBeInTheDocument();
     });
 
@@ -309,7 +309,7 @@ describe("Details", () => {
 
       const { container } = renderDetails();
       fillInRentalForm(container);
-      fireEvent.click(screen.getByRole("button", { name: /rent now/i }));
+      fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
 
       await waitFor(() => expect(mockCreateRecords).toHaveBeenCalled());
 

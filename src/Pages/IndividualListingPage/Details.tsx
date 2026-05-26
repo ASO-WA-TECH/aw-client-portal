@@ -11,6 +11,7 @@ import { Routes } from "../../Routes";
 type DetailsProps = {
   listing: ListingFields;
   ownerEmail: string;
+  ownerName?: string;
 };
 
 interface UserFields {
@@ -27,7 +28,7 @@ const listingHttpService = new HttpService("Listings");
 const rentalHttpService = new HttpService("Rentals");
 const userHttpService = new HttpService("Users");
 
-const Details = ({ listing, ownerEmail }: DetailsProps) => {
+const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { currentUser } = useAuth();
@@ -168,7 +169,7 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
           onClick={() => handleInterestClick(id!)}
           disabled={!dateNeeded || !numDays}
         >
-          <h2>RENT NOW</h2>
+          <h2>Enquire Now</h2>
         </button>
       </div>
     );
@@ -194,6 +195,18 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
           <p>{listing.Description}</p>
           <h2>Size & Fit</h2>
           <p>{listing.Size}</p>
+          {listing.Colour && listing.Colour.length > 0 && (
+            <>
+              <h2>Colour</h2>
+              <p>{listing.Colour.join(", ")}</p>
+            </>
+          )}
+          {ownerName && (
+            <>
+              <h2>Owner</h2>
+              <p>{ownerName}</p>
+            </>
+          )}
           {!isOwner && renderStatus()}
         </div>
       ) : (
