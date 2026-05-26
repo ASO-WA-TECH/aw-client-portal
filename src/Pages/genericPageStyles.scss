@@ -62,7 +62,7 @@ li {
   border: 1px solid #ddd;
   background: transparent;
   font-size: 0.9rem;
-  color: #555;
+  color: $grey;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
@@ -134,7 +134,7 @@ li {
 .accordion-body {
   padding: 0 18px 16px 62px;
   font-size: 0.9rem;
-  color: #555;
+  color: $grey;
   line-height: 1.7;
 }
 

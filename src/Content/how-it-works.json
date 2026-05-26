@@ -1,0 +1,55 @@
+[
+  {
+    "id": "how-it-works",
+    "label": "How it works",
+    "paragraphs": [
+      "See something you love? Click **Enquire Now** and a template email will pop up for you to message the lister directly.",
+      "Use the email to ask questions, confirm your rental dates and agree the details before going ahead."
+    ]
+  },
+  {
+    "id": "before-you-rent",
+    "label": "Before you rent",
+    "paragraphs": [
+      "Before confirming, check the size, condition, location, rental dates and any notes from the lister.",
+      "We recommend the lister confirming the item's condition via email and taking clear photos before handover."
+    ]
+  },
+  {
+    "id": "payments",
+    "label": "Payments and deposits",
+    "paragraphs": [
+      "For now, payments are agreed directly with the lister. Use your enquiry email to confirm the rental fee, payment method and any refundable deposit, any delivery and return costs, including when it should be paid and returned.",
+      "We recommend using a secure, traceable option like **PayPal**, bank transfer or another payment method that gives you a clear record. Avoid cash where possible and keep everything confirmed in writing before handover."
+    ]
+  },
+  {
+    "id": "shipping",
+    "label": "Shipping and delivery",
+    "paragraphs": [
+      "Agree how you'll get the item — whether that's collection, delivery or postage — and when it needs to be returned.",
+      "For delivery, we recommend using **tracked postage** or courier services where possible. For collection, choose a mutually agreed public place. Any delivery or return costs should be agreed before the rental is confirmed."
+    ]
+  },
+  {
+    "id": "returns",
+    "label": "Returns",
+    "paragraphs": [
+      "Returns should be agreed before the rental is confirmed. Make sure you're both clear on:"
+    ],
+    "bullets": [
+      "The exact return date",
+      "How it will be returned: collection, drop-off or postage and costs associated with this",
+      "**Condition on return**: items should be returned in the same condition they were received. We recommend both parties take photos before handover and on return",
+      "**Late returns**: if you need more time, contact the lister as early as possible. Any late fees should be agreed upfront",
+      "**Damage**: if an item is returned damaged, listers and renters should attempt to resolve this directly. Keep all communication via email. If you cannot resolve a dispute, contact us at [hello@aso-wa.com](mailto:hello@aso-wa.com) and we'll aim to resolve the issue"
+    ]
+  },
+  {
+    "id": "disclaimer",
+    "label": "Disclaimer",
+    "paragraphs": [
+      "ASO WA connects renters and listers. While ASO WA is in its early launch phase, payments, deposits, delivery and returns are agreed directly between users, while we build our in-platform payment experience. Before sending or receiving an item, we recommend confirming the condition in writing and taking clear photos. If you need to report a listing or user, contact [hello@aso-wa.com](mailto:hello@aso-wa.com)."
+    ]
+  }
+]

@@ -7,6 +7,8 @@ import { InputField } from "../../stories/InputField";
 import { Button } from "../../stories";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "../../Routes";
+import howItWorksContent from "../../Content/how-it-works.json";
+import InfoTabs from "../../Components/InfoTabs";
 
 type DetailsProps = {
   listing: ListingFields;
@@ -195,6 +197,7 @@ const Details = ({ listing, ownerEmail }: DetailsProps) => {
           <h2>Size & Fit</h2>
           <p>{listing.Size}</p>
           {!isOwner && renderStatus()}
+          {!isOwner && <InfoTabs content={howItWorksContent} />}
         </div>
       ) : (
         <div className="rental-card">
