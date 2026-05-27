@@ -53,10 +53,10 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
             </li>
             <li>
               <Link
-                to="/how-it-works"
+                to="/add-listing"
                 className="navigation-menu__desktop__links__item__link"
               >
-                How It Works
+                Create a Listing
               </Link>
             </li>
             <li>
@@ -124,11 +124,11 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
               </li>
               <li className="navigation-menu__mobile__links__item">
                 <Link
-                  to="/how-it-works"
+                  to="/add-listing"
                   className="navigation-menu__mobile__links__item__link"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  How It Works
+                  Create a Listing
                 </Link>
               </li>
               <br />

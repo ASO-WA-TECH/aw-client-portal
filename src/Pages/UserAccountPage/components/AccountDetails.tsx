@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from "react";
 import Button from "../../../stories/Button/";
 import HttpService from "../../../Services/httpService";
+import { useNavigate } from "react-router-dom";
+import { Routes } from "../../../Routes";
 
 interface UserData {
   id: string;
@@ -24,6 +26,11 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saving, setSaving] = useState(false);
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate(Routes.ADD_LISTING);
+  };
 
   if (!userData) return null;
 
@@ -147,13 +154,24 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
           </p>
         )}
 
-        <Button
-          customStyle="btn-save"
-          type="submit"
-          text={saving ? "Saving..." : "Save"}
-          variant="primary"
-          handleClick={handleSave}
-        />
+        <div className="button-group">
+          <Button
+            customStyle="btn-save"
+            type="submit"
+            text={saving ? "Saving..." : "Save"}
+            variant="primary"
+            handleClick={handleSave}
+          />
+
+          <Button
+            customStyle="btn-save"
+            type="button"
+            text="Create a listing"
+            variant="primary"
+            color="mustardYellow"
+            handleClick={handleRedirect}
+          />
+        </div>
       </div>
     </section>
   );

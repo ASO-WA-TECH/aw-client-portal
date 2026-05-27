@@ -6,7 +6,6 @@ import HttpService from "../../Services/httpService";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
-import AddListing from "./components/AddListing";
 import LoadingAccount from "./LoadingAccount";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -70,7 +69,6 @@ const UserAccountPage = () => {
     { label: "MY ACCOUNT", key: "my-account" },
     { label: "RENTALS", key: "rentals" },
     { label: "LISTINGS", key: "listings" },
-    { label: "ADD LISTING", key: "add-listing" },
   ];
 
   useEffect(() => {
@@ -225,8 +223,6 @@ const UserAccountPage = () => {
           {activeTab === "rentals" && <Rentals rentals={rentals} />}
 
           {activeTab === "listings" && <Listings listings={listings} />}
-
-          {activeTab === "add-listing" && <AddListing />}
         </main>
       </div>
     </div>

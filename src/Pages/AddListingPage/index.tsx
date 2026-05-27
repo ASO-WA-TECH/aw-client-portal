@@ -2,8 +2,8 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import HttpService from "../../../Services/httpService";
-import { useAuth } from "../../../Services/Auth/AuthContext";
+import HttpService from "../../Services/httpService";
+import { useAuth } from "../../Services/Auth/AuthContext";
 
 import type {
   ListingFormData,
@@ -12,20 +12,20 @@ import type {
   GenderOption,
   StatusOption,
   Image,
-} from "../../../listing.types";
+} from "../../listing.types";
 
 interface UserFields {
   [key: string]: unknown;
   auth_uid: string;
 }
 
-import "../index.scss";
+import "./index.scss";
 
-import InputField from "../../../stories/InputField";
-import CheckboxGroup from "../../../stories/FormField/CheckboxGroup";
-import InputDropdown from "../../../stories/FormField/InputDropdown";
-import Button from "../../../stories/Button";
-import ImageUploader from "../../../Components/ImageUploader";
+import InputField from "../../stories/InputField";
+import CheckboxGroup from "../../stories/FormField/CheckboxGroup";
+import InputDropdown from "../../stories/FormField/InputDropdown";
+import Button from "../../stories/Button";
+import ImageUploader from "../../Components/ImageUploader";
 
 const COLOUR_OPTIONS = [
   "Black",
@@ -115,7 +115,7 @@ const AddListing = () => {
     field: K,
     value: ListingFormData[K],
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev: ListingFormData) => ({ ...prev, [field]: value }));
   };
 
   const validateForm = () => {
@@ -175,7 +175,7 @@ const AddListing = () => {
       const payload = {
         ...formData,
         Owner: [userRecord.id],
-        Images: formData.Images.map((img) => ({
+        Images: formData.Images.map((img: Image) => ({
           url: img.url,
         })),
         Colour: Array.isArray(formData.Colour)
