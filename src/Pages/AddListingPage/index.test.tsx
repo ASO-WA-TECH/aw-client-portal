@@ -34,7 +34,14 @@ vi.mock("../../Services/httpService", () => ({
 }));
 
 vi.mock("../../Components/ImageUploader", () => ({
-  default: () => <div data-testid="image-uploader" />,
+  default: ({ onChange }: { onChange: (imgs: { url: string }[]) => void }) => (
+    <button
+      data-testid="mock-upload-btn"
+      onClick={() => onChange([{ url: "https://example.com/image.jpg" }])}
+    >
+      Upload Mock Image
+    </button>
+  ),
 }));
 
 // --- Helpers ---
@@ -46,8 +53,6 @@ const renderComponent = () =>
     </MemoryRouter>,
   );
 
-// Labels aren't associated via htmlFor so we query by role/label text on the
-// container, or use the label text to find the nearest sibling input.
 const getInputByLabel = (labelText: RegExp) => {
   const label = screen
     .getAllByText(labelText)
@@ -57,7 +62,9 @@ const getInputByLabel = (labelText: RegExp) => {
 };
 
 const fillRequiredFields = () => {
-  // Text inputs — find by their container label text
+  fireEvent.click(screen.getByTestId("mock-upload-btn"));
+
+  // Text inputs
   fireEvent.change(getInputByLabel(/^title/i), {
     target: { value: "Test Agbada" },
   });
@@ -81,7 +88,7 @@ const fillRequiredFields = () => {
   fireEvent.change(getInputByLabel(/^price/i), {
     target: { value: "10" },
   });
-  // Checkboxes — these DO have proper for/id associations (for="checkbox-Black")
+  // Checkboxes
   fireEvent.click(document.getElementById("checkbox-Black")!);
   fireEvent.click(document.getElementById("checkbox-Agbada")!);
 };
