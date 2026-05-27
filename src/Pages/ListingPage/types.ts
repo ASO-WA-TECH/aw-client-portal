@@ -1,3 +1,5 @@
+import type { SizeOption, CategoryOption } from "../../listing.types";
+
 export type ListingRecord = {
   id: string;
   createdTime: string;
@@ -9,11 +11,12 @@ export type ListingFields = {
   Owner: string[];
   Title: string;
   Description: string;
-  Category: string;
   Gender: "Woman" | "Man";
-  Size: string;
+  Size: SizeOption;
   Price: number;
   Images: Image[];
+  Colour: string[];
+  Category?: CategoryOption[];
   Status: "available" | "pending" | "unavailable";
   "Creation Date": string;
   Location: string;

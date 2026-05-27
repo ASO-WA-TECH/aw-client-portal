@@ -19,6 +19,9 @@ a {
     &__closed {
         display: block;
         padding: 12px;
+        display: flex;
+        flex-direction: row-reverse;
+
 
         &__hamburger-button {
             display: flex;
@@ -39,6 +42,13 @@ a {
                 border-radius: 2px;
             }
         }
+    }
+
+    &__subtitle {
+        text-align: center;
+        font-size: 1rem;
+        color: $grey;
+        margin-top: 0.5rem;
     }
 
     &__desktop {

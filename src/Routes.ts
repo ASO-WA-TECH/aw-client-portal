@@ -25,6 +25,5 @@ export enum Routes {
   TERMS_AND_CONDITIONS = "/terms-and-conditions",
   ABOUT_US = "/about-us",
   CAREERS = "/careers",
-  HOW_IT_WORKS = "/how-it-works",
   ANYTHING_ELSE = "*",
 }

@@ -44,22 +44,7 @@ const COLOUR_OPTIONS = [
   "Cream",
 ];
 
-const SIZE_OPTIONS: SizeOption[] = [
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "XXL",
-  6,
-  8,
-  10,
-  12,
-  14,
-  16,
-  18,
-  20,
-];
+const SIZE_OPTIONS: SizeOption[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const CATEGORY_OPTIONS: CategoryOption[] = [
   "Agbada",
