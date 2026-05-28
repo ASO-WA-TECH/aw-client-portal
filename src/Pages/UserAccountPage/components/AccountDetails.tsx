@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 import Button from "../../../stories/Button/";
 import HttpService from "../../../Services/httpService";
 import { useAuth } from "../../../Services/Auth/AuthContext";
@@ -92,6 +93,16 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
   const handleDeleteAccount = async () => {
     if (isDeleting) return;
     setIsDeleting(true);
+
+    try {
+      await deleteAccount();
+    } catch {
+      toast.error("Failed to delete account. Please try again.");
+      setShowDeleteConfirm(false);
+      setIsDeleting(false);
+      return;
+    }
+
     try {
       const listingIds = userData.Listings || [];
       if (listingIds.length > 0) {
@@ -108,16 +119,18 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
       }
 
       await usersHttpService.deleteRecord(userData.id);
-      await deleteAccount();
-
-      toast.success("Your account has been permanently deleted.");
-      navigate(Routes.INITIAL);
-    } catch {
-      toast.error("Failed to delete account. Please try again.");
-      setShowDeleteConfirm(false);
-    } finally {
-      setIsDeleting(false);
+    } catch (err) {
+      // Airtable data deletion failed, but Firebase auth is already deleted —
+      // user can't log back in, so navigate home anyway
+      Sentry.captureException(err, {
+        tags: { flow: "deleteAccount-airtable-data-deletion" },
+        level: "error",
+      });
     }
+
+    toast.success("Your account has been permanently deleted.");
+    navigate(Routes.INITIAL);
+    setIsDeleting(false);
   };
 
   return (
