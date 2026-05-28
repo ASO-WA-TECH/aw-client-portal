@@ -279,6 +279,7 @@ describe("Details", () => {
         expect(capturedHref).toContain("15-06-2026");
         expect(capturedHref).toContain("3 days");
         expect(capturedHref).toContain("owner@test.com");
+        expect(capturedHref).toContain("ASO WA Rental request");
       });
 
       vi.restoreAllMocks();

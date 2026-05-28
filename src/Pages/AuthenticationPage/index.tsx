@@ -178,9 +178,7 @@ function AuthenticationPage() {
 
                     <label htmlFor="isApproved" className="paragraph">
                       By joining I agree to our{" "}
-                      <a href={Routes.TERMS_AND_CONDITIONS}>
-                        Terms and Conditions
-                      </a>
+                      <a href="#">Terms and Conditions</a>
                     </label>
 
                     <br />
