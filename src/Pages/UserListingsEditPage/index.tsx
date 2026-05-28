@@ -133,6 +133,7 @@ const UserListingsEditPage = () => {
         Location,
         Price,
         Images,
+        Colour,
       } = formData;
 
       await listingHttpService.updateRecord({
@@ -147,6 +148,7 @@ const UserListingsEditPage = () => {
           Location,
           Price,
           Images: Images?.map((img) => ({ url: img.url })),
+          Colour,
         },
       });
 
