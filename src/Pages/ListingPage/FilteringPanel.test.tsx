@@ -1,25 +1,26 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import FilterPanel from "./FilteringPanel";
+import type { SortOption } from "./FilteringPanel";
 import type {
   CategoryOption,
   SizeOption,
+  ColourOption,
 } from "../../Constants/Listing/listing.constants";
+
+type FilterSection = "sort" | "category" | "size" | "colour" | "availability";
 
 const mockProps = {
   totalResults: 42,
   activeFilterCount: 0,
   selectedCategories: [] as CategoryOption[],
   selectedSizes: [] as SizeOption[],
-  selectedColours: [] as string[],
+  selectedColours: [] as ColourOption[],
+  currentSort: "date-desc" as SortOption,
   availableOnly: false,
-  expandedSections: ["category"] as (
-    | "category"
-    | "size"
-    | "colour"
-    | "availability"
-  )[],
+  expandedSections: ["category"] as FilterSection[],
   setAvailableOnly: vi.fn(),
+  setCurrentSort: vi.fn(),
   toggleSection: vi.fn(),
   toggleCategory: vi.fn(),
   toggleSize: vi.fn(),
@@ -33,8 +34,9 @@ beforeEach(() => {
 
 describe("FilterPanel", () => {
   describe("Header", () => {
-    it("renders the result count", () => {
+    it("renders the sidebar main title and result count", () => {
       render(<FilterPanel {...mockProps} />);
+      expect(screen.getByText("FILTERS & SORT")).toBeInTheDocument();
       expect(screen.getByText("42 RESULTS")).toBeInTheDocument();
     });
 
@@ -52,6 +54,44 @@ describe("FilterPanel", () => {
       render(<FilterPanel {...mockProps} activeFilterCount={2} />);
       fireEvent.click(screen.getByText("Clear all (2)"));
       expect(mockProps.clearAllFilters).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("Sort section", () => {
+    it("renders sort heading", () => {
+      render(<FilterPanel {...mockProps} />);
+      expect(screen.getByText("Sort By")).toBeInTheDocument();
+    });
+
+    it("shows sort radio options when section is expanded", () => {
+      render(<FilterPanel {...mockProps} expandedSections={["sort"]} />);
+      expect(screen.getByLabelText("Newest First")).toBeInTheDocument();
+      expect(screen.getByLabelText("Oldest First")).toBeInTheDocument();
+      expect(screen.getByLabelText("Price: Low to High")).toBeInTheDocument();
+      expect(screen.getByLabelText("Price: High to Low")).toBeInTheDocument();
+    });
+
+    it("hides sort options when section is collapsed", () => {
+      render(<FilterPanel {...mockProps} expandedSections={[]} />);
+      expect(screen.queryByLabelText("Newest First")).not.toBeInTheDocument();
+    });
+
+    it("calls setCurrentSort when a radio button is selected", () => {
+      render(<FilterPanel {...mockProps} expandedSections={["sort"]} />);
+      fireEvent.click(screen.getByLabelText("Oldest First"));
+      expect(mockProps.setCurrentSort).toHaveBeenCalledWith("date-asc");
+    });
+
+    it("marks correct radio option as checked based on currentSort state", () => {
+      render(
+        <FilterPanel
+          {...mockProps}
+          expandedSections={["sort"]}
+          currentSort="price-asc"
+        />,
+      );
+      expect(screen.getByLabelText("Price: Low to High")).toBeChecked();
+      expect(screen.getByLabelText("Newest First")).not.toBeChecked();
     });
   });
 

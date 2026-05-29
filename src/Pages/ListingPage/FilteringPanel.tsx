@@ -1,58 +1,33 @@
 import type {
   CategoryOption,
   SizeOption,
+  ColourOption,
+} from "../../Constants/Listing/listing.constants";
+import {
+  CATEGORY_OPTIONS,
+  SIZE_OPTIONS,
+  COLOUR_OPTIONS,
 } from "../../Constants/Listing/listing.constants";
 
-const CATEGORIES: CategoryOption[] = [
-  "Agbada",
-  "Gele",
-  "Iro and Buba",
-  "Dress",
-  "Top",
-  "Skirt",
-  "Corset",
-  "Fila",
-  "Kente",
-  "Boubou",
-  "Kaftan",
-  "Kaba & Slit",
-  "Kitenge",
-  "Habesha",
-];
+export type SortOption = "date-desc" | "date-asc" | "price-asc" | "price-desc";
 
-const SIZES: SizeOption[] = ["XS", "S", "M", "L", "XL", "XXL"];
-
-const COLOURS = [
-  "Black",
-  "White",
-  "Red",
-  "Blue",
-  "Green",
-  "Yellow",
-  "Orange",
-  "Pink",
-  "Purple",
-  "Brown",
-  "Gold",
-  "Silver",
-  "Multi",
-];
-
-type FilterSection = "category" | "size" | "colour" | "availability";
+type FilterSection = "sort" | "category" | "size" | "colour" | "availability";
 
 interface FilterPanelProps {
   totalResults: number;
   activeFilterCount: number;
   selectedCategories: CategoryOption[];
   selectedSizes: SizeOption[];
-  selectedColours: string[];
+  selectedColours: ColourOption[];
+  currentSort: SortOption;
   availableOnly: boolean;
   expandedSections: FilterSection[];
   setAvailableOnly: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurrentSort: (sort: SortOption) => void;
   toggleSection: (section: FilterSection) => void;
   toggleCategory: (cat: CategoryOption) => void;
   toggleSize: (size: SizeOption) => void;
-  toggleColour: (colour: string) => void;
+  toggleColour: (colour: ColourOption) => void;
   clearAllFilters: () => void;
 }
 
@@ -62,9 +37,11 @@ const FilterPanel = ({
   selectedCategories,
   selectedSizes,
   selectedColours,
+  currentSort,
   availableOnly,
   expandedSections,
   setAvailableOnly,
+  setCurrentSort,
   toggleSection,
   toggleCategory,
   toggleSize,
@@ -74,7 +51,7 @@ const FilterPanel = ({
   return (
     <aside className="listing-page__sidebar">
       <div className="listing-page__sidebar__header">
-        <span className="listing-page__sidebar__title">FILTERS</span>
+        <span className="listing-page__sidebar__title">FILTERS & SORT</span>
         <span className="listing-page__sidebar__count">
           {totalResults} RESULTS
         </span>
@@ -88,6 +65,61 @@ const FilterPanel = ({
           <p>Clear all ({activeFilterCount})</p>
         </button>
       )}
+
+      {/* Sorting Accordion Section */}
+      <div className="listing-page__sidebar__section">
+        <button
+          className="listing-page__sidebar__section__heading"
+          onClick={() => toggleSection("sort")}
+        >
+          <span>Sort By</span>
+          <span
+            className={`listing-page__sidebar__chevron ${expandedSections.includes("sort") ? "open" : ""}`}
+          >
+            &#8964;
+          </span>
+        </button>
+        {expandedSections.includes("sort") && (
+          <div className="listing-page__sidebar__section__options">
+            <label className="listing-page__sidebar__radio-label">
+              <input
+                type="radio"
+                name="sortOrder"
+                checked={currentSort === "date-desc"}
+                onChange={() => setCurrentSort("date-desc")}
+              />
+              <span>Newest First</span>
+            </label>
+            <label className="listing-page__sidebar__radio-label">
+              <input
+                type="radio"
+                name="sortOrder"
+                checked={currentSort === "date-asc"}
+                onChange={() => setCurrentSort("date-asc")}
+              />
+              <span>Oldest First</span>
+            </label>
+            <label className="listing-page__sidebar__radio-label">
+              <input
+                type="radio"
+                name="sortOrder"
+                checked={currentSort === "price-asc"}
+                onChange={() => setCurrentSort("price-asc")}
+              />
+              <span>Price: Low to High</span>
+            </label>
+            <label className="listing-page__sidebar__radio-label">
+              <input
+                type="radio"
+                name="sortOrder"
+                checked={currentSort === "price-desc"}
+                onChange={() => setCurrentSort("price-desc")}
+              />
+              <span>Price: High to Low</span>
+            </label>
+          </div>
+        )}
+      </div>
 
       {/* Availability */}
       <div className="listing-page__sidebar__section">
@@ -120,7 +152,7 @@ const FilterPanel = ({
         </button>
         {expandedSections.includes("category") && (
           <div className="listing-page__sidebar__section__options">
-            {CATEGORIES.map((cat) => (
+            {CATEGORY_OPTIONS.map((cat) => (
               <label
                 key={cat}
                 className="listing-page__sidebar__checkbox-label"
@@ -152,13 +184,13 @@ const FilterPanel = ({
         </button>
         {expandedSections.includes("size") && (
           <div className="listing-page__sidebar__section__options listing-page__sidebar__section__options--sizes">
-            {SIZES.map((size) => (
+            {SIZE_OPTIONS.map((size) => (
               <button
                 key={size}
                 className={`listing-page__sidebar__size-chip ${selectedSizes.includes(size) ? "active" : ""}`}
                 onClick={() => toggleSize(size)}
               >
-                <p> {size}</p>
+                <p>{size}</p>
               </button>
             ))}
           </div>
@@ -180,7 +212,7 @@ const FilterPanel = ({
         </button>
         {expandedSections.includes("colour") && (
           <div className="listing-page__sidebar__section__options">
-            {COLOURS.map((col) => (
+            {COLOUR_OPTIONS.map((col) => (
               <label
                 key={col}
                 className="listing-page__sidebar__checkbox-label"

@@ -1,21 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 import HttpService from "../../Services/httpService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./index.scss";
 import type { FlattenedListing, ListingRecord } from "./types";
 import type {
   SizeOption,
   CategoryOption,
+  ColourOption,
 } from "../../Constants/Listing/listing.constants";
+import type { SortOption } from "./FilteringPanel";
 import groupByKeyValue from "./utils/groupByKeyValue";
-import ListingDisplayImage from "../../stories/ListingDisplayImage/ListingDisplayImage";
 import Loading from "./Loading";
 import FilterPanel from "./FilteringPanel";
+import MobileFilterBar from "./MobileFilterBar";
+import GenderTabs from "./GenderTabs";
+import ListingGrid from "./ListingGrid";
 
-type FilterSection = "category" | "size" | "colour" | "availability";
+type FilterSection = "sort" | "category" | "size" | "colour" | "availability";
 
 const ListingPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const httpService = useMemo(() => new HttpService("Listings"), []);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [listingData, setListingData] = useState<FlattenedListing[]>([]);
@@ -23,16 +28,22 @@ const ListingPage = () => {
   const [filteredData, setFilteredData] = useState<FlattenedListing[]>([]);
   const [activeGender, setActiveGender] = useState("Woman");
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<FilterSection[]>([]);
 
-  const [selectedCategories, setSelectedCategories] = useState<
-    CategoryOption[]
-  >([]);
-  const [selectedSizes, setSelectedSizes] = useState<SizeOption[]>([]);
-  const [selectedColours, setSelectedColours] = useState<string[]>([]);
-  const [availableOnly, setAvailableOnly] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<FilterSection[]>([
-    "category",
-  ]);
+  const selectedCategories = useMemo(
+    () => searchParams.getAll("category") as CategoryOption[],
+    [searchParams],
+  );
+  const selectedSizes = useMemo(
+    () => searchParams.getAll("size") as SizeOption[],
+    [searchParams],
+  );
+  const selectedColours = useMemo(
+    () => searchParams.getAll("colour") as ColourOption[],
+    [searchParams],
+  );
+  const availableOnly = searchParams.get("available") === "true";
+  const currentSort = (searchParams.get("sort") as SortOption) || "date-desc";
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -45,8 +56,6 @@ const ListingPage = () => {
           createdTime,
         }));
         setListingData(flattenedData);
-        const defaultFilter = groupByKeyValue(flattenedData, "Gender", "Woman");
-        setFilteredData(defaultFilter);
       } catch {
         setIsDataError(true);
       } finally {
@@ -56,6 +65,7 @@ const ListingPage = () => {
     fetchListings();
   }, [httpService]);
 
+  // Combined Filters and Sort Logic Chain
   useEffect(() => {
     let data = groupByKeyValue(listingData, "Gender", activeGender);
 
@@ -71,12 +81,32 @@ const ListingPage = () => {
     }
     if (selectedColours.length > 0) {
       data = data.filter((item) =>
-        item.Colour?.some((col: string) => selectedColours.includes(col)),
+        item.Colour?.some((col: ColourOption) => selectedColours.includes(col)),
       );
     }
     if (availableOnly) {
       data = data.filter((item) => item.Status === "available");
     }
+
+    data = [...data].sort((a, b) => {
+      if (currentSort === "date-desc") {
+        return (
+          new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime()
+        );
+      }
+      if (currentSort === "date-asc") {
+        return (
+          new Date(a.createdTime).getTime() - new Date(b.createdTime).getTime()
+        );
+      }
+      if (currentSort === "price-asc") {
+        return (a.Price || 0) - (b.Price || 0);
+      }
+      if (currentSort === "price-desc") {
+        return (b.Price || 0) - (a.Price || 0);
+      }
+      return 0;
+    });
 
     setFilteredData(data);
   }, [
@@ -85,8 +115,73 @@ const ListingPage = () => {
     selectedSizes,
     selectedColours,
     availableOnly,
+    currentSort,
     listingData,
   ]);
+
+  // Param Mutation Closures
+  const updateParams = (key: string, values: string[]) => {
+    setSearchParams(
+      (prev) => {
+        prev.delete(key);
+        values.forEach((val) => prev.append(key, val));
+        return prev;
+      },
+      { replace: true },
+    );
+  };
+
+  const toggleCategory = (cat: CategoryOption) => {
+    const next = selectedCategories.includes(cat)
+      ? selectedCategories.filter((c) => c !== cat)
+      : [...selectedCategories, cat];
+    updateParams("category", next);
+  };
+
+  const toggleSize = (size: SizeOption) => {
+    const next = selectedSizes.includes(size)
+      ? selectedSizes.filter((s) => s !== size)
+      : [...selectedSizes, size];
+    updateParams("size", next.map(String));
+  };
+
+  const toggleColour = (colour: ColourOption) => {
+    const next = selectedColours.includes(colour)
+      ? selectedColours.filter((c) => c !== colour)
+      : [...selectedColours, colour];
+    updateParams("colour", next);
+  };
+
+  const setAvailableOnly = (
+    valueUpdate: React.SetStateAction<boolean> | boolean,
+  ) => {
+    const nextValue =
+      typeof valueUpdate === "function"
+        ? valueUpdate(availableOnly)
+        : valueUpdate;
+    setSearchParams(
+      (prev) => {
+        if (nextValue) prev.set("available", "true");
+        else prev.delete("available");
+        return prev;
+      },
+      { replace: true },
+    );
+  };
+
+  const setCurrentSort = (sort: SortOption) => {
+    setSearchParams(
+      (prev) => {
+        prev.set("sort", sort);
+        return prev;
+      },
+      { replace: true },
+    );
+  };
+
+  const clearAllFilters = () => {
+    setSearchParams(new URLSearchParams(), { replace: true });
+  };
 
   const toggleSection = (section: FilterSection) => {
     setExpandedSections((prev) =>
@@ -94,33 +189,6 @@ const ListingPage = () => {
         ? prev.filter((s) => s !== section)
         : [...prev, section],
     );
-  };
-
-  const toggleCategory = (cat: CategoryOption) => {
-    setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat],
-    );
-  };
-
-  const toggleSize = (size: SizeOption) => {
-    setSelectedSizes((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
-    );
-  };
-
-  const toggleColour = (colour: string) => {
-    setSelectedColours((prev) =>
-      prev.includes(colour)
-        ? prev.filter((c) => c !== colour)
-        : [...prev, colour],
-    );
-  };
-
-  const clearAllFilters = () => {
-    setSelectedCategories([]);
-    setSelectedSizes([]);
-    setSelectedColours([]);
-    setAvailableOnly(false);
   };
 
   const activeFilterCount =
@@ -135,9 +203,11 @@ const ListingPage = () => {
     selectedCategories,
     selectedSizes,
     selectedColours,
+    currentSort,
     availableOnly,
     expandedSections,
     setAvailableOnly,
+    setCurrentSort,
     toggleSection,
     toggleCategory,
     toggleSize,
@@ -158,23 +228,11 @@ const ListingPage = () => {
 
   return (
     <div className="listing-page">
-      {/* Mobile filter toggle bar */}
-      <div className="listing-page__mobile-filter-bar">
-        <button
-          className="listing-page__mobile-filter-btn"
-          onClick={() => setIsMobileFilterOpen(true)}
-        >
-          <p>FILTER &amp; SORT</p>
-          {activeFilterCount > 0 && (
-            <span className="listing-page__mobile-filter-btn__badge">
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
-        <span className="listing-page__mobile-filter-bar__count">
-          {filteredData.length} results
-        </span>
-      </div>
+      <MobileFilterBar
+        activeFilterCount={activeFilterCount}
+        totalResults={filteredData.length}
+        onOpenFilters={() => setIsMobileFilterOpen(true)}
+      />
 
       {/* Mobile filter drawer overlay */}
       {isMobileFilterOpen && (
@@ -205,62 +263,19 @@ const ListingPage = () => {
       )}
 
       <div className="listing-page__layout">
-        {/* Desktop sidebar */}
         <div className="listing-page__sidebar-wrapper">
           <FilterPanel {...sharedFilterProps} />
         </div>
 
-        {/* Main content */}
         <div className="listing-page__main">
-          {/* Gender tabs */}
-          <div className="listing-page__container__filters">
-            <button
-              className="listing-page__container__filters__option"
-              onClick={() => setActiveGender("Woman")}
-              data-testid="women-filter-btn"
-            >
-              <p
-                className={`listing-page__container__filters__option__name ${activeGender === "Woman" ? "active" : ""}`}
-              >
-                Womens
-              </p>
-            </button>
-            <button
-              className="listing-page__container__filters__option"
-              onClick={() => setActiveGender("Man")}
-              data-testid="men-filter-btn"
-            >
-              <p
-                className={`listing-page__container__filters__option__name ${activeGender === "Man" ? "active" : ""}`}
-              >
-                Mens
-              </p>
-            </button>
-          </div>
-
-          {/* Listings grid */}
-          <div className="listing-page__container__listings">
-            {filteredData.length === 0 ? (
-              <p className="listing-page__no-results">
-                No listings match your filters.
-              </p>
-            ) : (
-              filteredData.map((data) => (
-                <div
-                  key={data.id}
-                  onClick={() => navigate(`/listing/${data.id}`)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <ListingDisplayImage
-                    imageUrl={data.Images?.[0]?.url}
-                    title={data.Title}
-                    subtitle={`£${data.Price?.toFixed(2) ?? "0.00"}`}
-                    listingId={data.id}
-                  />
-                </div>
-              ))
-            )}
-          </div>
+          <GenderTabs
+            activeGender={activeGender}
+            onGenderChange={setActiveGender}
+          />
+          <ListingGrid
+            listings={filteredData}
+            onItemClick={(id) => navigate(`/listing/${id}`)}
+          />
         </div>
       </div>
     </div>
