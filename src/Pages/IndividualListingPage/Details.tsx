@@ -154,7 +154,7 @@ const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
 
   const renderStatus = () => {
     if (status === "pending" || status === "unavailable") {
-      return <h2>This item is currently being rented..</h2>;
+      return <h2>This item is currently being rented.</h2>;
     }
     if (error) {
       return <p>Error: {error}</p>;
