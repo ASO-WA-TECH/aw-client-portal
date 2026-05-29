@@ -150,7 +150,7 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     expect(
-      await screen.findByText(/this item is currently pending/i),
+      await screen.findByText(/this item is currently unavailable/i),
     ).toBeInTheDocument();
   });
 
