@@ -23,6 +23,9 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({ darkMode }) => {
           <Logo width={80} height={80} />
         </a>
       </div>
+      <p className="navigation-menu__subtitle">
+        Rent, List & Discover Traditional African Wear
+      </p>
       <nav className={`navigation-menu ${darkMode ? "dark" : ""}`}>
         {/* Desktop Menu */}
         <div className="navigation-menu__desktop" data-testid="desktop-menu">

@@ -5,7 +5,7 @@ export interface CheckboxGroupProps {
   values: string[];
   handleChange: (values: string[]) => void;
   label: string;
-  options: string[];
+  options: readonly string[];
   darkMode?: boolean;
   required?: boolean;
   validate?: (values: string[]) => string | null;
