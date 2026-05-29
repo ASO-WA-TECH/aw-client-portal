@@ -6,8 +6,8 @@ import HttpService from "../../Services/httpService";
 import AccountDetails from "./components/AccountDetails";
 import Rentals from "./components/Rentals";
 import Listings from "./components/Listings";
-import AddListing from "./components/AddListing";
 import LoadingAccount from "./LoadingAccount";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface Response<T> {
   id: string;
@@ -66,10 +66,9 @@ const UserAccountPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   const menuItems = [
-    { label: "MY ACCOUNT  ↓", key: "my-account" },
+    { label: "MY ACCOUNT", key: "my-account" },
     { label: "RENTALS", key: "rentals" },
     { label: "LISTINGS", key: "listings" },
-    { label: "ADD LISTING", key: "add-listing" },
   ];
 
   useEffect(() => {
@@ -176,7 +175,14 @@ const UserAccountPage = () => {
         className="mobile-header"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        <span>{activeLabel}</span>
+        <span>
+          {activeLabel}{" "}
+          {isMobileMenuOpen ? (
+            <ChevronUp className="chevron" size={16} />
+          ) : (
+            <ChevronDown className="chevron" size={16} />
+          )}
+        </span>
         <i className={`arrow ${isMobileMenuOpen ? "up" : "down"}`}></i>
       </div>
 
@@ -217,8 +223,6 @@ const UserAccountPage = () => {
           {activeTab === "rentals" && <Rentals rentals={rentals} />}
 
           {activeTab === "listings" && <Listings listings={listings} />}
-
-          {activeTab === "add-listing" && <AddListing />}
         </main>
       </div>
     </div>

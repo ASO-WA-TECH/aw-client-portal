@@ -128,7 +128,7 @@ describe("IndividualListingPage", () => {
     ).toBeInTheDocument();
   });
 
-  test("renders RENT NOW button when status is available", async () => {
+  test("renders ENQUIRE NOW button when status is available", async () => {
     mockFetchRecord
       .mockResolvedValueOnce(airtableRecord(mockListingData))
       .mockResolvedValueOnce(airtableRecord(mockOwnerFields));
@@ -136,7 +136,7 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     expect(
-      await screen.findByRole("button", { name: /rent now/i }),
+      await screen.findByRole("button", { name: /enquire now/i }),
     ).toBeInTheDocument();
   });
 
@@ -150,7 +150,7 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     expect(
-      await screen.findByText(/this item is currently pending/i),
+      await screen.findByText(/this item is currently being rented./i),
     ).toBeInTheDocument();
   });
 
@@ -164,7 +164,7 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     expect(
-      await screen.findByText(/this item is currently unavailable/i),
+      await screen.findByText(/this item is currently being rented./i),
     ).toBeInTheDocument();
   });
 
@@ -176,7 +176,7 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     expect(
-      await screen.findByRole("button", { name: /rent now/i }),
+      await screen.findByRole("button", { name: /enquire now/i }),
     ).toBeInTheDocument();
   });
 

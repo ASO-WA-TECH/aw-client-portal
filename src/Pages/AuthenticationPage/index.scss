@@ -96,9 +96,25 @@ p,
     font-style: v.$p-font-style;
 }
 
+.terms-link {
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 16px;
+
+    a {
+        color: v.$mustardYellow;
+        text-decoration: underline;
+
+        &:hover {
+            color: darken(v.$mustardYellow, 10%);
+        }
+    }
+}
+
 @media (max-width: 800px) {
     .flex-container {
         flex-direction: column;
+        padding-bottom: 24px;
     }
 
     .background {
@@ -108,7 +124,11 @@ p,
     }
     .background,
     .form {
-        width: 90%; /* prevent them from squishing */
-        margin: -4px auto; /* center on small screens */
+        width: 120%; /* prevent them from squishing */
+        margin: -3px auto; /* center on small screens */
+        border-radius: 0px;
     }
+    .formContent {
+    padding: 0px 81px 0px 9px;
+}
 }

@@ -13,6 +13,7 @@ export enum Routes {
   MY_LISTING = "/my-listings/listing",
   CREATE_LISTINGS = "/listing/create",
   EDIT_LISTINGS = "/listing/:id/edit",
+  ADD_LISTING = "/add-listing",
   LANDING = "/landing",
   REGISTER = "/register",
   LOG_IN = "/log-in",
@@ -24,6 +25,5 @@ export enum Routes {
   TERMS_AND_CONDITIONS = "/terms-and-conditions",
   ABOUT_US = "/about-us",
   CAREERS = "/careers",
-  HOW_IT_WORKS = "/how-it-works",
   ANYTHING_ELSE = "*",
 }

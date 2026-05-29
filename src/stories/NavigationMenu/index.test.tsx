@@ -12,6 +12,7 @@ describe("NavigationMenu", () => {
       logout: jest.fn(),
       login: jest.fn(),
       signup: jest.fn(),
+      deleteAccount: jest.fn(), // <-- Added this line to satisfy AuthContextType
     });
   });
 

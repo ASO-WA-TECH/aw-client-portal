@@ -30,9 +30,6 @@ vi.mock("./components/Listings", () => ({
     <div data-testid="listings">Listings: {listings.length}</div>
   ),
 }));
-vi.mock("./components/AddListing", () => ({
-  default: () => <div data-testid="add-listing">Add Listing</div>,
-}));
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -154,16 +151,6 @@ describe("UserAccountPage", () => {
 
     expect(await screen.findByTestId("listings")).toBeInTheDocument();
     expect(screen.queryByTestId("account-details")).not.toBeInTheDocument();
-  });
-
-  it("switches to ADD LISTING tab on click", async () => {
-    renderWithRouter();
-
-    await waitFor(() => screen.getByTestId("account-details"));
-
-    fireEvent.click(screen.getByText("ADD LISTING"));
-
-    expect(await screen.findByTestId("add-listing")).toBeInTheDocument();
   });
 
   it("fetches and passes rentals correctly", async () => {

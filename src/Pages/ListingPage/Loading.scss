@@ -1,53 +1,410 @@
-.listing-loading__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 24px;
-    padding: 16px;
+@use '../../variables.scss' as *;
 
-    &__item {
+.listing-page {
+    &__layout {
         display: flex;
-        flex-direction: column;
-        gap: 12px;
+        gap: 32px;
+        align-items: flex-start;
+        padding: 40px 24px 0;
+    }
 
-        &__image {
-            width: 100%;
-            aspect-ratio: 4/3;
-            border-radius: 16px;
+    &__main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    // ─── Sidebar (desktop) ─
+    &__sidebar-wrapper {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 24px;
+
+        @media screen and (max-width: 800px) {
+            display: none;
+        }
+    }
+
+    &__sidebar {
+        border: 1px solid #F1F4FB;
+        border-radius: 4px;
+        background: #fff;
+
+        &__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px 12px;
+            border-bottom: 1px solid #F1F4FB;
         }
 
         &__title {
-            width: 70%;
-            height: 16px;
-            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            color: #1a1a1a;
         }
 
-        &__subtitle {
-            width: 50%;
-            height: 14px;
-            border-radius: 8px;
+        &__count {
+            font-size: 11px;
+            color: #A1A1A1;
         }
 
+        &__clear {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            border-bottom: 1px solid #F1F4FB;
+            font-size: 12px;
+            color: $emeraldGreen;
+            cursor: pointer;
+            text-decoration: underline;
+            font-family: inherit;
+
+            &:hover {
+                opacity: 0.75;
+            }
+        }
+
+        // ── Section ──────────────────────────────────────────────────────────
+        &__section {
+            border-bottom: 1px solid #F1F4FB;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &__heading {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                background: none;
+                border: none;
+                padding: 13px 16px;
+                font-size: 13px;
+                font-weight: 700;
+                color: #1a1a1a;
+                cursor: pointer;
+                text-align: left;
+                font-family: inherit;
+
+                &:hover {
+                    background: #F7F9FF;
+                }
+            }
+
+            &__toggle-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 13px 16px;
+            }
+
+            &__label {
+                font-size: 13px;
+                font-weight: 700;
+                color: #1a1a1a;
+            }
+
+            &__options {
+                padding: 4px 16px 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+
+                &--sizes {
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    gap: 6px;
+                    padding-bottom: 14px;
+                }
+            }
+        }
+
+        // ── Chevron ───────────────────────────────────────────────────────────
+        &__chevron {
+            font-size: 18px;
+            color: #A1A1A1;
+            transition: transform 0.2s;
+            display: inline-block;
+            line-height: 1;
+
+            &.open {
+                transform: rotate(180deg);
+            }
+        }
+
+        // ── Toggle switch ─────────────────────────────────────────────────────
+        &__toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            border-radius: 12px;
+            background: #D0D0D0;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            padding: 0;
+            flex-shrink: 0;
+
+            &.active {
+                background: $emeraldGreen;
+            }
+
+            &__thumb {
+                position: absolute;
+                top: 3px;
+                left: 3px;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: #fff;
+                transition: transform 0.2s;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+            &.active &__thumb {
+                transform: translateX(20px);
+            }
+        }
+
+        // ── Checkboxes ────────────────────────────────────────────────────────
+        &__checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #1a1a1a;
+            cursor: pointer;
+
+            input[type="checkbox"] {
+                width: 15px;
+                height: 15px;
+                accent-color: $emeraldGreen;
+                cursor: pointer;
+                flex-shrink: 0;
+            }
+
+            &:hover span {
+                color: $emeraldGreen;
+            }
+        }
+
+        // ── Size chips ────────────────────────────────────────────────────────
+        &__size-chip {
+            padding: 5px 10px;
+            border: 1px solid #D0D0D0;
+            background: #fff;
+            font-size: 12px;
+            color: #1a1a1a;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+            font-family: inherit;
+
+            &:hover {
+                border-color: $emeraldGreen;
+                color: $emeraldGreen;
+            }
+
+            &.active {
+                background: $emeraldGreen;
+                border-color: $emeraldGreen;
+                color: #fff;
+            }
+        }
     }
-}
 
+    // ─── Mobile filter bar ───────────────────────────────────────────────────
+    &__mobile-filter-bar {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+        border-bottom: 2px solid #F1F4FB;
 
+        @media screen and (max-width: 800px) {
+            display: flex;
+        }
 
-/* loading shimmer animation */
-.loading {
-    background: linear-gradient(90deg,
-            #2f2f2f 25%,
-            #3a3a3a 37%,
-            #2f2f2f 63%);
-    background-size: 400% 100%;
-    animation: shimmer 1.4s ease infinite;
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -400px 0;
+        &__count {
+            font-size: 13px;
+            color: #A1A1A1;
+        }
     }
 
-    100% {
-        background-position: 400px 0;
+    &__mobile-filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #1a1a1a;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        border-radius: 2px;
+        font-family: inherit;
+
+        &__badge {
+            background: $emeraldGreen;
+            color: #fff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    // ─── Mobile drawer overlay ───────────────────────────────────────────────
+    &__mobile-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+        display: flex;
+        align-items: flex-end;
+
+        @media screen and (min-width: 801px) {
+            display: none;
+        }
+    }
+
+    &__mobile-drawer {
+        background: #fff;
+        width: 100%;
+        max-height: 90vh;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        flex-direction: column;
+
+        &__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            border-bottom: 1px solid #F1F4FB;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+        }
+
+        &__close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #1a1a1a;
+            padding: 0;
+            line-height: 1;
+        }
+
+        &__body {
+            overflow-y: auto;
+            flex: 1;
+            
+            .listing-page__sidebar__header {
+                display: none;
+            }
+
+            .listing-page__sidebar {
+                border: none;
+                border-radius: 0;
+                padding: 0 4px;
+                width: 100%;
+            }
+        }
+
+        &__footer {
+            padding: 16px 20px;
+            border-top: 1px solid #F1F4FB;
+        }
+
+        &__apply {
+            width: 100%;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            border-radius: 2px;
+            font-family: inherit;
+        }
+    }
+
+    // ─── Gender filter tabs (your existing styles, preserved) ────────────────
+    &__container {
+        &__filters {
+            border-bottom: 2px solid #F1F4FB;
+            margin-bottom: 20px;
+
+            &__option {
+                display: inline;
+                margin-right: 20px;
+                background-color: inherit;
+                border: none;
+
+                &__name {
+                    color: #A1A1A1;
+                    font-weight: 900;
+                    font-size: 1.1rem;
+                    line-height: 20px;
+                    position: relative;
+
+                    &.active {
+                        color: #1a1a1a;
+
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            bottom: -5px;
+                            left: 0%;
+                            width: 50%;
+                            height: 3px;
+                            background-color: $emeraldGreen;
+                            border-radius: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+        // ─── Listings grid (your existing styles, preserved) ─────────────────
+        &__listings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+    }
+
+    &__no-results {
+        grid-column: 1 / -1;
+        text-align: center;
+        color: #A1A1A1;
+        padding: 40px 0;
+        font-size: 15px;
+    }
+
+    // ─── Responsive ──────────────────────────────────────────────────────────
+    @media screen and (min-width: 800px) {
+        &__container {
+            &__listings {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 24px;
+            }
+        }
     }
 }

@@ -240,6 +240,13 @@ function AuthenticationPage() {
                     variant="primary"
                     handleClick={() => {}}
                   />
+
+                  <p className="terms-link">
+                    By logging in, you agree to our{" "}
+                    <a href={Routes.TERMS_AND_CONDITIONS}>
+                      Terms and Conditions
+                    </a>
+                  </p>
                 </form>
               )}
             </div>

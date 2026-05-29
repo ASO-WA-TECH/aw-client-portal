@@ -1,98 +1,38 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
-import HttpService from "../../../Services/httpService";
-import { useAuth } from "../../../Services/Auth/AuthContext";
-
+import HttpService from "../../Services/httpService";
+import { useAuth } from "../../Services/Auth/AuthContext";
+import "./index.scss";
+import InputField from "../../stories/InputField";
+import CheckboxGroup from "../../stories/FormField/CheckboxGroup";
+import InputDropdown from "../../stories/FormField/InputDropdown";
+import Button from "../../stories/Button";
+import ImageUploader from "../../Components/ImageUploader";
+import {
+  SIZE_OPTIONS,
+  CATEGORY_OPTIONS,
+  GENDER_OPTIONS,
+  STATUS_OPTIONS,
+  MODEL_HEIGHT_OPTIONS,
+  COLOUR_OPTIONS,
+  createEmptyForm,
+} from "../../Constants/Listing/listing.constants.tsx";
 import type {
   ListingFormData,
   SizeOption,
   CategoryOption,
   GenderOption,
   StatusOption,
+  ModelHeightOption,
+  ColourOption,
   Image,
-} from "../../../listing.types";
+} from "../../Constants/Listing/listing.constants";
 
 interface UserFields {
   [key: string]: unknown;
   auth_uid: string;
 }
-
-import "../index.scss";
-
-import InputField from "../../../stories/InputField";
-import CheckboxGroup from "../../../stories/FormField/CheckboxGroup";
-import InputDropdown from "../../../stories/FormField/InputDropdown";
-import Button from "../../../stories/Button";
-import ImageUploader from "../../../Components/ImageUploader";
-
-const COLOUR_OPTIONS = [
-  "Black",
-  "White",
-  "Red",
-  "Blue",
-  "Green",
-  "Yellow",
-  "Pink",
-  "Purple",
-  "Orange",
-  "Brown",
-  "Silver",
-  "Gold",
-  "Cream",
-];
-
-const SIZE_OPTIONS: SizeOption[] = [
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "XXL",
-  6,
-  8,
-  10,
-  12,
-  14,
-  16,
-  18,
-  20,
-];
-
-const CATEGORY_OPTIONS: CategoryOption[] = [
-  "Agbada",
-  "Gele",
-  "Iro and Buba",
-  "Dress",
-  "Top",
-  "Skirt",
-  "Corset",
-  "Fila",
-];
-
-const GENDER_OPTIONS: GenderOption[] = [
-  "Man",
-  "Woman",
-  "Boy",
-  "Girl",
-  "Unisex",
-];
-
-const STATUS_OPTIONS: StatusOption[] = ["available", "unavailable"];
-
-const EMPTY_FORM: ListingFormData = {
-  Title: "",
-  Description: "",
-  Size: "",
-  Category: [],
-  Gender: "",
-  Status: "",
-  Location: "",
-  Price: "",
-  Images: [],
-  Colour: [],
-};
 
 const AddListing = () => {
   const navigate = useNavigate();
@@ -108,14 +48,14 @@ const AddListing = () => {
     [],
   );
 
-  const [formData, setFormData] = useState<ListingFormData>(EMPTY_FORM);
+  const [formData, setFormData] = useState<ListingFormData>(createEmptyForm());
   const [isSaving, setIsSaving] = useState(false);
 
   const updateField = <K extends keyof ListingFormData>(
     field: K,
     value: ListingFormData[K],
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev: ListingFormData) => ({ ...prev, [field]: value }));
   };
 
   const validateForm = () => {
@@ -129,6 +69,7 @@ const AddListing = () => {
       Location,
       Price,
       Colour,
+      Images,
     } = formData;
 
     return (
@@ -140,7 +81,8 @@ const AddListing = () => {
       Status &&
       Location &&
       Price !== "" &&
-      Colour.length > 0
+      Colour.length > 0 &&
+      Images.length > 0
     );
   };
 
@@ -175,7 +117,7 @@ const AddListing = () => {
       const payload = {
         ...formData,
         Owner: [userRecord.id],
-        Images: formData.Images.map((img) => ({
+        Images: formData.Images.map((img: Image) => ({
           url: img.url,
         })),
         Colour: Array.isArray(formData.Colour)
@@ -230,11 +172,22 @@ const AddListing = () => {
             required
           />
 
+          <InputDropdown
+            label="Model Height (optional)"
+            value={formData.ModelHeight ?? " "}
+            options={MODEL_HEIGHT_OPTIONS}
+            handleChange={(e) =>
+              updateField("ModelHeight", e.target.value as ModelHeightOption)
+            }
+          />
+
           <CheckboxGroup
             label="Colour"
             values={formData.Colour}
             options={COLOUR_OPTIONS}
-            handleChange={(values) => updateField("Colour", values)}
+            handleChange={(values) =>
+              updateField("Colour", values as ColourOption[])
+            }
             required
           />
 
