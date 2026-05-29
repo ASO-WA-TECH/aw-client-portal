@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import type { ListingFields } from "../ListingPage/types";
 import HttpService, { type AirtableRecord } from "../../Services/httpService";
+import { toast } from "react-toastify";
+import Button from "../../stories/Button";
+
 import { useAuth } from "../../Services/Auth/AuthContext";
-import { InputField } from "../../stories/InputField";
-import { Button } from "../../stories";
-import { useNavigate } from "react-router-dom";
+import InputField from "../../stories/InputField";
 import { Routes } from "../../Routes";
+import howItWorksContent from "../../Content/how-it-works.json";
+import InfoTabs from "../../Components/InfoTabs";
 
 type DetailsProps = {
   listing: ListingFields;
@@ -20,13 +23,14 @@ interface UserFields {
 }
 
 interface RentalFields {
+  [key: string]: unknown;
   Rentee?: string[];
   Listing?: string[];
 }
 
-const listingHttpService = new HttpService("Listings");
-const rentalHttpService = new HttpService("Rentals");
-const userHttpService = new HttpService("Users");
+const listingHttpService = new HttpService<ListingFields>("Listings");
+const rentalHttpService = new HttpService<RentalFields>("Rentals");
+const userHttpService = new HttpService<UserFields>("Users");
 
 const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
   const navigate = useNavigate();
@@ -42,12 +46,18 @@ const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
     if (!currentUser?.uid || !listing.Owner?.length) return;
 
     const checkOwner = async () => {
-      const allUsers = await userHttpService.fetchAllRecords();
-      const airtableUser = (
-        allUsers as unknown as AirtableRecord<UserFields>[]
-      ).find((user) => user.fields.auth_uid === currentUser.uid);
-      if (airtableUser && listing.Owner.includes(airtableUser.id)) {
-        setIsOwner(true);
+      try {
+        const allUsers = await userHttpService.fetchAllRecords();
+        const airtableUser = allUsers.find(
+          (user: AirtableRecord<UserFields>) =>
+            user.fields.auth_uid === currentUser.uid,
+        );
+        if (airtableUser && listing.Owner.includes(airtableUser.id)) {
+          setIsOwner(true);
+        }
+      } catch (err) {
+        toast.error("Failed to check owner status");
+        console.error(err);
       }
     };
 
@@ -57,37 +67,42 @@ const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
   const handleInterestClick = async (listingId: string) => {
     if (!currentUser?.uid) return;
 
-    const [existingRentals, allUsers] = await Promise.all([
-      rentalHttpService.fetchAllRecords(),
-      userHttpService.fetchAllRecords(),
-    ]);
+    try {
+      const [existingRentals, allUsers] = await Promise.all([
+        rentalHttpService.fetchAllRecords(),
+        userHttpService.fetchAllRecords(),
+      ]);
 
-    const airtableUser = (
-      allUsers as unknown as AirtableRecord<UserFields>[]
-    ).find((user) => user.fields.auth_uid === currentUser.uid);
+      // 2. ADDED TYPES TO FIX IMPLICIT 'ANY' ERRORS
+      const airtableUser = allUsers.find(
+        (user: AirtableRecord<UserFields>) =>
+          user.fields.auth_uid === currentUser.uid,
+      );
 
-    if (!airtableUser) return;
+      if (!airtableUser) return;
 
-    const alreadyInterested = (
-      existingRentals as unknown as AirtableRecord<RentalFields>[]
-    ).some(
-      (r) =>
-        r.fields.Rentee?.[0] === airtableUser.id &&
-        r.fields.Listing?.[0] === listingId,
-    );
+      const alreadyInterested = existingRentals.some(
+        (r: AirtableRecord<RentalFields>) =>
+          r.fields.Rentee?.[0] === airtableUser.id &&
+          r.fields.Listing?.[0] === listingId,
+      );
 
-    if (alreadyInterested) return;
+      if (alreadyInterested) return;
 
-    handleRent();
+      handleRent();
+    } catch {
+      setError("Failed to check interest status.");
+    }
   };
 
   const handleRent = async () => {
     if (!id || !currentUser?.uid) return;
     try {
       const allUsers = await userHttpService.fetchAllRecords();
-      const airtableUser = (
-        allUsers as unknown as AirtableRecord<UserFields>[]
-      ).find((user) => user.fields.auth_uid === currentUser.uid);
+      const airtableUser = allUsers.find(
+        (user: AirtableRecord<UserFields>) =>
+          user.fields.auth_uid === currentUser.uid,
+      );
 
       if (!airtableUser) {
         console.error(
@@ -146,7 +161,8 @@ const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
     if (error) {
       return <p>Error: {error}</p>;
     }
-    return (
+
+    return currentUser ? (
       <div className="individual-listing-page__details__rental-form">
         <InputField
           label="Date needed"
@@ -172,53 +188,58 @@ const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
           <h2>Enquire Now</h2>
         </button>
       </div>
+    ) : (
+      <div className="rental-card">
+        <p>Please log in or sign up to express interest in this listing.</p>
+        <Button
+          type="button"
+          text="Login/ Sign up"
+          handleClick={() => navigate(Routes.AUTHENTICATE)}
+        />
+      </div>
     );
   };
 
   return (
     <div className="individual-listing-page__details">
-      {currentUser ? (
-        <div className="rental-card">
-          {isOwner && (
-            <div className="individual-listing-page__details__owner-banner">
-              <p>This is your listing</p>
-            </div>
-          )}
-          <span className="individual-listing-page__details__brand">
-            ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
-          </span>
-          <h1>{listing.Title?.toUpperCase()}</h1>
-          <div className="rental-price">
-            <span>Rent from £{listing.Price?.toFixed(2)} per day</span>
+      <div className="rental-card">
+        {isOwner && (
+          <div className="individual-listing-page__details__owner-banner">
+            <p>This is your listing</p>
           </div>
-          <h2>Description</h2>
-          <p>{listing.Description}</p>
-          <h2>Size & Fit</h2>
-          <p>{listing.Size}</p>
-          {listing.Colour && listing.Colour.length > 0 && (
-            <>
-              <h2>Colour</h2>
-              <p>{listing.Colour.join(", ")}</p>
-            </>
-          )}
-          {ownerName && (
-            <>
-              <h2>Owner</h2>
-              <p>{ownerName}</p>
-            </>
-          )}
-          {!isOwner && renderStatus()}
+        )}
+        <span className="individual-listing-page__details__brand">
+          ASO WA {listing.Gender === "Man" ? "Men" : "Women"}
+        </span>
+        <h1>{listing.Title?.toUpperCase()}</h1>
+        <div className="rental-price">
+          <span>Rent from £{listing.Price?.toFixed(2)} per day</span>
         </div>
-      ) : (
-        <div className="rental-card">
-          <p>Please log in or sign up to express interest in this listing.</p>
-          <Button
-            type="button"
-            text="Login/ Sign up"
-            handleClick={() => navigate(Routes.AUTHENTICATE)}
-          />
-        </div>
-      )}
+        <h2>Description</h2>
+        <p>{listing.Description}</p>
+        <h2>Size & Fit</h2>
+        <p>{listing.Size}</p>
+        {listing.Colour && listing.Colour.length > 0 && (
+          <>
+            <h2>Colour</h2>
+            <p>{listing.Colour.join(", ")}</p>
+          </>
+        )}
+        {ownerName && (
+          <>
+            <h2>Owner</h2>
+            <p>{ownerName}</p>
+          </>
+        )}
+        {listing.ModelHeight && (
+          <div>
+            <h2>Model Height</h2>
+            <p>{listing.ModelHeight}</p>
+          </div>
+        )}
+        {!isOwner && renderStatus()}
+        {!isOwner && <InfoTabs content={howItWorksContent} />}
+      </div>
     </div>
   );
 };

@@ -4,8 +4,8 @@ import * as Sentry from "@sentry/react";
 import Button from "../../../stories/Button/";
 import HttpService from "../../../Services/httpService";
 import { useAuth } from "../../../Services/Auth/AuthContext";
-import { Routes } from "../../../Routes";
 import { toast } from "react-toastify";
+import { Routes } from "../../../Routes";
 
 interface UserData {
   id: string;
@@ -37,6 +37,10 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleRedirect = () => {
+    navigate(Routes.ADD_LISTING);
+  };
 
   if (!userData) return null;
 
@@ -203,13 +207,24 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
           </p>
         )}
 
-        <Button
-          customStyle="btn-save"
-          type="submit"
-          text={saving ? "Saving..." : "Save"}
-          variant="primary"
-          handleClick={handleSave}
-        />
+        <div className="button-group">
+          <Button
+            customStyle="btn-save"
+            type="submit"
+            text={saving ? "Saving..." : "Save"}
+            variant="primary"
+            handleClick={handleSave}
+          />
+
+          <Button
+            customStyle="btn-save"
+            type="button"
+            text="Create a listing"
+            variant="primary"
+            color="mustardYellow"
+            handleClick={handleRedirect}
+          />
+        </div>
       </div>
 
       <div className="delete-section">

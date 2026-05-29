@@ -1,0 +1,157 @@
+[
+  {
+    "id": "payments",
+    "label": "Payments",
+    "items": [
+      {
+        "q": "Do you handle payments?",
+        "a": ["No. **ASO WA** does not process or facilitate payments. All financial transactions take place directly between users outside of the platform."]
+      },
+      {
+        "q": "When should payments be made?",
+        "a": ["We recommend that full rental payment is completed before the item is dispatched or collected. Payment timing must be clearly agreed in writing before any item is released. ASO WA does not enforce payment structures."]
+      },
+      {
+        "q": "What payment methods should I use?",
+        "a": [
+          "ASO WA does not process or facilitate payments. All financial transactions take place directly between users.",
+          "We encourage users to choose secure, traceable payment methods that offer buyer and seller protection. Some users choose platforms such as **PayPal** (\"Goods & Services\") or similar third-party providers."
+        ],
+        "bullets": [
+          "Avoid cash payments where possible",
+          "Avoid \"Friends & Family\" transfers when transacting with someone you do not know",
+          "Keep written confirmation of agreed terms before making payment"
+        ],
+        "footer": ["All payment arrangements are made at the users' own discretion and risk."]
+      },
+      {
+        "q": "Is ASO WA responsible if I am not paid?",
+        "a": ["No. ASO WA is not involved in financial transactions and is not responsible for non-payment, fraud, or disputes."]
+      },
+      {
+        "q": "Will ASO WA introduce in-platform payments?",
+        "a": ["We may explore integrated payment functionality in future versions of the platform. Any updates will be clearly communicated."]
+      }
+    ]
+  },
+  {
+    "id": "rentals",
+    "label": "Rentals & Deposits",
+    "items": [
+      {
+        "q": "Should I take a security deposit?",
+        "a": [
+          "Users may choose to request a refundable security deposit to cover damage, loss, or late return.",
+          "Deposit amounts and terms should be clearly agreed in writing before payment. ASO WA does not hold or manage deposits."
+        ]
+      },
+      {
+        "q": "When should a deposit be returned?",
+        "a": ["Deposit return timing and conditions must be agreed before the rental begins."],
+        "bullets": ["Expected condition on return", "Inspection timeframe", "Return deadline", "Refund timeline"],
+        "footer": ["ASO WA does not enforce deposit returns."]
+      },
+      {
+        "q": "What if an item is returned damaged?",
+        "a": ["Condition expectations should be agreed before the transaction."],
+        "bullets": ["Taking clear photos before dispatch", "Taking photos upon return", "Agreeing in writing how damage will be assessed"],
+        "footer": ["Disputes must be resolved directly between users. ASO WA is not responsible for damage claims."]
+      },
+      {
+        "q": "What if an item is not returned?",
+        "a": ["Return dates and late terms should be agreed in writing before the rental begins. ASO WA does not enforce returns and is not responsible for non-return of items."]
+      }
+    ]
+  },
+  {
+    "id": "delivery",
+    "label": "Delivery & Collection",
+    "items": [
+      {
+        "q": "Do you arrange delivery?",
+        "a": ["No. Users must arrange delivery or collection directly."]
+      },
+      {
+        "q": "How should I deliver an item?",
+        "a": ["Delivery arrangements are agreed between users. Common options include:"],
+        "bullets": ["Royal Mail", "Tracked parcel services", "Courier services", "Collection in a mutually agreed public location"],
+        "footer": ["We recommend using tracked and insured services where appropriate. ASO WA does not manage or insure deliveries."]
+      },
+      {
+        "q": "What if an item is lost or damaged during delivery?",
+        "a": ["ASO WA is not responsible once the item leaves the lister's possession. Users should agree on responsibility and insurance before shipping."]
+      }
+    ]
+  },
+  {
+    "id": "cancellations",
+    "label": "Cancellations & Disputes",
+    "items": [
+      {
+        "q": "What if I need to cancel?",
+        "a": ["Cancellation terms must be agreed between users before payment. ASO WA does not issue refunds or manage cancellations."]
+      },
+      {
+        "q": "Does ASO WA mediate disputes?",
+        "a": ["No. ASO WA provides a platform for connection but is not a party to transactions and does not mediate disputes."]
+      }
+    ]
+  },
+  {
+    "id": "sellers",
+    "label": "Sellers & Listings",
+    "items": [
+      {
+        "q": "How do I create a strong listing?",
+        "a": [],
+        "bullets": ["Clear, well-lit images", "Front and back views", "Close-up fabric details", "Accurate sizing information (including corset measurements if needed)", "Details of alterations", "Condition (e.g. new, worn once, good condition, tailored)"],
+        "footer": ["Clear listings reduce misunderstandings and improve trust."]
+      },
+      {
+        "q": "How should I price my item?",
+        "a": ["Pricing is at the seller's discretion. Consider the following:"],
+        "bullets": ["Original purchase price", "Condition", "Brand or designer", "Demand", "Rental duration"],
+        "footer": ["ASO WA does not regulate pricing."]
+      },
+      {
+        "q": "What if the item doesn't fit?",
+        "a": ["Fit expectations and refund terms must be agreed before completing the transaction. ASO WA does not issue refunds."]
+      }
+    ]
+  },
+  {
+    "id": "safety",
+    "label": "Safety",
+    "items": [
+      {
+        "q": "How can I stay safe?",
+        "a": [],
+        "bullets": ["Verifying user details before payment", "Keeping written agreements", "Meeting in public places for collection", "Using tracked delivery"]
+      },
+      {
+        "q": "How do I report inappropriate behaviour?",
+        "a": ["Please contact: [hello@aso-wa.com](mailto:hello@aso-wa.com)"]
+      }
+    ]
+  },
+  {
+    "id": "feedback",
+    "label": "Feedback",
+    "items": [
+      {
+        "q": "Where can I leave feedback?",
+        "a": ["We are building ASO WA in phases and value community input.", "Send feedback or suggestions to: [hello@aso-wa.com](mailto:hello@aso-wa.com)"]
+      }
+    ]
+  },
+  {
+    "id": "general",
+    "label": "General",
+    "items": [
+      {
+        "q": "Is ASO WA responsible for disputes?",
+        "a": ["No. ASO WA is not a party to transactions and does not mediate disputes."]
+      }
+    ]
+  }
+]

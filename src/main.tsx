@@ -15,6 +15,7 @@ import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import HomePage from "./Pages/Homepage";
 import LandingPage from "./Pages/LandingPage";
 import ListingPage from "./Pages/ListingPage";
+import AddListingPage from "./Pages/AddListingPage";
 import AuthenticationPage from "./Pages/AuthenticationPage";
 import UserAccountPage from "./Pages/UserAccountPage/index";
 import UserListingsEditPage from "./Pages/UserListingsEditPage";
@@ -82,6 +83,14 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoute>
               <UserListingsEditPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={Routes.ADD_LISTING}
+          element={
+            <ProtectedRoute>
+              <AddListingPage />
             </ProtectedRoute>
           }
         />

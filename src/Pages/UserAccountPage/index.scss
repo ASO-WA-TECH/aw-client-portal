@@ -137,7 +137,14 @@
         padding: 12px 40px;
         float: right;
         margin-top: 10px;
-        width: 35%;
+        width: 50%;
+    }
+     .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
     }
 
     .delete-section {
@@ -354,6 +361,10 @@
 
         .listings-grid {
             grid-template-columns: 1fr;
+        }
+
+        .btn-save {
+            width: 100%;
         }
     }
 }

@@ -2,8 +2,8 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import HttpService from "../../../Services/httpService";
-import { useAuth } from "../../../Services/Auth/AuthContext";
+import HttpService from "../../Services/httpService";
+import { useAuth } from "../../Services/Auth/AuthContext";
 
 import type {
   ListingFormData,
@@ -12,20 +12,21 @@ import type {
   GenderOption,
   StatusOption,
   Image,
-} from "../../../listing.types";
+  ModelHeightOption,
+} from "../../listing.types";
 
 interface UserFields {
   [key: string]: unknown;
   auth_uid: string;
 }
 
-import "../index.scss";
+import "./index.scss";
 
-import InputField from "../../../stories/InputField";
-import CheckboxGroup from "../../../stories/FormField/CheckboxGroup";
-import InputDropdown from "../../../stories/FormField/InputDropdown";
-import Button from "../../../stories/Button";
-import ImageUploader from "../../../Components/ImageUploader";
+import InputField from "../../stories/InputField";
+import CheckboxGroup from "../../stories/FormField/CheckboxGroup";
+import InputDropdown from "../../stories/FormField/InputDropdown";
+import Button from "../../stories/Button";
+import ImageUploader from "../../Components/ImageUploader";
 
 const COLOUR_OPTIONS = [
   "Black",
@@ -92,7 +93,21 @@ const EMPTY_FORM: ListingFormData = {
   Price: "",
   Images: [],
   Colour: [],
+  ModelHeight: "",
 };
+
+const MODEL_HEIGHT_OPTIONS: ModelHeightOption[] = [
+  " ",
+  "1.50 m (4 ft 11 in)",
+  "1.55 m (5 ft 1 in)",
+  "1.60 m (5 ft 3 in)",
+  "1.65 m (5 ft 5 in)",
+  "1.70 m (5 ft 7 in)",
+  "1.75 m (5 ft 9 in)",
+  "1.80 m (5 ft 11 in)",
+  "1.85 m (6 ft 1 in)",
+  "1.90 m (6 ft 3 in)",
+];
 
 const AddListing = () => {
   const navigate = useNavigate();
@@ -115,7 +130,7 @@ const AddListing = () => {
     field: K,
     value: ListingFormData[K],
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev: ListingFormData) => ({ ...prev, [field]: value }));
   };
 
   const validateForm = () => {
@@ -129,6 +144,7 @@ const AddListing = () => {
       Location,
       Price,
       Colour,
+      Images,
     } = formData;
 
     return (
@@ -140,7 +156,8 @@ const AddListing = () => {
       Status &&
       Location &&
       Price !== "" &&
-      Colour.length > 0
+      Colour.length > 0 &&
+      Images.length > 0
     );
   };
 
@@ -175,7 +192,7 @@ const AddListing = () => {
       const payload = {
         ...formData,
         Owner: [userRecord.id],
-        Images: formData.Images.map((img) => ({
+        Images: formData.Images.map((img: Image) => ({
           url: img.url,
         })),
         Colour: Array.isArray(formData.Colour)
@@ -228,6 +245,15 @@ const AddListing = () => {
               updateField("Size", e.target.value as SizeOption)
             }
             required
+          />
+
+          <InputDropdown
+            label="Model Height (optional)"
+            value={formData.ModelHeight ?? " "}
+            options={MODEL_HEIGHT_OPTIONS}
+            handleChange={(e) =>
+              updateField("ModelHeight", e.target.value as ModelHeightOption)
+            }
           />
 
           <CheckboxGroup
