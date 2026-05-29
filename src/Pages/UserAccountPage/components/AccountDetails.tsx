@@ -1,7 +1,10 @@
 import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 import Button from "../../../stories/Button/";
 import HttpService from "../../../Services/httpService";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../Services/Auth/AuthContext";
+import { toast } from "react-toastify";
 import { Routes } from "../../../Routes";
 
 interface UserData {
@@ -9,13 +12,19 @@ interface UserData {
   Name: string;
   FullName: string;
   Email: string;
+  Rentals?: string[];
+  Listings?: string[];
 }
 interface AccountDetailsProps {
   userData: UserData;
 }
 
 const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
+  const { deleteAccount } = useAuth();
+  const navigate = useNavigate();
   const usersHttpService = useMemo(() => new HttpService("Users"), []);
+  const listingsHttpService = useMemo(() => new HttpService("Listings"), []);
+  const rentalHttpService = useMemo(() => new HttpService("Rentals"), []);
 
   const [firstName, setFirstName] = useState(userData?.Name ?? "");
   const [fullName, setFullName] = useState(userData?.FullName ?? "");
@@ -26,7 +35,8 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saving, setSaving] = useState(false);
-  const navigate = useNavigate();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRedirect = () => {
     navigate(Routes.ADD_LISTING);
@@ -82,6 +92,49 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (isDeleting) return;
+    setIsDeleting(true);
+
+    try {
+      await deleteAccount();
+    } catch {
+      toast.error("Failed to delete account. Please try again.");
+      setShowDeleteConfirm(false);
+      setIsDeleting(false);
+      return;
+    }
+
+    try {
+      const listingIds = userData.Listings || [];
+      if (listingIds.length > 0) {
+        await Promise.all(
+          listingIds.map((id) => listingsHttpService.deleteRecord(id)),
+        );
+      }
+
+      const rentalIds = userData.Rentals || [];
+      if (rentalIds.length > 0) {
+        await Promise.all(
+          rentalIds.map((id) => rentalHttpService.deleteRecord(id)),
+        );
+      }
+
+      await usersHttpService.deleteRecord(userData.id);
+    } catch (err) {
+      // Airtable data deletion failed, but Firebase auth is already deleted —
+      // user can't log back in, so navigate home anyway
+      Sentry.captureException(err, {
+        tags: { flow: "deleteAccount-airtable-data-deletion" },
+        level: "error",
+      });
+    }
+
+    toast.success("Your account has been permanently deleted.");
+    navigate(Routes.INITIAL);
+    setIsDeleting(false);
   };
 
   return (
@@ -173,6 +226,54 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({ userData }) => {
           />
         </div>
       </div>
+
+      <div className="delete-section">
+        <hr />
+        <h3>DELETE ACCOUNT</h3>
+        <p className="delete-warning">
+          Once you delete your account, there is no going back. This action is
+          permanent and cannot be undone.
+        </p>
+        <button
+          className="btn-delete-account"
+          onClick={() => setShowDeleteConfirm(true)}
+        >
+          Delete Account
+        </button>
+      </div>
+
+      {showDeleteConfirm && (
+        <div
+          className="modal-overlay"
+          onClick={() => !isDeleting && setShowDeleteConfirm(false)}
+        >
+          <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Delete Your Account?</h3>
+            <p>
+              Are you sure you want to delete your account? Once deleted, your
+              account, profile and listings will be permanently removed and
+              cannot be recovered. If you have any active rentals, please make
+              sure these are resolved before proceeding.
+            </p>
+            <div className="modal-actions">
+              <button
+                className="btn-cancel"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-confirm-delete"
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Yes, Delete My Account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

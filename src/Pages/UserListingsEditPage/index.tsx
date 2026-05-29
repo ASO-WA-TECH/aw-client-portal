@@ -148,6 +148,7 @@ const UserListingsEditPage = () => {
         Location,
         Price,
         Images,
+        Colour,
         ModelHeight,
       } = formData;
 
@@ -163,6 +164,7 @@ const UserListingsEditPage = () => {
           Location,
           Price,
           Images: Images?.map((img) => ({ url: img.url })),
+          Colour,
           ModelHeight,
         },
       });

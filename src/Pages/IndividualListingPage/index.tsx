@@ -16,13 +16,14 @@ const IndividualListingPage = () => {
     [],
   );
   const ownerHttpService = useMemo(
-    () => new HttpService<{ Email?: string }>("Users"),
+    () => new HttpService<{ Email?: string; Name?: string; FullName?: string }>("Users"),
     [],
   );
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [listingData, setListingData] = useState<ListingFields>();
   const [isDataError, setIsDataError] = useState(false);
   const [ownerEmail, setOwnerEmail] = useState<string>();
+  const [ownerName, setOwnerName] = useState<string>();
   const urlParams = useParams();
 
   useEffect(() => {
@@ -50,6 +51,8 @@ const IndividualListingPage = () => {
           }
 
           setOwnerEmail(ownerRecord.fields.Email);
+          const name = ownerRecord.fields.Name || ownerRecord.fields.FullName || "";
+          setOwnerName(name);
         }
       } catch {
         toast.error("Failed to fetch listing or owner data");
@@ -77,7 +80,7 @@ const IndividualListingPage = () => {
       {listingData.Images && listingData.Images.length > 0 && (
         <Image images={listingData.Images} title={listingData.Title} />
       )}
-      <Details listing={listingData} ownerEmail={ownerEmail || ASO_WA_EMAIL} />
+      <Details listing={listingData} ownerEmail={ownerEmail || ASO_WA_EMAIL} ownerName={ownerName} />
     </div>
   );
 };

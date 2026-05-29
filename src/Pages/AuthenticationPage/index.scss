@@ -96,6 +96,21 @@ p,
     font-style: v.$p-font-style;
 }
 
+.terms-link {
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 16px;
+
+    a {
+        color: v.$mustardYellow;
+        text-decoration: underline;
+
+        &:hover {
+            color: darken(v.$mustardYellow, 10%);
+        }
+    }
+}
+
 @media (max-width: 800px) {
     .flex-container {
         flex-direction: column;
