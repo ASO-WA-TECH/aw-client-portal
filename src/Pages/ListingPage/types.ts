@@ -18,6 +18,7 @@ export type ListingFields = {
   "Creation Date": string;
   Location: string;
   "Rental Interest"?: string[];
+  ModelHeight?: string;
 };
 
 export type Image = {

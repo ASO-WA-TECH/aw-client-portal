@@ -12,6 +12,7 @@ import type {
   GenderOption,
   StatusOption,
   Image,
+  ModelHeightOption,
 } from "../../listing.types";
 
 interface UserFields {
@@ -92,7 +93,21 @@ const EMPTY_FORM: ListingFormData = {
   Price: "",
   Images: [],
   Colour: [],
+  ModelHeight: "",
 };
+
+const MODEL_HEIGHT_OPTIONS: ModelHeightOption[] = [
+  " ",
+  "1.50 m (4 ft 11 in)",
+  "1.55 m (5 ft 1 in)",
+  "1.60 m (5 ft 3 in)",
+  "1.65 m (5 ft 5 in)",
+  "1.70 m (5 ft 7 in)",
+  "1.75 m (5 ft 9 in)",
+  "1.80 m (5 ft 11 in)",
+  "1.85 m (6 ft 1 in)",
+  "1.90 m (6 ft 3 in)",
+];
 
 const AddListing = () => {
   const navigate = useNavigate();
@@ -129,6 +144,7 @@ const AddListing = () => {
       Location,
       Price,
       Colour,
+      Images,
     } = formData;
 
     return (
@@ -140,7 +156,8 @@ const AddListing = () => {
       Status &&
       Location &&
       Price !== "" &&
-      Colour.length > 0
+      Colour.length > 0 &&
+      Images.length > 0
     );
   };
 
@@ -228,6 +245,15 @@ const AddListing = () => {
               updateField("Size", e.target.value as SizeOption)
             }
             required
+          />
+
+          <InputDropdown
+            label="Model Height (optional)"
+            value={formData.ModelHeight ?? " "}
+            options={MODEL_HEIGHT_OPTIONS}
+            handleChange={(e) =>
+              updateField("ModelHeight", e.target.value as ModelHeightOption)
+            }
           />
 
           <CheckboxGroup
