@@ -140,7 +140,7 @@ describe("Details", () => {
     test("shows pending message when status is pending", () => {
       renderDetails({ Status: "pending" });
       expect(
-        screen.getByText(/this item is currently unavailable/i),
+        screen.getByText(/this item is currently being rented./i),
       ).toBeInTheDocument();
       expect(
         screen.queryByRole("button", { name: /enquire now/i }),
@@ -150,7 +150,7 @@ describe("Details", () => {
     test("shows unavailable message when status is unavailable", () => {
       renderDetails({ Status: "unavailable" });
       expect(
-        screen.getByText(/this item is currently unavailable/i),
+        screen.getByText(/this item is currently being rented./i),
       ).toBeInTheDocument();
       expect(
         screen.queryByRole("button", { name: /enquire now/i }),
@@ -254,7 +254,7 @@ describe("Details", () => {
       fireEvent.click(screen.getByRole("button", { name: /enquire now/i }));
       await waitFor(() =>
         expect(
-          screen.getByText(/this item is currently unavailable/i),
+          screen.getByText(/this item is currently being rented./i),
         ).toBeInTheDocument(),
       );
     });

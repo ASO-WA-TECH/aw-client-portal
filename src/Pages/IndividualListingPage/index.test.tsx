@@ -150,7 +150,7 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     expect(
-      await screen.findByText(/this item is currently unavailable/i),
+      await screen.findByText(/this item is currently being rented./i),
     ).toBeInTheDocument();
   });
 
@@ -164,7 +164,7 @@ describe("IndividualListingPage", () => {
     renderPage();
 
     expect(
-      await screen.findByText(/this item is currently unavailable/i),
+      await screen.findByText(/this item is currently being rented./i),
     ).toBeInTheDocument();
   });
 
