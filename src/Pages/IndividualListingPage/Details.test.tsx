@@ -20,6 +20,7 @@ const {
 vi.mock("react-router-dom", () => ({
   useParams: () => ({ id: "rec123" }),
   useNavigate: () => vi.fn(),
+  useLocation: () => vi.fn(),
 }));
 
 vi.mock("../../Services/Auth/AuthContext", () => ({
@@ -141,7 +142,9 @@ describe("Details", () => {
       expect(
         screen.getByText(/this item is currently pending/i),
       ).toBeInTheDocument();
-      expect(screen.queryByRole("button", { name: /enquire now/i })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /enquire now/i }),
+      ).not.toBeInTheDocument();
     });
 
     test("shows unavailable message when status is unavailable", () => {
@@ -149,7 +152,9 @@ describe("Details", () => {
       expect(
         screen.getByText(/this item is currently unavailable/i),
       ).toBeInTheDocument();
-      expect(screen.queryByRole("button", { name: /enquire now/i })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /enquire now/i }),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -166,13 +171,17 @@ describe("Details", () => {
 
     test("button is disabled when fields are empty", () => {
       renderDetails();
-      expect(screen.getByRole("button", { name: /enquire now/i })).toBeDisabled();
+      expect(
+        screen.getByRole("button", { name: /enquire now/i }),
+      ).toBeDisabled();
     });
 
     test("button is enabled when both fields are filled", () => {
       const { container } = renderDetails();
       fillInRentalForm(container);
-      expect(screen.getByRole("button", { name: /enquire now/i })).toBeEnabled();
+      expect(
+        screen.getByRole("button", { name: /enquire now/i }),
+      ).toBeEnabled();
     });
   });
 

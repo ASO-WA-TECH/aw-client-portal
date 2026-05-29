@@ -4,7 +4,7 @@ import type { ListingFields } from "../ListingPage/types";
 import HttpService, { type AirtableRecord } from "../../Services/httpService";
 import { toast } from "react-toastify";
 import Button from "../../stories/Button";
-
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../Services/Auth/AuthContext";
 import InputField from "../../stories/InputField";
 import { Routes } from "../../Routes";
@@ -34,6 +34,7 @@ const userHttpService = new HttpService<UserFields>("Users");
 
 const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams<{ id: string }>();
   const { currentUser } = useAuth();
   const [status, setStatus] = useState(listing.Status);
@@ -194,7 +195,9 @@ const Details = ({ listing, ownerEmail, ownerName }: DetailsProps) => {
         <Button
           type="button"
           text="Login/ Sign up"
-          handleClick={() => navigate(Routes.AUTHENTICATE)}
+          handleClick={() =>
+            navigate(Routes.AUTHENTICATE, { state: { from: location } })
+          }
         />
       </div>
     );
