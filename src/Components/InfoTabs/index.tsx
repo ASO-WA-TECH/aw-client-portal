@@ -7,6 +7,7 @@ export interface InfoTabItem {
   label: string;
   paragraphs?: string[];
   bullets?: string[];
+  secondaryParagraphs?: string[];
 }
 
 interface InfoTabsProps {
@@ -44,6 +45,9 @@ const InfoTabs = ({ content }: InfoTabsProps) => {
             ))}
           </ul>
         )}
+        {currentTab.secondaryParagraphs?.map((p, i) => (
+          <p key={i}>{parseContent(p)}</p>
+        ))}
       </div>
     </div>
   );

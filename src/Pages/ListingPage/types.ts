@@ -21,6 +21,7 @@ export type ListingFields = {
   "Creation Date": string;
   Location: string;
   "Rental Interest"?: string[];
+  Colour?: string[];
   ModelHeight?: string;
 };
 

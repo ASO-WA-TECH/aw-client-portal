@@ -10,6 +10,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  deleteUser,
   onAuthStateChanged,
   type User,
   type UserCredential,
@@ -21,6 +22,7 @@ interface AuthContextType {
   signup: (email: string, password: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -92,6 +94,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function deleteAccount() {
+    try {
+      if (auth.currentUser) {
+        await deleteUser(auth.currentUser);
+      }
+      Sentry.setUser(null);
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { flow: "deleteAccount" },
+        level: "error",
+      });
+      throw error;
+    }
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
@@ -113,6 +130,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signup,
     login,
     logout,
+    deleteAccount,
   };
 
   return (
