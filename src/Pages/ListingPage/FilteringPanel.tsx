@@ -1,4 +1,7 @@
-import type { CategoryOption, SizeOption } from "../../listing.types";
+import type {
+  CategoryOption,
+  SizeOption,
+} from "../../Constants/Listing/listing.constants";
 
 const CATEGORIES: CategoryOption[] = [
   "Agbada",

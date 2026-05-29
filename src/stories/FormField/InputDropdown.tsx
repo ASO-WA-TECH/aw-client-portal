@@ -5,7 +5,7 @@ export interface InputDropdownProps {
   value: string | number;
   handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   label: string;
-  options: (string | number)[];
+  options: readonly (string | number)[];
   placeholder?: string;
   isReadOnly?: boolean;
   darkMode?: boolean;

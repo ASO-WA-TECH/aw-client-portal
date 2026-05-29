@@ -1,7 +1,10 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import FilterPanel from "./FilteringPanel";
-import type { CategoryOption, SizeOption } from "../../listing.types";
+import type {
+  CategoryOption,
+  SizeOption,
+} from "../../Constants/Listing/listing.constants";
 
 const mockProps = {
   totalResults: 42,

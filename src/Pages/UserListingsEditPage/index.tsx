@@ -4,13 +4,13 @@ import HttpService from "../../Services/httpService";
 import BackButton from "../../stories/BackButton/BackButton";
 
 import type {
-  ListingFormData,
   SizeOption,
   CategoryOption,
   GenderOption,
   StatusOption,
   ModelHeightOption,
-} from "../../listing.types";
+  ListingFormData,
+} from "../../Constants/Listing/listing.constants";
 
 import { toast } from "react-toastify";
 import "./index.scss";
@@ -19,56 +19,14 @@ import CheckboxGroup from "../../stories/FormField/CheckboxGroup";
 import InputDropdown from "../../stories/FormField/InputDropdown";
 import Button from "../../stories/Button";
 import ImageUploader from "../../Components/ImageUploader";
-
-const SIZE_OPTIONS: SizeOption[] = ["XS", "S", "M", "L", "XL", "XXL"];
-
-const CATEGORY_OPTIONS: CategoryOption[] = [
-  "Agbada",
-  "Gele",
-  "Iro and Buba",
-  "Dress",
-  "Top",
-  "Skirt",
-  "Corset",
-  "Fila",
-];
-
-const GENDER_OPTIONS: GenderOption[] = [
-  "Man",
-  "Woman",
-  "Unisex",
-  "Boy",
-  "Girl",
-];
-
-const STATUS_OPTIONS: StatusOption[] = ["available", "unavailable"];
-
-const EMPTY_FORM: ListingFormData = {
-  Title: "",
-  Description: "",
-  Size: "",
-  Category: [],
-  Gender: "",
-  Status: "",
-  Location: "",
-  Price: "",
-  Images: [],
-  Colour: [],
-  ModelHeight: "",
-};
-
-const MODEL_HEIGHT_OPTIONS: ModelHeightOption[] = [
-  " ",
-  "1.50 m (4 ft 11 in)",
-  "1.55 m (5 ft 1 in)",
-  "1.60 m (5 ft 3 in)",
-  "1.65 m (5 ft 5 in)",
-  "1.70 m (5 ft 7 in)",
-  "1.75 m (5 ft 9 in)",
-  "1.80 m (5 ft 11 in)",
-  "1.85 m (6 ft 1 in)",
-  "1.90 m (6 ft 3 in)",
-];
+import {
+  SIZE_OPTIONS,
+  GENDER_OPTIONS,
+  STATUS_OPTIONS,
+  MODEL_HEIGHT_OPTIONS,
+  CATEGORY_OPTIONS,
+  createEmptyForm,
+} from "../../Constants/Listing/listing.constants.tsx";
 
 const UserListingsEditPage = () => {
   const navigate = useNavigate();
@@ -80,7 +38,7 @@ const UserListingsEditPage = () => {
 
   const { id } = useParams<{ id: string }>();
 
-  const [formData, setFormData] = useState<ListingFormData>(EMPTY_FORM);
+  const [formData, setFormData] = useState<ListingFormData>(createEmptyForm());
   const [initialData, setInitialData] = useState<ListingFormData | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -98,7 +56,7 @@ const UserListingsEditPage = () => {
 
         if (record?.fields) {
           const loaded: ListingFormData = {
-            ...EMPTY_FORM,
+            ...createEmptyForm(),
             ...record.fields,
             Price: record.fields.Price ?? "",
             Category: (record.fields.Category ?? []) as CategoryOption[],

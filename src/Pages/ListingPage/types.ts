@@ -1,4 +1,11 @@
-import type { SizeOption, CategoryOption } from "../../listing.types";
+import type {
+  SizeOption,
+  CategoryOption,
+  GenderOption,
+  StatusOption,
+  ColourOption,
+  ModelHeightOption,
+} from "../../Constants/Listing/listing.constants";
 
 export type ListingRecord = {
   id: string;
@@ -11,18 +18,17 @@ export type ListingFields = {
   Owner: string[];
   Title: string;
   Description: string;
-  Gender: "Woman" | "Man";
+  Gender: GenderOption;
   Size: SizeOption;
   Price: number;
   Images: Image[];
-  Colour: string[];
+  Colour: ColourOption[];
   Category?: CategoryOption[];
-  Status: "available" | "pending" | "unavailable";
-  "Creation Date": string;
+  Status: StatusOption;
   Location: string;
   "Rental Interest"?: string[];
-  Colour?: string[];
-  ModelHeight?: string;
+  "Creation Date": string;
+  ModelHeight?: ModelHeightOption;
 };
 
 export type Image = {

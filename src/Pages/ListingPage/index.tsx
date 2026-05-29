@@ -3,8 +3,10 @@ import HttpService from "../../Services/httpService";
 import { useNavigate } from "react-router-dom";
 import "./index.scss";
 import type { FlattenedListing, ListingRecord } from "./types";
-
-import type { SizeOption, CategoryOption } from "../../listing.types";
+import type {
+  SizeOption,
+  CategoryOption,
+} from "../../Constants/Listing/listing.constants";
 import groupByKeyValue from "./utils/groupByKeyValue";
 import ListingDisplayImage from "../../stories/ListingDisplayImage/ListingDisplayImage";
 import Loading from "./Loading";
