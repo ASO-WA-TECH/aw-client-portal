@@ -27,7 +27,6 @@ export type ListingFields = {
   Status: StatusOption;
   Location: string;
   "Rental Interest"?: string[];
-  "Creation Date": string;
   ModelHeight?: ModelHeightOption;
 };
 
