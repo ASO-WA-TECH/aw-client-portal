@@ -53,7 +53,6 @@ const mockListing: ListingFields = {
   Colour: ["Green"],
   Size: "M",
   Status: "available",
-  "Creation Date": "",
   Location: "",
 };
 
