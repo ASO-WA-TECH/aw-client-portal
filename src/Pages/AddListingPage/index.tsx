@@ -123,6 +123,7 @@ const AddListing = () => {
         Colour: Array.isArray(formData.Colour)
           ? formData.Colour
           : [formData.Colour].filter(Boolean),
+        ...(formData.ModelHeight ? { ModelHeight: formData.ModelHeight } : {}),
       };
       await listingHttpService.createRecords(payload);
 

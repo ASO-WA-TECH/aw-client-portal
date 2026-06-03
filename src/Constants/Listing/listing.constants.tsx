@@ -1,5 +1,3 @@
-// listing.constants.ts — derives everything, no imports needed
-
 export const SIZE_OPTIONS = [
   "XS",
   "S",
@@ -93,7 +91,6 @@ export interface ListingFormData {
   Images: Image[];
   Colour: ColourOption[];
   ModelHeight: ModelHeightOption | "";
-  "Creation Date": "";
 }
 
 export const createEmptyForm = (): ListingFormData => ({
@@ -108,5 +105,4 @@ export const createEmptyForm = (): ListingFormData => ({
   Images: [],
   Colour: [],
   ModelHeight: "",
-  "Creation Date": "",
 });
