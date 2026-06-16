@@ -11,6 +11,7 @@ interface ListingRecord {
     Price: number;
     Gender: string;
     Description: string;
+    CreationDate: Date;
     Images?: Array<{ url: string }>;
   };
 }
@@ -31,7 +32,6 @@ const LandingPage = () => {
           fields: record.fields as ListingRecord["fields"],
         }));
         setListings(records);
-        console.log("Fetched listings:", records);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -54,8 +54,8 @@ const LandingPage = () => {
               ? [...listings]
                   .sort(
                     (a, b) =>
-                      new Date(b.fields["Creation Date"]).getTime() -
-                      new Date(a.fields["Creation Date"]).getTime(),
+                      new Date(b.fields.CreationDate).getTime() -
+                      new Date(a.fields.CreationDate).getTime(),
                   )
                   .slice(0, 4)
                   .map((listing, index) => (
