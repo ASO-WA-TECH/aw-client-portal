@@ -11,6 +11,7 @@ interface ListingRecord {
     Price: number;
     Gender: string;
     Description: string;
+    CreationDate: Date;
     Images?: Array<{ url: string }>;
   };
 }
@@ -50,21 +51,28 @@ const LandingPage = () => {
         <div className="carouselContainer">
           <div className="productGrid">
             {listings.length > 0
-              ? listings.slice(0, 4).map((listing, index) => (
-                  <div
-                    key={listing.id || index}
-                    onClick={() => navigate(`/listing/${listing.id}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <ListingDisplayImage
-                      listingId={listing.id}
-                      title={listing.fields.Title}
-                      subtitle={`£${listing.fields.Price}`}
-                      imageUrl={listing.fields.Images?.[0]?.url ?? ""}
-                      darkMode={false}
-                    />
-                  </div>
-                ))
+              ? [...listings]
+                  .sort(
+                    (a, b) =>
+                      new Date(b.fields.CreationDate).getTime() -
+                      new Date(a.fields.CreationDate).getTime(),
+                  )
+                  .slice(0, 4)
+                  .map((listing, index) => (
+                    <div
+                      key={listing.id || index}
+                      onClick={() => navigate(`/listing/${listing.id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <ListingDisplayImage
+                        listingId={listing.id}
+                        title={listing.fields.Title}
+                        subtitle={`£${listing.fields.Price}`}
+                        imageUrl={listing.fields.Images?.[0]?.url ?? ""}
+                        darkMode={false}
+                      />
+                    </div>
+                  ))
               : !loading && <p>No listings found.</p>}
           </div>
         </div>
