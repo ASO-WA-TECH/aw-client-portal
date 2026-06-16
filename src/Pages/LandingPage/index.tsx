@@ -31,6 +31,7 @@ const LandingPage = () => {
           fields: record.fields as ListingRecord["fields"],
         }));
         setListings(records);
+        console.log("Fetched listings:", records);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -50,21 +51,28 @@ const LandingPage = () => {
         <div className="carouselContainer">
           <div className="productGrid">
             {listings.length > 0
-              ? listings.slice(0, 4).map((listing, index) => (
-                  <div
-                    key={listing.id || index}
-                    onClick={() => navigate(`/listing/${listing.id}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <ListingDisplayImage
-                      listingId={listing.id}
-                      title={listing.fields.Title}
-                      subtitle={`£${listing.fields.Price}`}
-                      imageUrl={listing.fields.Images?.[0]?.url ?? ""}
-                      darkMode={false}
-                    />
-                  </div>
-                ))
+              ? [...listings]
+                  .sort(
+                    (a, b) =>
+                      new Date(b.fields["Creation Date"]).getTime() -
+                      new Date(a.fields["Creation Date"]).getTime(),
+                  )
+                  .slice(0, 4)
+                  .map((listing, index) => (
+                    <div
+                      key={listing.id || index}
+                      onClick={() => navigate(`/listing/${listing.id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <ListingDisplayImage
+                        listingId={listing.id}
+                        title={listing.fields.Title}
+                        subtitle={`£${listing.fields.Price}`}
+                        imageUrl={listing.fields.Images?.[0]?.url ?? ""}
+                        darkMode={false}
+                      />
+                    </div>
+                  ))
               : !loading && <p>No listings found.</p>}
           </div>
         </div>
